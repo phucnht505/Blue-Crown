@@ -1,3 +1,9 @@
+using BlueCrown.Api.Models;
+using Microsoft.EntityFrameworkCore;
+using BlueCrown.Api.Repositories.Interfaces;
+using BlueCrown.Api.Repositories.Implementations;
+using BlueCrown.Api.Services.Interfaces;
+using BlueCrown.Api.Services.Implementations;
 
 namespace BlueCrown.Api
 {
@@ -7,16 +13,20 @@ namespace BlueCrown.Api
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+            builder.Services.AddDbContext<BlueCrownContext>(options =>
+                options.UseSqlServer(
+                    builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IUserService, UserService>();
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -26,7 +36,6 @@ namespace BlueCrown.Api
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 
