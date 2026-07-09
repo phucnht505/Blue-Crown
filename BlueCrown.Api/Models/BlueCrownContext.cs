@@ -27,6 +27,8 @@ public partial class BlueCrownContext : DbContext
 
     public virtual DbSet<DoctorProfile> DoctorProfiles { get; set; }
 
+    public virtual DbSet<DrugAlternative> DrugAlternatives { get; set; }
+
     public virtual DbSet<EcommerceOrder> EcommerceOrders { get; set; }
 
     public virtual DbSet<HealthGoal> HealthGoals { get; set; }
@@ -256,6 +258,39 @@ public partial class BlueCrownContext : DbContext
             entity.HasOne(d => d.User).WithOne(p => p.DoctorProfile)
                 .HasForeignKey<DoctorProfile>(d => d.UserId)
                 .HasConstraintName("FK__doctor_pr__user___38996AB5");
+        });
+
+        modelBuilder.Entity<DrugAlternative>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__drug_alt__3213E83FDC4692DC");
+
+            entity.ToTable("drug_alternatives");
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("(newid())")
+                .HasColumnName("id");
+            entity.Property(e => e.AlternativeProductId).HasColumnName("alternative_product_id");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
+            entity.Property(e => e.ProductId).HasColumnName("product_id");
+            entity.Property(e => e.Reason)
+                .HasMaxLength(255)
+                .HasColumnName("reason");
+            entity.Property(e => e.SimilarityScore)
+                .HasColumnType("decimal(5, 2)")
+                .HasColumnName("similarity_score");
+
+            entity.HasOne(d => d.AlternativeProduct).WithMany(p => p.DrugAlternativeAlternativeProducts)
+                .HasForeignKey(d => d.AlternativeProductId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DrugAlternative_Alternative");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.DrugAlternativeProducts)
+                .HasForeignKey(d => d.ProductId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_DrugAlternative_Product");
         });
 
         modelBuilder.Entity<EcommerceOrder>(entity =>
@@ -688,19 +723,32 @@ public partial class BlueCrownContext : DbContext
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("(newid())")
                 .HasColumnName("id");
+            entity.Property(e => e.ActiveIngredient)
+                .HasMaxLength(200)
+                .HasColumnName("active_ingredient");
             entity.Property(e => e.Description).HasColumnName("description");
+            entity.Property(e => e.DosageForm)
+                .HasMaxLength(100)
+                .HasColumnName("dosage_form");
             entity.Property(e => e.IsPrescriptionRequired)
                 .HasDefaultValue(false)
                 .HasColumnName("is_prescription_required");
             entity.Property(e => e.Name)
                 .HasMaxLength(255)
                 .HasColumnName("name");
+            entity.Property(e => e.PrescriptionRequired).HasColumnName("prescription_required");
             entity.Property(e => e.Price)
                 .HasColumnType("decimal(12, 2)")
                 .HasColumnName("price");
             entity.Property(e => e.StockQuantity)
                 .HasDefaultValue(0)
                 .HasColumnName("stock_quantity");
+            entity.Property(e => e.Strength)
+                .HasMaxLength(50)
+                .HasColumnName("strength");
+            entity.Property(e => e.TherapeuticGroup)
+                .HasMaxLength(200)
+                .HasColumnName("therapeutic_group");
         });
 
         modelBuilder.Entity<ReceiptDetail>(entity =>
