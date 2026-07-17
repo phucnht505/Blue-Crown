@@ -8,6 +8,8 @@ namespace BlueCrown.Api.Repositories.Interfaces
 
         Task<User?> GetByIdAsync(Guid id);
 
+        Task<User?> GetByPhoneAsync(string phone);
+
         Task<User?> GetByEmailAsync(string email);
 
         Task AddAsync(User user);
