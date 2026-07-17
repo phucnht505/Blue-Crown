@@ -1,8 +1,10 @@
 ﻿using BlueCrown.Api.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlueCrown.Api.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
@@ -14,16 +16,13 @@ namespace BlueCrown.Api.Controllers
             _userService = userService;
         }
 
-        // GET: api/users
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
         {
             var users = await _userService.GetAllUsersAsync();
-
             return Ok(users);
         }
 
-        // GET: api/users/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserById(Guid id)
         {
@@ -36,6 +35,7 @@ namespace BlueCrown.Api.Controllers
                     message = "Không tìm thấy người dùng."
                 });
             }
+
             return Ok(user);
         }
     }
