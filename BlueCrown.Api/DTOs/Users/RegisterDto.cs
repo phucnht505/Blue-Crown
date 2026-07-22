@@ -5,19 +5,21 @@ namespace BlueCrown.Api.DTOs.Users
     public class RegisterDto
     {
         [Required(ErrorMessage = "Họ tên không được để trống.")]
-        [StringLength(100, MinimumLength = 2)]
+        [StringLength(50, MinimumLength = 2, ErrorMessage = "Họ tên từ 2 đến 50 ký tự")]
+        [RegularExpression(@"^[\p{L}\s]+$", ErrorMessage = "Họ tên chỉ chứa chữ cái không chứa số")]
         public string FullName { get; set; } = string.Empty;
 
-        [Required]
-        [EmailAddress]
-        [StringLength(255)]
+        [Required(ErrorMessage = "Email không được để trống")]
+        [EmailAddress(ErrorMessage = "Email không được để trống")]
         public string Email { get; set; } = string.Empty;
 
-        [RegularExpression(@"^(0|\+84)[3|5|7|8|9][0-9]{8}$", ErrorMessage = "Số điện thoại không hợp lệ.")]
+
+        [Required(ErrorMessage = "Số điện thoại không được để trống")]
+        [RegularExpression(@"^(03|05|07|08|09)\d{8}$", ErrorMessage = "Số điện thoại không hợp lệ.")]
         public string? Phone { get; set; }
 
-        [Required]
-        [StringLength(100, MinimumLength = 8)]
+        [Required(ErrorMessage = "Mật khẩu không được để trống")]
+        [MinLength(8, ErrorMessage = "Mật khẩu phải có ít nhất 8 ký tự")]
         public string Password { get; set; } = string.Empty;
 
         public DateOnly? DateOfBirth { get; set; }

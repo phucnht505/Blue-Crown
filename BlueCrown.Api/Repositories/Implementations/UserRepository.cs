@@ -24,6 +24,11 @@ namespace BlueCrown.Api.Repositories.Implementations
             return await _context.Users.FindAsync(id);
         }
 
+        public async Task<User?> GetByPhoneAsync(string phone)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Phone == phone);
+        }
+
         public async Task<User?> GetByEmailAsync(string email)
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
