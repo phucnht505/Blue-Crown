@@ -21,6 +21,8 @@ public partial class PatientProfile
 
     public string? EmergencyContactPhone { get; set; }
 
+    public decimal? WeightKg { get; set; }
+
     public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
 
     public virtual ICollection<ChatSession> ChatSessions { get; set; } = new List<ChatSession>();

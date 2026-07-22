@@ -597,6 +597,7 @@ public partial class BlueCrownContext : DbContext
                 .HasColumnType("decimal(5, 2)")
                 .HasColumnName("height_cm");
             entity.Property(e => e.UserId).HasColumnName("user_id");
+            entity.Property(e => e.WeightKg).HasColumnType("decimal(5, 2)");
 
             entity.HasOne(d => d.User).WithOne(p => p.PatientProfile)
                 .HasForeignKey<PatientProfile>(d => d.UserId)
