@@ -21,6 +21,8 @@ namespace BlueCrown.Api
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IPatientProfileRepository, PatientProfileRepository>();
+            builder.Services.AddScoped<IPatientProfileService, PatientProfileService>();
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
