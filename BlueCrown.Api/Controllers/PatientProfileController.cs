@@ -6,8 +6,8 @@ using System.Security.Claims;
 
 namespace BlueCrown.Api.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     [Authorize]
     public class PatientProfileController : ControllerBase
     {
@@ -18,54 +18,46 @@ namespace BlueCrown.Api.Controllers
             _service = service;
         }
 
-        // GET: api/PatientProfile/me
         [HttpGet("me")]
         public async Task<IActionResult> GetMyProfile()
         {
-            var userId = GetUserId();
+            Guid userId = GetCurrentUserId();
 
             var profile = await _service.GetMyProfileAsync(userId);
 
             if (profile == null)
-            {
-                return NotFound(new
-                {
-                    message = "Chưa có hồ sơ sức khỏe."
-                });
-            }
+                return NotFound(new { message = "Chưa có hồ sơ sức khỏe." });
 
             return Ok(profile);
         }
 
-        // POST: api/PatientProfile
         [HttpPost]
         public async Task<IActionResult> CreateProfile(CreatePatientProfileDto dto)
         {
-            var userId = GetUserId();
+            Guid userId = GetCurrentUserId();
 
             await _service.CreateProfileAsync(userId, dto);
 
             return Ok(new
             {
-                message = "Tạo hồ sơ sức khỏe thành công."
+                message = "Tạo hồ sơ thành công."
             });
         }
 
-        // PUT: api/PatientProfile
         [HttpPut]
         public async Task<IActionResult> UpdateProfile(UpdatePatientProfileDto dto)
         {
-            var userId = GetUserId();
+            Guid userId = GetCurrentUserId();
 
             await _service.UpdateProfileAsync(userId, dto);
 
             return Ok(new
             {
-                message = "Cập nhật hồ sơ sức khỏe thành công."
+                message = "Cập nhật hồ sơ thành công."
             });
         }
 
-        private Guid GetUserId()
+        private Guid GetCurrentUserId()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
