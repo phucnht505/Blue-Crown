@@ -46,6 +46,10 @@ namespace BlueCrown.Api
             builder.Services.AddScoped<IPatientProfileService, PatientProfileService>();
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<IInventoryReceiptRepository, InventoryReceiptRepository>();
+            builder.Services.AddScoped<IInventoryReceiptService, InventoryReceiptService>();
+            builder.Services.AddScoped<IReceiptDetailRepository, ReceiptDetailRepository>();
+            builder.Services.AddScoped<IFefoService, FefoService>();
 
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IJwtService, JwtService>();
