@@ -52,6 +52,8 @@ namespace BlueCrown.Api
             builder.Services.AddScoped<IFefoService, FefoService>();
             builder.Services.AddScoped<ICheckoutRepository, CheckoutRepository>();
             builder.Services.AddScoped<ICheckoutService, CheckoutService>();
+            builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+            builder.Services.AddScoped<IPaymentService, PaymentService>();
 
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IJwtService, JwtService>();
