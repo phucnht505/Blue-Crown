@@ -62,6 +62,8 @@ namespace BlueCrown.Api
             builder.Services.AddScoped<IPrescriptionService, PrescriptionService>();
             builder.Services.AddScoped<IEcommerceOrderRepository, EcommerceOrderRepository>();
             builder.Services.AddScoped<IEcommerceOrderService, EcommerceOrderService>();
+            builder.Services.AddScoped<IDoctorProfileRepository, DoctorProfileRepository>();
+            builder.Services.AddScoped<IDoctorProfileService, DoctorProfileService>();
 
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IJwtService, JwtService>();
