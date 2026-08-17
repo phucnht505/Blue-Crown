@@ -66,6 +66,8 @@ namespace BlueCrown.Api
             builder.Services.AddScoped<IDoctorProfileService, DoctorProfileService>();
             builder.Services.AddScoped<IChatSessionRepository, ChatSessionRepository>();
             builder.Services.AddScoped<IChatSessionService, ChatSessionService>();
+            builder.Services.AddScoped<IChatMessageRepository, ChatMessageRepository>();
+            builder.Services.AddScoped<IChatMessageService, ChatMessageService>();
 
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IJwtService, JwtService>();
