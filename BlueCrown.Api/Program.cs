@@ -78,6 +78,10 @@ namespace BlueCrown.Api
             builder.Services.AddScoped<IClinicService, ClinicService>();
             builder.Services.AddScoped<IHealthGoalRepository, HealthGoalRepository>();
             builder.Services.AddScoped<IHealthGoalService, HealthGoalService>();
+            builder.Services.AddScoped<IHealthMetricRepository, HealthMetricRepository>();
+            builder.Services.AddScoped<IHealthMetricService, HealthMetricService>();
+            builder.Services.AddScoped<IDrugAlternativeRepository, DrugAlternativeRepository>();
+            builder.Services.AddScoped<IDrugAlternativeService, DrugAlternativeService>();
 
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IJwtService, JwtService>();
