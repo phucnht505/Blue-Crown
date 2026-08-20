@@ -86,6 +86,8 @@ namespace BlueCrown.Api
             builder.Services.AddScoped<INotificationService, NotificationService>();
             builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
             builder.Services.AddScoped<ISupplierService, SupplierService>();
+            builder.Services.AddScoped<IMetricTypeRepository, MetricTypeRepository>();
+            builder.Services.AddScoped<IMetricTypeService, MetricTypeService>();
 
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IJwtService, JwtService>();
