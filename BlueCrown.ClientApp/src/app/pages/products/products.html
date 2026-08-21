@@ -1,0 +1,47 @@
+<section class="products-page">
+
+  <div class="page-header">
+
+    <span>SẢN PHẨM</span>
+
+    <h1>
+      Nhà thuốc Blue Crown
+    </h1>
+
+    <p>
+      Tìm kiếm thuốc và sản phẩm chăm sóc sức khỏe.
+    </p>
+
+  </div>
+
+
+  <div class="search-box">
+
+    <input type="text"
+           [(ngModel)]="searchText"
+           placeholder="Tìm tên thuốc, hoạt chất..." />
+
+  </div>
+
+
+  <div class="product-grid">
+
+    @for (product of filteredProducts; track product.id) {
+
+    <app-product-card [product]="product">
+    </app-product-card>
+
+    }
+
+  </div>
+
+
+  @if (filteredProducts.length === 0) {
+
+  <div class="empty">
+    Không tìm thấy sản phẩm phù hợp.
+  </div>
+
+  }
+
+</section>
