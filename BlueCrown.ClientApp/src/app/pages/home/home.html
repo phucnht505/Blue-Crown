@@ -1,0 +1,69 @@
+<section class="hero">
+
+  <div class="hero-content">
+
+    <div class="hero-text">
+
+      <span class="hero-label">
+        BLUE CROWN HEALTHCARE
+      </span>
+
+      <h1>
+        Chăm sóc sức khỏe
+        <span>thông minh hơn</span>
+      </h1>
+
+      <p>
+        Tìm kiếm thuốc, sản phẩm chăm sóc sức khỏe
+        và dịch vụ y tế ngay trên Blue Crown.
+      </p>
+
+      <div class="hero-actions">
+
+        <a routerLink="/products" class="primary-btn">
+          Xem sản phẩm
+        </a>
+
+        <a routerLink="/login" class="secondary-btn">
+          Đăng nhập
+        </a>
+
+      </div>
+
+    </div>
+
+    <div class="hero-image">
+      <div class="medical-icon">💊</div>
+    </div>
+
+  </div>
+
+</section>
+
+
+<section class="products-section">
+
+  <div class="section-header">
+
+    <div>
+      <span>SẢN PHẨM</span>
+      <h2>Sản phẩm nổi bật</h2>
+    </div>
+
+    <a routerLink="/products">
+      Xem tất cả →
+    </a>
+
+  </div>
+
+
+  <div class="product-grid">
+
+    @for (product of products; track product.id) {
+    <app-product-card [product]="product">
+    </app-product-card>
+    }
+
+  </div>
+
+</section>

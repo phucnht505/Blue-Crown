@@ -1,0 +1,34 @@
+<div class="product-card">
+
+  <div class="product-image">
+    <span>💊</span>
+  </div>
+
+  <div class="product-body">
+
+    <span class="product-category">
+      {{ product.category }}
+    </span>
+
+    <h3>{{ product.name }}</h3>
+
+    <p class="generic-name">
+      {{ product.genericName }}
+    </p>
+
+    <div class="product-bottom">
+
+      <strong>
+        {{ product.price | number }}đ
+      </strong>
+
+      <a [routerLink]="['/products', product.id]"
+         class="detail-btn">
+        Xem
+      </a>
+
+    </div>
+
+  </div>
+
+</div>
