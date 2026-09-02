@@ -230,7 +230,13 @@ export const routes: Routes = [
         canActivate: [authGuard, roleGuard],
         data: { roles: ['admin'] },
         loadComponent: () => import('./pages/admin-inventory-receipts/admin-inventory-receipts').then(m => m.AdminInventoryReceipts),
-      },
+        },
+        {
+            path: 'admin/statistics',
+            canActivate: [authGuard, roleGuard],
+            data: { roles: ['admin'] },
+            loadComponent: () => import('./pages/admin-statistics/admin-statistics').then(m => m.AdminStatisticsPage),
+        },
       {
         path: 'order-management',
         canActivate: [authGuard, roleGuard],
