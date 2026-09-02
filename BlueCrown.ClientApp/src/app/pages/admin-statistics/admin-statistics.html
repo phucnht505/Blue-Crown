@@ -1,0 +1,254 @@
+<main class="statistics-page">
+    <div class="page-header">
+        <div>
+            <a routerLink="/admin/dashboard" class="back-link">← Admin Dashboard</a>
+            <p class="eyebrow">BÁO CÁO THỐNG KÊ</p>
+            <h1>Thống kê bán hàng và nhập kho</h1>
+            <p>Theo dõi doanh thu bán hàng, chi phí nhập hàng và các giao dịch đã hoàn tất.</p>
+        </div>
+    </div>
+
+    <section class="filter-card">
+        <div class="filter-group">
+            <label>Thống kê theo</label>
+
+            <select [(ngModel)]="period" (change)="onPeriodChange()">
+                <option value="day">Ngày</option>
+                <option value="month">Tháng</option>
+                <option value="year">Năm</option>
+            </select>
+        </div>
+
+        @if (period === 'day') {
+        <div class="filter-group">
+            <label>Ngày</label>
+            <input type="date" [(ngModel)]="selectedDate">
+        </div>
+        }
+
+        @if (period === 'month') {
+        <div class="filter-group">
+            <label>Tháng</label>
+            <input type="month" [(ngModel)]="selectedMonth">
+        </div>
+        }
+
+        @if (period === 'year') {
+        <div class="filter-group">
+            <label>Năm</label>
+            <input type="number"
+                   min="2000"
+                   max="9999"
+                   [(ngModel)]="selectedYear">
+        </div>
+        }
+
+        <button type="button"
+                class="search-button"
+                (click)="loadStatistics()"
+                [disabled]="loading">
+
+            {{ loading ? 'Đang tải...' : 'Xem báo cáo' }}
+        </button>
+    </section>
+
+    @if (errorMessage) {
+    <div class="error-box">
+        {{ errorMessage }}
+    </div>
+    }
+
+    @if (loading) {
+    <div class="loading-box">
+        <div class="spinner"></div>
+        <span>Đang tổng hợp dữ liệu báo cáo...</span>
+    </div>
+    }
+
+    @if (statistics && !loading) {
+    @if (statistics.salesOrderCount === 0 && statistics.inventoryReceiptCount === 0) {
+    <div class="empty-report">
+        Không có dữ liệu bán hàng hoặc nhập kho trong kỳ báo cáo này.
+    </div>
+    }
+    <section class="report-toolbar">
+        <div>
+            <p class="toolbar-label">KỲ BÁO CÁO</p>
+            <h2>{{ getPeriodTitle() }}</h2>
+        </div>
+
+        <div class="export-actions">
+            <button type="button"
+                    class="export-button pdf-button"
+                    (click)="exportPdf()"
+                    [disabled]="exportingPdf || exportingWord">
+
+                {{ exportingPdf ? 'Đang xuất PDF...' : 'Xuất PDF' }}
+            </button>
+
+            <button type="button"
+                    class="export-button word-button"
+                    (click)="exportWord()"
+                    [disabled]="exportingPdf || exportingWord">
+
+                {{ exportingWord ? 'Đang xuất Word...' : 'Xuất Word' }}
+            </button>
+        </div>
+    </section>
+
+    <section class="summary-grid">
+        <article class="summary-card">
+            <span>Đơn bán hoàn tất</span>
+            <strong>{{ statistics.salesOrderCount }}</strong>
+            <small>Đơn hàng đã giao thành công</small>
+        </article>
+
+        <article class="summary-card">
+            <span>Doanh thu bán hàng</span>
+            <strong>{{ formatMoney(statistics.salesRevenue) }}</strong>
+            <small>Tổng giá trị đơn đã giao</small>
+        </article>
+
+        <article class="summary-card">
+            <span>Phiếu nhập đã duyệt</span>
+            <strong>{{ statistics.inventoryReceiptCount }}</strong>
+            <small>Phiếu nhập hợp lệ trong kỳ</small>
+        </article>
+
+        <article class="summary-card">
+            <span>Chi phí nhập hàng</span>
+            <strong>{{ formatMoney(statistics.inventoryCost) }}</strong>
+            <small>Tổng giá trị nhập kho</small>
+        </article>
+
+        <article class="summary-card balance-card">
+            <span>Chênh lệch thu - chi</span>
+            <strong>{{ formatMoney(statistics.balance) }}</strong>
+            <small>Doanh thu bán - chi phí nhập</small>
+        </article>
+    </section>
+
+    <section class="table-card">
+        <div class="section-title">
+            <div>
+                <h2>Hóa đơn / đơn bán đã hoàn tất</h2>
+                <p>{{ statistics.salesOrderCount }} giao dịch</p>
+            </div>
+        </div>
+
+        @if (statistics.salesOrders.length === 0) {
+        <div class="empty-state">
+            Không có đơn bán hoàn tất trong khoảng thời gian này.
+        </div>
+        } @else {
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Mã đơn</th>
+                        <th>Khách hàng</th>
+                        <th>Ngày bán</th>
+                        <th>Thanh toán</th>
+                        <th>Trạng thái</th>
+                        <th class="money-column">Tổng tiền</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @for (order of statistics.salesOrders; track order.id) {
+                    <tr>
+                        <td class="code">
+                            {{ shortId(order.id) }}
+                        </td>
+
+                        <td>
+                            <strong>{{ order.customerName }}</strong>
+
+                            @if (order.guestPhone) {
+                            <small>{{ order.guestPhone }}</small>
+                            }
+                        </td>
+
+                        <td>
+                            {{ order.createdAt | date:'dd/MM/yyyy HH:mm' }}
+                        </td>
+
+                        <td>
+                            {{ order.paymentMethod | uppercase }}
+                        </td>
+
+                        <td>
+                            <span class="status success">
+                                Đã giao
+                            </span>
+                        </td>
+
+                        <td class="money-column">
+                            {{ formatMoney(order.totalAmount) }}
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        }
+    </section>
+
+    <section class="table-card">
+        <div class="section-title">
+            <div>
+                <h2>Phiếu nhập đã duyệt</h2>
+                <p>{{ statistics.inventoryReceiptCount }} phiếu nhập</p>
+            </div>
+        </div>
+
+        @if (statistics.inventoryReceipts.length === 0) {
+        <div class="empty-state">
+            Không có phiếu nhập đã duyệt trong khoảng thời gian này.
+        </div>
+        } @else {
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Mã phiếu</th>
+                        <th>Nhà cung cấp</th>
+                        <th>Ngày nhập</th>
+                        <th>Trạng thái</th>
+                        <th class="money-column">Tổng chi phí</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @for (receipt of statistics.inventoryReceipts; track receipt.id) {
+                    <tr>
+                        <td class="code">
+                            {{ shortId(receipt.id) }}
+                        </td>
+
+                        <td>
+                            {{ receipt.supplierName }}
+                        </td>
+
+                        <td>
+                            {{ receipt.receiptDate | date:'dd/MM/yyyy HH:mm' }}
+                        </td>
+
+                        <td>
+                            <span class="status success">
+                                Đã duyệt
+                            </span>
+                        </td>
+
+                        <td class="money-column">
+                            {{ formatMoney(receipt.totalCost) }}
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        }
+    </section>
+    }
+</main>
