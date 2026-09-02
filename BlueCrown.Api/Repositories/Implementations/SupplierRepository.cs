@@ -15,21 +15,17 @@ namespace BlueCrown.Api.Repositories.Implementations
 
         public async Task<List<Supplier>> GetAllAsync()
         {
-            return await _context.Suppliers
-                .OrderBy(x => x.SupplierName)
-                .ToListAsync();
+            return await _context.Suppliers.OrderBy(x => x.SupplierName).ToListAsync();
         }
 
         public async Task<Supplier?> GetByIdAsync(Guid id)
         {
-            return await _context.Suppliers
-                .FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.Suppliers.Include(x => x.InventoryReceipts).FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<Supplier?> GetByNameAsync(string supplierName)
         {
-            return await _context.Suppliers
-                .FirstOrDefaultAsync(x => x.SupplierName == supplierName);
+            return await _context.Suppliers.FirstOrDefaultAsync(x => x.SupplierName == supplierName);
         }
 
         public async Task AddAsync(Supplier supplier)

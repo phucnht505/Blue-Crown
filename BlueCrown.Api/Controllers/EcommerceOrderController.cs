@@ -2,95 +2,171 @@
 using BlueCrown.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace BlueCrown.Api.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Route("api/[controller]")]
     public class EcommerceOrderController : ControllerBase
     {
         private readonly IEcommerceOrderService _service;
 
-        public EcommerceOrderController(
-            IEcommerceOrderService service)
+        public EcommerceOrderController(IEcommerceOrderService service)
         {
             _service = service;
         }
 
-        // =========================================================
-        // GET: api/EcommerceOrder
-        // Lấy tất cả đơn hàng
-        // =========================================================
-        [HttpGet]
-        public async Task<ActionResult<List<EcommerceOrderDto>>> GetAll()
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<ActionResult<EcommerceOrderDto>> Create([FromBody] CreateEcommerceOrderDto dto)
         {
-            var orders = await _service.GetAllAsync();
+            try
+            {
+                Guid? userId = null;
 
-            return Ok(orders);
+                if (User.Identity?.IsAuthenticated == true)
+                {
+                    var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                    if (!Guid.TryParse(userIdClaim, out var parsedUserId))
+                        return Unauthorized(new { message = "Không xác định được người dùng." });
+
+                    userId = parsedUserId;
+                }
+
+                var order = await _service.CreateAsync(userId, dto);
+                return CreatedAtAction(nameof(GetManagementById), new { id = order.Id }, order);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
         }
 
-        // =========================================================
-        // GET: api/EcommerceOrder/{id}
-        // Lấy đơn hàng theo ID
-        // =========================================================
-        [HttpGet("{id:guid}")]
-        public async Task<ActionResult<EcommerceOrderDto>> GetById(
-            Guid id)
+        // UC10: Guest tra cứu bằng số điện thoại, mã đơn là tùy chọn.
+        [HttpPost("lookup")]
+        [AllowAnonymous]
+        public async Task<ActionResult<List<EcommerceOrderDto>>> LookupGuestOrders([FromBody] GuestOrderLookupDto dto)
         {
-            var order = await _service.GetByIdAsync(id);
+            try
+            {
+                var orders = await _service.LookupGuestOrdersAsync(dto);
+
+                if (orders.Count == 0)
+                    return NotFound(new { message = "Không tìm thấy đơn hàng phù hợp với thông tin đã nhập." });
+
+                return Ok(orders);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("my")]
+        [Authorize]
+        public async Task<ActionResult<List<EcommerceOrderDto>>> GetMyOrders()
+        {
+            var userId = GetUserId();
+
+            if (!userId.HasValue)
+                return Unauthorized(new { message = "Không xác định được người dùng." });
+
+            return Ok(await _service.GetMyOrdersAsync(userId.Value));
+        }
+
+        [HttpGet("my/{id:guid}")]
+        [Authorize]
+        public async Task<ActionResult<EcommerceOrderDto>> GetMyOrderById(Guid id)
+        {
+            var userId = GetUserId();
+
+            if (!userId.HasValue)
+                return Unauthorized(new { message = "Không xác định được người dùng." });
+
+            var order = await _service.GetMyOrderByIdAsync(id, userId.Value);
 
             if (order == null)
-            {
-                return NotFound(new
-                {
-                    message = "Không tìm thấy đơn hàng."
-                });
-            }
+                return NotFound(new { message = "Không tìm thấy đơn hàng." });
 
             return Ok(order);
         }
 
-        // =========================================================
-        // POST: api/EcommerceOrder
-        // Tạo đơn hàng
-        // =========================================================
-        [HttpPost]
-        public async Task<ActionResult<EcommerceOrderDto>> Create(
-            [FromBody] CreateEcommerceOrderDto dto)
+        [HttpPut("my/{id:guid}/cancel")]
+        [Authorize]
+        public async Task<ActionResult<EcommerceOrderDto>> CancelMyOrder(Guid id)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                var userId = GetUserId();
+
+                if (!userId.HasValue)
+                    return Unauthorized(new { message = "Không xác định được người dùng." });
+
+                var order = await _service.CancelMyOrderAsync(id, userId.Value);
+
+                if (order == null)
+                    return NotFound(new { message = "Không tìm thấy đơn hàng." });
+
+                return Ok(order);
             }
-
-            var order = await _service.CreateAsync(dto);
-
-            return CreatedAtAction(
-                nameof(GetById),
-                new { id = order.Id },
-                order
-            );
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
         }
 
-        // =========================================================
-        // DELETE: api/EcommerceOrder/{id}
-        // Xóa đơn hàng
-        // =========================================================
-        [HttpDelete("{id:guid}")]
-        public async Task<IActionResult> Delete(Guid id)
+        [HttpGet("manage")]
+        [Authorize(Roles = "admin,pharmacist")]
+        public async Task<ActionResult<List<EcommerceOrderDto>>> GetManagementOrders()
         {
-            var result = await _service.DeleteAsync(id);
+            return Ok(await _service.GetManagementOrdersAsync());
+        }
 
-            if (!result)
+        [HttpGet("manage/{id:guid}")]
+        [Authorize(Roles = "admin,pharmacist")]
+        public async Task<ActionResult<EcommerceOrderDto>> GetManagementById(Guid id)
+        {
+            var order = await _service.GetManagementOrderByIdAsync(id);
+
+            if (order == null)
+                return NotFound(new { message = "Không tìm thấy đơn hàng." });
+
+            return Ok(order);
+        }
+
+        [HttpPut("manage/{id:guid}/status")]
+        [Authorize(Roles = "admin,pharmacist")]
+        public async Task<ActionResult<EcommerceOrderDto>> UpdateStatus(Guid id, [FromBody] UpdateEcommerceOrderStatusDto dto)
+        {
+            try
             {
-                return NotFound(new
-                {
-                    message = "Không tìm thấy đơn hàng."
-                });
-            }
+                var order = await _service.UpdateStatusAsync(id, dto);
 
-            return NoContent();
+                if (order == null)
+                    return NotFound(new { message = "Không tìm thấy đơn hàng." });
+
+                return Ok(order);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
+        }
+
+        private Guid? GetUserId()
+        {
+            var claim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            return Guid.TryParse(claim, out var userId) ? userId : null;
         }
     }
 }

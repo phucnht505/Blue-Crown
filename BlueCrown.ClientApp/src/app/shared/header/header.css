@@ -77,6 +77,43 @@
   color: white;
 }
 
+.user-name {
+  color: #334155;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* THÊM MỚI */
+.account-btn {
+  padding: 9px 16px;
+  border: 1px solid #2563eb;
+  border-radius: 8px;
+  color: #2563eb;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+  .account-btn:hover {
+    background: #eff6ff;
+  }
+
+.logout-btn {
+  padding: 9px 16px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+  .logout-btn:hover {
+    background: #1d4ed8;
+  }
+
 @media (max-width: 800px) {
   .nav {
     display: none;

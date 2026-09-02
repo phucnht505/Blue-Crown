@@ -1,0 +1,418 @@
+:host {
+  display: block;
+  min-height: calc(100vh - 70px);
+  background: #f6f9fe;
+}
+
+.lookup-page {
+  width: min(1000px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 45px 0 70px;
+}
+
+.lookup-header {
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+
+.lookup-header h1 {
+  margin: 0;
+  color: #153b8d;
+  font-size: 34px;
+}
+
+.lookup-header p {
+  max-width: 700px;
+  margin: 10px auto 0;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.lookup-card,
+.order-card {
+  padding: 24px;
+  border: 1px solid #dbe4f0;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, .05);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 7px;
+  color: #334155;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+  .field label span {
+    color: #dc2626;
+  }
+
+  .field label small {
+    margin-left: 4px;
+    color: #64748b;
+    font-weight: 400;
+  }
+
+.field input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 13px;
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+  outline: none;
+}
+
+  .field input:focus {
+    border-color: #2563eb;
+  }
+
+.field-error {
+  margin: 6px 0 0;
+  color: #dc2626;
+  font-size: 12px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.primary-button,
+.secondary-button {
+  padding: 11px 17px;
+  border-radius: 9px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.primary-button {
+  border: 0;
+  background: #2563eb;
+  color: #fff;
+}
+
+  .primary-button:hover:not(:disabled) {
+    background: #1d4ed8;
+  }
+
+.secondary-button {
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #334155;
+}
+
+  .secondary-button:hover {
+    background: #f8fafc;
+  }
+
+.primary-button:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+.error-message {
+  margin-top: 20px;
+  padding: 14px 16px;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.order-card {
+  margin-top: 24px;
+}
+
+.result-header {
+  padding-bottom: 18px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+  .result-header h2 {
+    margin: 0;
+    color: #153b8d;
+  }
+
+  .result-header p {
+    margin: 6px 0 0;
+    color: #64748b;
+  }
+
+.result-list {
+  margin-top: 4px;
+}
+
+.lookup-result {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 160px auto;
+  align-items: center;
+  gap: 20px;
+  padding: 18px 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+  .lookup-result:last-child {
+    border-bottom: 0;
+  }
+
+.result-order-info,
+.result-summary {
+  min-width: 0;
+}
+
+  .result-order-info strong,
+  .result-order-info span,
+  .result-summary strong,
+  .result-summary span {
+    display: block;
+  }
+
+  .result-order-info strong {
+    overflow: hidden;
+    color: #1e293b;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .result-summary strong {
+    color: #dc2626;
+  }
+
+  .result-order-info > span:last-child,
+  .result-summary > span:last-child {
+    margin-top: 5px;
+    color: #64748b;
+    font-size: 13px;
+  }
+
+.result-label {
+  margin-bottom: 5px;
+  color: #64748b !important;
+  font-size: 11px !important;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.detail-card {
+  margin-top: 24px;
+}
+
+.order-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.order-label {
+  margin: 0 0 5px;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .07em;
+}
+
+.order-header h2 {
+  margin: 0;
+  color: #153b8d;
+  font-size: 18px;
+  word-break: break-all;
+}
+
+.status-badge {
+  display: inline-flex;
+  flex-shrink: 0;
+  padding: 7px 11px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+  .status-badge.processing {
+    background: #fef3c7;
+    color: #92400e;
+  }
+
+  .status-badge.confirmed {
+    background: #dbeafe;
+    color: #1d4ed8;
+  }
+
+  .status-badge.shipped {
+    background: #e0e7ff;
+    color: #4338ca;
+  }
+
+  .status-badge.delivered {
+    background: #dcfce7;
+    color: #15803d;
+  }
+
+  .status-badge.cancelled {
+    background: #fee2e2;
+    color: #b91c1c;
+  }
+
+.order-info {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-top: 20px;
+}
+
+  .order-info > div {
+    padding: 14px;
+    border-radius: 10px;
+    background: #f8fafc;
+  }
+
+  .order-info span,
+  .order-info strong {
+    display: block;
+  }
+
+  .order-info span {
+    margin-bottom: 5px;
+    color: #64748b;
+    font-size: 12px;
+  }
+
+  .order-info strong {
+    color: #1e293b;
+  }
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+.products {
+  margin-top: 28px;
+}
+
+  .products h3 {
+    margin: 0 0 14px;
+    color: #153b8d;
+  }
+
+.product-row {
+  display: grid;
+  grid-template-columns: 70px 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.product-image {
+  width: 70px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 9px;
+  background: #f8fafc;
+}
+
+  .product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .product-image span {
+    font-size: 30px;
+  }
+
+.product-content strong,
+.product-content span,
+.product-price strong,
+.product-price span {
+  display: block;
+}
+
+.product-content strong {
+  color: #1e293b;
+}
+
+.product-content span,
+.product-price span {
+  margin-top: 5px;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.product-price {
+  text-align: right;
+}
+
+  .product-price strong {
+    margin-top: 5px;
+    color: #dc2626;
+  }
+
+.order-total {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 24px;
+  padding-top: 20px;
+}
+
+  .order-total span {
+    color: #64748b;
+    font-weight: 700;
+  }
+
+  .order-total strong {
+    color: #dc2626;
+    font-size: 24px;
+  }
+
+@media (max-width: 700px) {
+  .form-grid,
+  .order-info {
+    grid-template-columns: 1fr;
+  }
+
+  .full-width {
+    grid-column: auto;
+  }
+
+  .order-header {
+    flex-direction: column;
+  }
+
+  .lookup-result {
+    grid-template-columns: 1fr;
+  }
+
+  .product-row {
+    grid-template-columns: 60px 1fr;
+  }
+
+  .product-price {
+    grid-column: 2;
+    text-align: left;
+  }
+}

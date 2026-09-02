@@ -1,0 +1,258 @@
+<main class="users-page">
+  <section class="page-header">
+    <div>
+      <p class="eyebrow">ADMIN</p>
+      <h1>Quản lý người dùng</h1>
+      <p>Quản lý tài khoản, vai trò và trạng thái hoạt động của người dùng Blue Crown.</p>
+    </div>
+
+    <button class="primary-button" type="button" (click)="openCreate()">+ Thêm tài khoản</button>
+  </section>
+
+  @if (errorMessage) {
+  <div class="message error-message">{{ errorMessage }}</div>
+  }
+
+  @if (successMessage) {
+  <div class="message success-message">{{ successMessage }}</div>
+  }
+
+  <section class="filter-card">
+    <form [formGroup]="filterForm" (ngSubmit)="loadUsers()">
+      <div class="filter-grid">
+        <div class="field">
+          <label>Tìm kiếm</label>
+          <input type="text" formControlName="search" placeholder="Tên, email hoặc số điện thoại">
+        </div>
+
+        <div class="field">
+          <label>Vai trò</label>
+          <select formControlName="role">
+            <option value="">Tất cả vai trò</option>
+            <option value="patient">Bệnh nhân</option>
+            <option value="doctor">Bác sĩ</option>
+            <option value="pharmacist">Dược sĩ</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Trạng thái</label>
+          <select formControlName="status">
+            <option value="">Tất cả trạng thái</option>
+            <option value="active">Hoạt động</option>
+            <option value="suspended">Đã khóa</option>
+            <option value="pending">Chờ kích hoạt</option>
+          </select>
+        </div>
+
+        <div class="filter-actions">
+          <button class="primary-button" type="submit">Lọc</button>
+          <button class="secondary-button" type="button" (click)="resetFilters()">Đặt lại</button>
+        </div>
+      </div>
+    </form>
+  </section>
+
+  <section class="table-card">
+    @if (isLoading) {
+    <div class="state-message">Đang tải danh sách người dùng...</div>
+    } @else if (users.length === 0) {
+    <div class="state-message">Không tìm thấy người dùng phù hợp.</div>
+    } @else {
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Họ tên</th>
+            <th>Email</th>
+            <th>Số điện thoại</th>
+            <th>Vai trò</th>
+            <th>Trạng thái</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (user of users; track user.id) {
+          <tr>
+            <td>{{ user.fullName || '-' }}</td>
+            <td>{{ user.email || '-' }}</td>
+            <td>{{ user.phone || '-' }}</td>
+            <td>{{ getRoleLabel(user.role) }}</td>
+
+            <td>
+              <span class="status-badge"
+                    [class.active]="user.status === 'active'"
+                    [class.suspended]="user.status === 'suspended'"
+                    [class.pending]="user.status === 'pending'">
+                {{ getStatusLabel(user.status) }}
+              </span>
+            </td>
+
+            <td>
+              <div class="action-group">
+                <button type="button" class="action-button" (click)="viewDetail(user.id)">Chi tiết</button>
+                <button type="button" class="action-button edit" (click)="openEdit(user.id)">Sửa</button>
+
+                <button type="button"
+                        class="action-button"
+                        [class.danger]="user.status === 'active'"
+                        [class.success]="user.status !== 'active'"
+                        [disabled]="user.id === currentAdminId"
+                        (click)="toggleStatus(user)">
+                  {{ user.status === 'active' ? 'Khóa' : 'Mở khóa' }}
+                </button>
+
+                <button type="button"
+                        class="action-button danger"
+                        [disabled]="user.id === currentAdminId"
+                        (click)="deleteUser(user)">
+                  Xóa
+                </button>
+              </div>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    }
+  </section>
+
+  @if (isFormOpen) {
+  <div class="overlay">
+    <section class="modal">
+      <div class="modal-header">
+        <div>
+          <h2>{{ editingUserId ? 'Cập nhật tài khoản' : 'Thêm tài khoản' }}</h2>
+          <p>{{ editingUserId ? 'Chỉnh sửa thông tin và quyền của người dùng.' : 'Tạo tài khoản mới trong hệ thống.' }}</p>
+        </div>
+
+        <button type="button" class="close-button" (click)="closeForm()">×</button>
+      </div>
+
+      <form [formGroup]="userForm" (ngSubmit)="submit()" novalidate>
+        <div class="form-grid">
+          <div class="field">
+            <label>Họ tên <span>*</span></label>
+            <input type="text" formControlName="fullName">
+
+            @if (userForm.controls.fullName.touched && userForm.controls.fullName.invalid) {
+            <p class="field-error">Họ tên phải từ 2 đến 50 ký tự và chỉ chứa chữ cái.</p>
+            }
+          </div>
+
+          <div class="field">
+            <label>Email <span>*</span></label>
+            <input type="email" formControlName="email">
+
+            @if (userForm.controls.email.touched && userForm.controls.email.invalid) {
+            <p class="field-error">Email không hợp lệ.</p>
+            }
+          </div>
+
+          <div class="field">
+            <label>Số điện thoại <span>*</span></label>
+            <input type="text" formControlName="phone">
+
+            @if (userForm.controls.phone.touched && userForm.controls.phone.invalid) {
+            <p class="field-error">Số điện thoại không hợp lệ.</p>
+            }
+          </div>
+
+          @if (!editingUserId) {
+          <div class="field">
+            <label>Mật khẩu <span>*</span></label>
+            <input type="password" formControlName="password">
+
+            @if (userForm.controls.password.touched && userForm.controls.password.invalid) {
+            <p class="field-error">Ít nhất 8 ký tự, có chữ hoa, chữ thường và chữ số.</p>
+            }
+          </div>
+          }
+
+          <div class="field">
+            <label>Ngày sinh</label>
+            <input type="date" formControlName="dateOfBirth">
+          </div>
+
+          <div class="field">
+            <label>Giới tính</label>
+            <select formControlName="gender">
+              <option value="">Chưa chọn</option>
+              <option value="male">Nam</option>
+              <option value="female">Nữ</option>
+              <option value="other">Khác</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Vai trò <span>*</span></label>
+            <select formControlName="role">
+              <option value="patient">Bệnh nhân</option>
+              <option value="doctor">Bác sĩ</option>
+              <option value="pharmacist">Dược sĩ</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Trạng thái <span>*</span></label>
+            <select formControlName="status">
+              <option value="active">Hoạt động</option>
+              <option value="suspended">Đã khóa</option>
+              <option value="pending">Chờ kích hoạt</option>
+            </select>
+          </div>
+
+          @if (editingUserId) {
+          <div class="field full-width">
+            <label>Avatar URL</label>
+            <input type="text" formControlName="avatarUrl">
+          </div>
+          }
+        </div>
+
+        <div class="modal-actions">
+          <button class="secondary-button" type="button" (click)="closeForm()">Hủy</button>
+          <button class="primary-button" type="submit" [disabled]="isSaving">
+            {{ isSaving ? 'Đang lưu...' : 'Lưu thay đổi' }}
+          </button>
+        </div>
+      </form>
+    </section>
+  </div>
+  }
+
+  @if (selectedUser && !isFormOpen) {
+  <div class="overlay">
+    <section class="modal detail-modal">
+      <div class="modal-header">
+        <div>
+          <h2>Chi tiết người dùng</h2>
+          <p>Thông tin tài khoản trong hệ thống.</p>
+        </div>
+
+        <button type="button" class="close-button" (click)="closeDetail()">×</button>
+      </div>
+
+      <div class="detail-grid">
+        <div><span>Họ tên</span><strong>{{ selectedUser.fullName || '-' }}</strong></div>
+        <div><span>Email</span><strong>{{ selectedUser.email || '-' }}</strong></div>
+        <div><span>Số điện thoại</span><strong>{{ selectedUser.phone || '-' }}</strong></div>
+        <div><span>Ngày sinh</span><strong>{{ selectedUser.dateOfBirth || '-' }}</strong></div>
+        <div><span>Giới tính</span><strong>{{ getGenderLabel(selectedUser.gender) }}</strong></div>
+        <div><span>Vai trò</span><strong>{{ getRoleLabel(selectedUser.role) }}</strong></div>
+        <div><span>Trạng thái</span><strong>{{ getStatusLabel(selectedUser.status) }}</strong></div>
+        <div><span>Avatar</span><strong>{{ selectedUser.avatarUrl || '-' }}</strong></div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="secondary-button" type="button" (click)="closeDetail()">Đóng</button>
+        <button class="primary-button" type="button" (click)="openEdit(selectedUser.id)">Chỉnh sửa</button>
+      </div>
+    </section>
+  </div>
+  }
+</main>

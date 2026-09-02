@@ -8,7 +8,7 @@ namespace BlueCrown.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    [Authorize(Roles = "patient,doctor")]
     public class ChatMessageController : ControllerBase
     {
         private readonly IChatMessageService _service;

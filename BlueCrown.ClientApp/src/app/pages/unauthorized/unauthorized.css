@@ -1,0 +1,54 @@
+.unauthorized-page {
+  min-height: calc(100vh - 140px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 50px 20px;
+  background: #f8fafc;
+}
+
+.unauthorized-card {
+  max-width: 560px;
+  width: 100%;
+  padding: 45px;
+  background: #fff;
+  border: 1px solid #dbe4f0;
+  border-radius: 18px;
+  text-align: center;
+  box-shadow: 0 12px 35px rgba(15, 23, 42, 0.08);
+}
+
+.status-code {
+  margin-bottom: 10px;
+  color: #2563eb;
+  font-size: 70px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.unauthorized-card h1 {
+  margin: 0 0 12px;
+  color: #1e3a8a;
+  font-size: 28px;
+}
+
+.unauthorized-card p {
+  margin: 0;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.unauthorized-card a {
+  display: inline-flex;
+  margin-top: 26px;
+  padding: 12px 20px;
+  border-radius: 9px;
+  background: #2563eb;
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+  .unauthorized-card a:hover {
+    background: #1d4ed8;
+  }

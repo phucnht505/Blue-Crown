@@ -18,217 +18,131 @@ namespace BlueCrown.Api.Controllers
             _service = service;
         }
 
-        // =========================================================
-        // GET: api/ChatSession/my
-        // Patient xem các phiên chat của mình
-        // =========================================================
         [HttpGet("my")]
-        [Authorize(Roles = "Patient")]
+        [Authorize(Roles = "patient")]
         public async Task<ActionResult<List<ChatSessionDto>>> GetMySessions()
         {
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (!Guid.TryParse(userIdClaim, out var userId))
-            {
-                return Unauthorized(new
-                {
-                    message = "Không xác định được UserId từ JWT."
-                });
-            }
-
-            var patientId = await _service.GetPatientIdByUserIdAsync(userId);
+            var patientId = await _service.GetPatientIdByUserIdAsync(GetCurrentUserId());
 
             if (patientId == null)
-            {
-                return NotFound(new
-                {
-                    message = "Không tìm thấy Patient Profile."
-                });
-            }
+                return NotFound(new { message = "Không tìm thấy Patient Profile." });
 
-            var sessions = await _service.GetMySessionsAsync(patientId.Value);
-
-            return Ok(sessions);
+            return Ok(await _service.GetMySessionsAsync(patientId.Value));
         }
 
-        // =========================================================
-        // GET: api/ChatSession/doctor
-        // Doctor xem các phiên chat được gán cho mình
-        // =========================================================
         [HttpGet("doctor")]
-        [Authorize(Roles = "Doctor")]
+        [Authorize(Roles = "doctor")]
         public async Task<ActionResult<List<ChatSessionDto>>> GetDoctorSessions()
         {
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (!Guid.TryParse(userIdClaim, out var userId))
-            {
-                return Unauthorized(new
-                {
-                    message = "Không xác định được UserId từ JWT."
-                });
-            }
-
-            var doctorId = await _service.GetDoctorIdByUserIdAsync(userId);
+            var doctorId = await _service.GetDoctorIdByUserIdAsync(GetCurrentUserId());
 
             if (doctorId == null)
-            {
-                return NotFound(new
-                {
-                    message = "Không tìm thấy Doctor Profile."
-                });
-            }
+                return NotFound(new { message = "Không tìm thấy Doctor Profile." });
 
-            var sessions = await _service.GetDoctorSessionsAsync(doctorId.Value);
-
-            return Ok(sessions);
+            return Ok(await _service.GetDoctorSessionsAsync(doctorId.Value));
         }
 
-        // =========================================================
-        // GET: api/ChatSession/{id}
-        // Xem chi tiết ChatSession
-        // =========================================================
+        [HttpGet("doctor/available")]
+        [Authorize(Roles = "doctor")]
+        public async Task<ActionResult<List<ChatSessionDto>>> GetAvailableSessions()
+        {
+            return Ok(await _service.GetAvailableSessionsAsync());
+        }
+
         [HttpGet("{id:guid}")]
+        [Authorize(Roles = "patient,doctor")]
         public async Task<ActionResult<ChatSessionDto>> GetById(Guid id)
         {
-            var session = await _service.GetByIdAsync(id);
-
-            if (session == null)
+            try
             {
-                return NotFound(new
-                {
-                    message = "Không tìm thấy Chat Session."
-                });
-            }
+                var session = await _service.GetByIdAsync(id, GetCurrentUserId());
 
-            return Ok(session);
+                if (session == null)
+                    return NotFound(new { message = "Không tìm thấy Chat Session." });
+
+                return Ok(session);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Forbid();
+            }
         }
 
-        // =========================================================
-        // POST: api/ChatSession
-        // Patient tạo ChatSession
-        // =========================================================
         [HttpPost]
-        [Authorize(Roles = "Patient")]
+        [Authorize(Roles = "patient")]
         public async Task<ActionResult<ChatSessionDto>> Create([FromBody] CreateChatSessionDto dto)
         {
             try
             {
-                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-                if (!Guid.TryParse(userIdClaim, out var userId))
-                {
-                    return Unauthorized(new
-                    {
-                        message = "Không xác định được UserId từ JWT."
-                    });
-                }
-
-                var patientId = await _service.GetPatientIdByUserIdAsync(userId);
+                var patientId = await _service.GetPatientIdByUserIdAsync(GetCurrentUserId());
 
                 if (patientId == null)
-                {
-                    return NotFound(new
-                    {
-                        message = "Không tìm thấy Patient Profile."
-                    });
-                }
+                    return NotFound(new { message = "Không tìm thấy Patient Profile." });
 
                 var session = await _service.CreateAsync(patientId.Value, dto);
-
-                return CreatedAtAction(
-                    nameof(GetById),
-                    new { id = session.Id },
-                    session);
+                return CreatedAtAction(nameof(GetById), new { id = session.Id }, session);
             }
             catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    message = ex.Message
-                });
+                return BadRequest(new { message = ex.Message });
             }
         }
 
-        // =========================================================
-        // PUT: api/ChatSession/{id}/assign-doctor
-        // Doctor nhận/gán mình vào ChatSession
-        // =========================================================
         [HttpPut("{id:guid}/assign-doctor")]
-        [Authorize(Roles = "Doctor")]
+        [Authorize(Roles = "doctor")]
         public async Task<IActionResult> AssignDoctor(Guid id)
         {
             try
             {
-                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-                if (!Guid.TryParse(userIdClaim, out var userId))
-                {
-                    return Unauthorized(new
-                    {
-                        message = "Không xác định được UserId từ JWT."
-                    });
-                }
-
-                var doctorId = await _service.GetDoctorIdByUserIdAsync(userId);
+                var doctorId = await _service.GetDoctorIdByUserIdAsync(GetCurrentUserId());
 
                 if (doctorId == null)
-                {
-                    return NotFound(new
-                    {
-                        message = "Không tìm thấy Doctor Profile."
-                    });
-                }
+                    return NotFound(new { message = "Không tìm thấy Doctor Profile." });
 
                 var result = await _service.AssignDoctorAsync(id, doctorId.Value);
 
                 if (!result)
-                {
-                    return NotFound(new
-                    {
-                        message = "Không tìm thấy Chat Session."
-                    });
-                }
+                    return NotFound(new { message = "Không tìm thấy Chat Session." });
 
                 return NoContent();
             }
             catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    message = ex.Message
-                });
+                return BadRequest(new { message = ex.Message });
             }
         }
 
-        // =========================================================
-        // PUT: api/ChatSession/{id}/status
-        // Cập nhật trạng thái ChatSession
-        // =========================================================
         [HttpPut("{id:guid}/status")]
+        [Authorize(Roles = "patient,doctor")]
         public async Task<IActionResult> UpdateStatus(Guid id, [FromBody] UpdateChatSessionStatusDto dto)
         {
             try
             {
-                var result = await _service.UpdateStatusAsync(id, dto);
+                var result = await _service.UpdateStatusAsync(id, GetCurrentUserId(), dto);
 
                 if (!result)
-                {
-                    return NotFound(new
-                    {
-                        message = "Không tìm thấy Chat Session."
-                    });
-                }
+                    return NotFound(new { message = "Không tìm thấy Chat Session." });
 
                 return NoContent();
             }
+            catch (UnauthorizedAccessException)
+            {
+                return Forbid();
+            }
             catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    message = ex.Message
-                });
+                return BadRequest(new { message = ex.Message });
             }
+        }
+
+        private Guid GetCurrentUserId()
+        {
+            var value = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!Guid.TryParse(value, out var userId))
+                throw new UnauthorizedAccessException("Không xác định được UserId từ JWT.");
+
+            return userId;
         }
     }
 }

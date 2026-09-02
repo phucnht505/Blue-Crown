@@ -1,1 +1,166 @@
-<p>product-detail works!</p>
+<section class="product-detail-page">
+  <a routerLink="/products" class="back-link">← Quay lại nhà thuốc</a>
+
+  @if (isLoading) {
+  <div class="state-message">Đang tải thông tin sản phẩm...</div>
+  } @else if (errorMessage) {
+  <div class="state-message">{{ errorMessage }}</div>
+  } @else if (product) {
+  <div class="product-detail">
+    <div class="product-image">
+      @if (product.imageUrl) {
+      <img [src]="product.imageUrl" [alt]="product.name">
+      } @else {
+      <span>💊</span>
+      }
+    </div>
+
+    <div class="product-info">
+      <span class="category">{{ product.therapeuticGroup || 'Sản phẩm y tế' }}</span>
+
+      <h1>{{ product.name }}</h1>
+
+      <p class="ingredient">
+        Hoạt chất: <strong>{{ product.activeIngredient || 'Không áp dụng' }}</strong>
+      </p>
+
+      <div class="price">{{ product.price | number }}đ</div>
+
+      <p class="description">
+        {{ product.description || 'Chưa có mô tả cho sản phẩm này.' }}
+      </p>
+
+      <div class="product-specs">
+        <div class="spec-row">
+          <span>Dạng bào chế</span>
+          <strong>{{ product.dosageForm || 'Không áp dụng' }}</strong>
+        </div>
+
+        <div class="spec-row">
+          <span>Hàm lượng</span>
+          <strong>{{ product.strength || 'Không áp dụng' }}</strong>
+        </div>
+
+        <div class="spec-row">
+          <span>Tồn kho</span>
+
+          @if ((product.stockQuantity ?? 0) > 0) {
+          <strong>{{ product.stockQuantity }} sản phẩm</strong>
+          } @else {
+          <strong class="out-of-stock-text">Hết hàng</strong>
+          }
+        </div>
+
+        <div class="spec-row">
+          <span>Yêu cầu đơn thuốc</span>
+          <strong>{{ product.isPrescriptionRequired ? 'Có' : 'Không' }}</strong>
+        </div>
+      </div>
+
+      @if (product.isPrescriptionRequired) {
+      <div class="prescription-warning">
+        Sản phẩm này yêu cầu đơn thuốc hợp lệ trước khi mua.
+      </div>
+      }
+
+      @if ((product.stockQuantity ?? 0) <= 0) {
+      <div class="out-of-stock-warning">
+        Sản phẩm hiện đang hết hàng. Bạn có thể tham khảo các sản phẩm thay thế bên dưới.
+      </div>
+      }
+
+      <button type="button"
+              class="add-cart-button"
+              [disabled]="(product.stockQuantity ?? 0) <= 0"
+              (click)="addToCart()">
+        {{ (product.stockQuantity ?? 0) > 0 ? 'Thêm vào giỏ hàng' : 'Hết hàng' }}
+      </button>
+
+      @if (cartMessage) {
+      <p class="cart-message">{{ cartMessage }}</p>
+      }
+    </div>
+  </div>
+
+  @if ((product.stockQuantity ?? 0) <= 0) {
+  <section class="alternatives-section">
+    <div class="alternatives-header">
+      <div>
+        <span class="alternatives-eyebrow">GỢI Ý THAY THẾ</span>
+        <h2>Sản phẩm thay thế</h2>
+        <p>Các sản phẩm dưới đây được cấu hình là lựa chọn thay thế và hiện còn hàng.</p>
+      </div>
+    </div>
+
+    @if (isLoadingAlternatives) {
+    <div class="state-message">Đang tìm sản phẩm thay thế...</div>
+    } @else if (alternativeMessage) {
+    <div class="alternative-empty">{{ alternativeMessage }}</div>
+    } @else {
+    <div class="alternatives-grid">
+      @for (alternative of alternatives; track alternative.relation.id) {
+      <article class="alternative-card">
+        <div class="alternative-image">
+          @if (alternative.product.imageUrl) {
+          <img [src]="alternative.product.imageUrl" [alt]="alternative.product.name">
+          } @else {
+          <span>💊</span>
+          }
+        </div>
+
+        <div class="alternative-content">
+          <span class="alternative-category">
+            {{ alternative.product.therapeuticGroup || 'Sản phẩm y tế' }}
+          </span>
+
+          <h3>{{ alternative.product.name }}</h3>
+
+          @if (alternative.product.activeIngredient) {
+          <p class="alternative-ingredient">
+            Hoạt chất: {{ alternative.product.activeIngredient }}
+          </p>
+          }
+
+          <div class="alternative-price">
+            {{ alternative.product.price | number }}đ
+          </div>
+
+          <div class="alternative-meta">
+            <div>
+              <span>Độ tương đồng</span>
+              <strong>
+                {{ alternative.relation.similarityScore != null ? alternative.relation.similarityScore + '%' : 'Chưa đánh giá' }}
+              </strong>
+            </div>
+
+            <div>
+              <span>Tồn kho</span>
+              <strong>{{ alternative.product.stockQuantity }} sản phẩm</strong>
+            </div>
+
+            <div>
+              <span>Đơn thuốc</span>
+              <strong>{{ alternative.product.isPrescriptionRequired ? 'Yêu cầu' : 'Không yêu cầu' }}</strong>
+            </div>
+          </div>
+
+          @if (alternative.relation.reason) {
+          <div class="alternative-reason">
+            <strong>Lý do gợi ý:</strong>
+            <span>{{ alternative.relation.reason }}</span>
+          </div>
+          }
+
+          <a class="view-alternative-button"
+             [routerLink]="['/products', alternative.product.id]">
+            Xem sản phẩm
+          </a>
+        </div>
+      </article>
+      }
+    </div>
+    }
+  </section>
+  }
+  }
+</section>

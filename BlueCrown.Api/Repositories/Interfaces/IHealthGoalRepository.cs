@@ -6,6 +6,7 @@ namespace BlueCrown.Api.Repositories.Interfaces
     {
         Task<List<HealthGoal>> GetByPatientIdAsync(Guid patientId);
         Task<HealthGoal?> GetByIdAsync(Guid id);
+        Task<List<MetricType>> GetMetricTypesAsync();
         Task AddAsync(HealthGoal healthGoal);
         Task UpdateAsync(HealthGoal healthGoal);
         Task DeleteAsync(HealthGoal healthGoal);

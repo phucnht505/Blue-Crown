@@ -20,9 +20,7 @@ namespace BlueCrown.Api.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetAll()
         {
-            var products = await _productService.GetAllAsync();
-
-            return Ok(products);
+            return Ok(await _productService.GetAllAsync());
         }
 
         [HttpGet("{id:guid}")]
@@ -32,12 +30,7 @@ namespace BlueCrown.Api.Controllers
             var product = await _productService.GetByIdAsync(id);
 
             if (product == null)
-            {
-                return NotFound(new
-                {
-                    message = "Không tìm thấy thuốc."
-                });
-            }
+                return NotFound(new { message = "Không tìm thấy Product." });
 
             return Ok(product);
         }
@@ -46,72 +39,89 @@ namespace BlueCrown.Api.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Search([FromQuery] string keyword)
         {
-            if (string.IsNullOrWhiteSpace(keyword))
+            try
             {
-                return BadRequest(new
-                {
-                    message = "Vui lòng nhập từ khóa tìm kiếm."
-                });
+                return Ok(await _productService.SearchAsync(keyword));
             }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
 
-            var products = await _productService.SearchAsync(keyword);
-
-            return Ok(products);
+        [HttpGet("by-medication/{medicationId:guid}")]
+        [Authorize(Roles = "admin,pharmacist")]
+        public async Task<IActionResult> GetByMedicationId(Guid medicationId)
+        {
+            try
+            {
+                return Ok(await _productService.GetByMedicationIdAsync(medicationId));
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Pharmacist")]
-        public async Task<IActionResult> Create(
-            [FromBody] CreateProductDto dto)
+        [Authorize(Roles = "admin,pharmacist")]
+        public async Task<IActionResult> Create([FromBody] CreateProductDto dto)
         {
-            await _productService.CreateAsync(dto);
-
-            return Ok(new
+            try
             {
-                message = "Thêm thuốc thành công."
-            });
+                await _productService.CreateAsync(dto);
+                return Ok(new { message = "Thêm Product thành công." });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
         }
 
         [HttpPut("{id:guid}")]
-        [Authorize(Roles = "Admin,Pharmacist")]
-        public async Task<IActionResult> Update(
-            Guid id,
-            [FromBody] UpdateProductDto dto)
+        [Authorize(Roles = "admin,pharmacist")]
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateProductDto dto)
         {
-            var result = await _productService.UpdateAsync(id, dto);
-
-            if (!result)
+            try
             {
-                return NotFound(new
-                {
-                    message = "Không tìm thấy thuốc."
-                });
+                var result = await _productService.UpdateAsync(id, dto);
+
+                if (!result)
+                    return NotFound(new { message = "Không tìm thấy Product." });
+
+                return Ok(new { message = "Cập nhật Product thành công." });
             }
-
-            return Ok(new
+            catch (ArgumentException ex)
             {
-                message = "Cập nhật thuốc thành công."
-            });
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
         }
 
         [HttpDelete("{id:guid}")]
-        [Authorize(Roles = "Admin,Pharmacist")]
+        [Authorize(Roles = "admin,pharmacist")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var result = await _productService.DeleteAsync(id);
-
-            if (!result)
+            try
             {
-                return NotFound(new
-                {
-                    message = "Không tìm thấy thuốc."
-                });
+                var result = await _productService.DeleteAsync(id);
+
+                if (!result)
+                    return NotFound(new { message = "Không tìm thấy Product." });
+
+                return Ok(new { message = "Xóa Product thành công." });
             }
-
-            return Ok(new
+            catch (InvalidOperationException ex)
             {
-                message = "Xóa thuốc thành công."
-            });
+                return Conflict(new { message = ex.Message });
+            }
         }
     }
 }

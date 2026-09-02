@@ -18,6 +18,14 @@ namespace BlueCrown.Api
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddControllers();
+            builder.Services.AddMemoryCache();
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AngularClient", policy =>
+                    {
+                        policy.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod();
+                    });
+            });
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -39,9 +47,9 @@ namespace BlueCrown.Api
             builder.Services.AddDbContext<BlueCrownContext>(options =>
                 options.UseSqlServer(
                     builder.Configuration.GetConnectionString("DefaultConnection")));
-
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IPatientProfileRepository, PatientProfileRepository>();
             builder.Services.AddScoped<IPatientProfileService, PatientProfileService>();
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
@@ -70,8 +78,15 @@ namespace BlueCrown.Api
             builder.Services.AddScoped<IChatMessageService, ChatMessageService>();
             builder.Services.AddScoped<IMedicationRepository, MedicationRepository>();
             builder.Services.AddScoped<IMedicationService, MedicationService>();
+            builder.Services.AddScoped<IPrescriptionDispenseRepository, PrescriptionDispenseRepository>();
             builder.Services.AddScoped<ISymptomLogRepository, SymptomLogRepository>();
             builder.Services.AddScoped<ISymptomLogService, SymptomLogService>();
+
+            builder.Services.AddHttpClient<ISymptomAnalysisService, SymptomAnalysisService>(client =>
+            {
+                client.BaseAddress = new Uri(builder.Configuration["AiService:BaseUrl"] ?? "http://127.0.0.1:8001/");
+                client.Timeout = TimeSpan.FromSeconds(120);
+            });
             builder.Services.AddScoped<IAutoPrescriptionRepository, AutoPrescriptionRepository>();
             builder.Services.AddScoped<IAutoPrescriptionService, AutoPrescriptionService>();
             builder.Services.AddScoped<IClinicRepository, ClinicRepository>();
@@ -91,6 +106,8 @@ namespace BlueCrown.Api
 
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IJwtService, JwtService>();
+            builder.Services.AddScoped<IEmailService, EmailService>();
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(options =>
             {
@@ -135,6 +152,8 @@ namespace BlueCrown.Api
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors("AngularClient");
 
             app.UseAuthentication();
 

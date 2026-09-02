@@ -1,0 +1,197 @@
+<main class="profile-page">
+  <section class="page-header">
+    <div>
+      <p class="eyebrow">TÀI KHOẢN</p>
+      <h1>Hồ sơ cá nhân</h1>
+      <p>Xem và cập nhật thông tin cá nhân của tài khoản Blue Crown.</p>
+    </div>
+  </section>
+
+  @if (isLoading) {
+  <div class="state-message">Đang tải hồ sơ cá nhân...</div>
+  } @else if (profile) {
+  <section class="profile-card">
+    <div class="profile-summary">
+      <div class="avatar">
+        @if (profile.avatarUrl) {
+        <img [src]="profile.avatarUrl" [alt]="profile.fullName">
+        } @else {
+        <span>{{ profile.fullName.charAt(0).toUpperCase() }}</span>
+        }
+      </div>
+
+      <div class="summary-content">
+        <h2>{{ profile.fullName }}</h2>
+        <p>{{ profile.email }}</p>
+
+        <div class="badges">
+          <span class="badge role-badge">{{ getRoleLabel(profile.role) }}</span>
+          <span class="badge status-badge" [class.active]="profile.status === 'active'"
+                [class.suspended]="profile.status === 'suspended'"
+                [class.pending]="profile.status === 'pending'">
+            {{ getStatusLabel(profile.status) }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    @if (errorMessage) {
+    <div class="message error-message">{{ errorMessage }}</div>
+    }
+
+    @if (successMessage) {
+    <div class="message success-message">{{ successMessage }}</div>
+    }
+
+    <form [formGroup]="accountForm" (ngSubmit)="saveAccount()" novalidate>
+      <div class="section-title">
+        <h2>Thông tin tài khoản</h2>
+        <p>Email, vai trò và trạng thái tài khoản không thể tự thay đổi tại đây.</p>
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label>Họ và tên <span>*</span></label>
+          <input type="text" formControlName="fullName">
+
+          @if (accountForm.controls.fullName.touched && accountForm.controls.fullName.invalid) {
+          <p class="field-error">Họ tên phải từ 2 đến 50 ký tự và chỉ chứa chữ cái.</p>
+          }
+        </div>
+
+        <div class="field">
+          <label>Email</label>
+          <input type="email" [value]="profile.email" disabled>
+          <p class="field-note">Email đăng nhập không thể thay đổi.</p>
+        </div>
+
+        <div class="field">
+          <label>Số điện thoại <span>*</span></label>
+          <input type="text" formControlName="phone">
+
+          @if (accountForm.controls.phone.touched && accountForm.controls.phone.invalid) {
+          <p class="field-error">Số điện thoại không hợp lệ.</p>
+          }
+        </div>
+
+        <div class="field">
+          <label>Ngày sinh</label>
+          <input type="date" formControlName="dateOfBirth">
+        </div>
+
+        <div class="field">
+          <label>Giới tính</label>
+          <select formControlName="gender">
+            <option value="">Chưa chọn</option>
+            <option value="male">Nam</option>
+            <option value="female">Nữ</option>
+            <option value="other">Khác</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Vai trò</label>
+          <input type="text" [value]="getRoleLabel(profile.role)" disabled>
+        </div>
+
+        <div class="field full-width">
+          <label>Ảnh đại diện</label>
+          <input type="text" formControlName="avatarUrl" placeholder="Nhập đường dẫn ảnh nếu có">
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="primary-button" type="submit" [disabled]="isSavingAccount">
+          {{ isSavingAccount ? 'Đang lưu...' : 'Lưu thông tin cá nhân' }}
+        </button>
+      </div>
+    </form>
+  </section>
+
+  @if (isDoctor) {
+  <section class="profile-card doctor-card">
+    <div class="section-title">
+      <h2>Hồ sơ chuyên môn bác sĩ</h2>
+      <p>Cập nhật thông tin chuyên môn hiển thị trong hệ thống.</p>
+    </div>
+
+    @if (doctorErrorMessage) {
+    <div class="message error-message">{{ doctorErrorMessage }}</div>
+    }
+
+    @if (doctorSuccessMessage) {
+    <div class="message success-message">{{ doctorSuccessMessage }}</div>
+    }
+
+    @if (doctorProfile) {
+    <div class="readonly-info">
+      <div>
+        <span>Số giấy phép hành nghề</span>
+        <strong>{{ doctorProfile.licenseNumber }}</strong>
+      </div>
+
+      <div>
+        <span>Trạng thái giấy phép</span>
+        <strong [class.verified]="doctorProfile.licenseVerified">
+          {{ doctorProfile.licenseVerified ? 'Đã xác minh' : 'Chưa xác minh' }}
+        </strong>
+      </div>
+
+      <div>
+        <span>Đánh giá</span>
+        <strong>{{ doctorProfile.ratingAvg ?? 0 }} / 5 ({{ doctorProfile.ratingCount ?? 0 }} lượt)</strong>
+      </div>
+    </div>
+
+    <form [formGroup]="doctorForm" (ngSubmit)="saveDoctorProfile()" novalidate>
+      <div class="form-grid">
+        <div class="field">
+          <label>Chuyên khoa <span>*</span></label>
+          <input type="text" formControlName="specialty">
+
+          @if (doctorForm.controls.specialty.touched && doctorForm.controls.specialty.invalid) {
+          <p class="field-error">Chuyên khoa không được để trống.</p>
+          }
+        </div>
+
+        <div class="field">
+          <label>Phòng khám</label>
+          <select formControlName="clinicId">
+            <option value="">Chưa chọn phòng khám</option>
+
+            @for (clinic of clinics; track clinic.id) {
+            <option [value]="clinic.id">{{ clinic.name }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Số năm kinh nghiệm</label>
+          <input type="number" formControlName="yearsExperience" min="0" max="80">
+        </div>
+
+        <div class="field">
+          <label>Phí khám trực tiếp</label>
+          <input type="number" formControlName="consultationFee" min="0" placeholder="VNĐ">
+        </div>
+
+        <div class="field full-width">
+          <label>Giới thiệu</label>
+          <textarea rows="5" formControlName="bio"
+                    placeholder="Giới thiệu kinh nghiệm, lĩnh vực chuyên môn..."></textarea>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="primary-button" type="submit" [disabled]="isSavingDoctor">
+          {{ isSavingDoctor ? 'Đang lưu...' : 'Lưu hồ sơ chuyên môn' }}
+        </button>
+      </div>
+    </form>
+    }
+  </section>
+  }
+  } @else if (errorMessage) {
+  <div class="state-message error-state">{{ errorMessage }}</div>
+  }
+</main>

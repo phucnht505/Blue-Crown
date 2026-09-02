@@ -1,0 +1,274 @@
+.prescriptions-page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 45px 30px 70px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.page-label,
+.doctor-label {
+  color: #2563eb;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+}
+
+.page-header h1 {
+  margin: 7px 0;
+  color: #1e3a8a;
+  font-size: 32px;
+}
+
+.page-header p {
+  margin: 0;
+  color: #64748b;
+}
+
+.page-header a {
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.prescription-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.prescription-card {
+  padding: 25px;
+  background: #fff;
+  border: 1px solid #dbe4f0;
+  border-radius: 16px;
+}
+
+.prescription-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+  .prescription-header h2 {
+    margin: 5px 0 3px;
+    color: #1e3a8a;
+    font-size: 20px;
+  }
+
+  .prescription-header p {
+    margin: 0;
+    color: #64748b;
+  }
+
+.status-badge {
+  height: fit-content;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.status-pending {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.status-approved {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.status-dispensed {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.status-cancelled {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.record-info {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 20px;
+}
+
+  .record-info div {
+    padding: 12px;
+    background: #f8fafc;
+    border-radius: 9px;
+  }
+
+  .record-info span,
+  .record-info strong {
+    display: block;
+  }
+
+  .record-info span {
+    margin-bottom: 4px;
+    color: #94a3b8;
+    font-size: 11px;
+  }
+
+  .record-info strong {
+    color: #334155;
+    font-size: 13px;
+  }
+
+.medicine-section {
+  margin-top: 23px;
+}
+
+  .medicine-section > h3 {
+    margin: 0 0 13px;
+    color: #334155;
+    font-size: 16px;
+  }
+
+.medicine-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.medicine-card {
+  padding: 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 11px;
+  background: #f8fafc;
+}
+
+.medicine-name {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+  .medicine-name h4 {
+    margin: 0;
+    color: #1e3a8a;
+    font-size: 16px;
+  }
+
+  .medicine-name p {
+    margin: 4px 0 0;
+    color: #64748b;
+    font-size: 13px;
+  }
+
+  .medicine-name > span {
+    height: fit-content;
+    padding: 4px 8px;
+    background: #eff6ff;
+    border-radius: 999px;
+    color: #2563eb;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+.medicine-details {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 14px;
+}
+
+  .medicine-details div {
+    padding: 10px;
+    background: #fff;
+    border-radius: 8px;
+  }
+
+  .medicine-details span,
+  .medicine-details strong {
+    display: block;
+  }
+
+  .medicine-details span {
+    margin-bottom: 3px;
+    color: #94a3b8;
+    font-size: 11px;
+  }
+
+  .medicine-details strong {
+    color: #334155;
+    font-size: 13px;
+  }
+
+.instructions {
+  margin-top: 13px;
+  padding: 11px;
+  background: #fff;
+  border-radius: 8px;
+}
+
+  .instructions span {
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .instructions p {
+    margin: 5px 0 0;
+    color: #475569;
+    line-height: 1.6;
+  }
+
+.message {
+  margin-bottom: 20px;
+  padding: 13px 15px;
+  border-radius: 9px;
+}
+
+.error-message {
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.empty-state,
+.state-card {
+  padding: 50px 25px;
+  background: #fff;
+  border: 1px solid #dbe4f0;
+  border-radius: 15px;
+  color: #64748b;
+  text-align: center;
+}
+
+  .empty-state > div {
+    font-size: 40px;
+  }
+
+  .empty-state h2 {
+    margin: 10px 0 6px;
+    color: #334155;
+  }
+
+  .empty-state p {
+    margin: 0;
+  }
+
+@media (max-width: 700px) {
+  .prescriptions-page {
+    padding: 30px 16px 50px;
+  }
+
+  .page-header {
+    flex-direction: column;
+  }
+
+  .record-info,
+  .medicine-details {
+    grid-template-columns: 1fr;
+  }
+}

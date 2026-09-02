@@ -1,0 +1,124 @@
+<section class="profile-page">
+  <div class="page-header">
+    <div>
+      <span>PATIENT PROFILE</span>
+      <h1>Hồ sơ sức khỏe</h1>
+      <p>Cập nhật các thông tin sức khỏe cơ bản và liên hệ khẩn cấp.</p>
+    </div>
+
+    <a routerLink="/patient/dashboard">← Quay lại Dashboard</a>
+  </div>
+
+  @if (isLoading) {
+  <div class="state-card">Đang tải hồ sơ sức khỏe...</div>
+  } @else {
+  <form class="profile-form" [formGroup]="profileForm" (ngSubmit)="save()">
+    <div class="form-section">
+      <div class="section-heading">
+        <h2>Thông tin sức khỏe cơ bản</h2>
+        <p>Các thông tin này hỗ trợ bác sĩ khi tư vấn và theo dõi sức khỏe.</p>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="bloodType">Nhóm máu <span>*</span></label>
+
+          <select id="bloodType" formControlName="bloodType" (change)="clearMessages()">
+            <option value="">Chọn nhóm máu</option>
+            <option value="A+">A+</option>
+            <option value="A-">A-</option>
+            <option value="B+">B+</option>
+            <option value="B-">B-</option>
+            <option value="AB+">AB+</option>
+            <option value="AB-">AB-</option>
+            <option value="O+">O+</option>
+            <option value="O-">O-</option>
+          </select>
+
+          @if (bloodType.touched && bloodType.hasError('required')) {
+          <p class="field-error">Vui lòng chọn nhóm máu.</p>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="heightCm">Chiều cao (cm) <span>*</span></label>
+          <input id="heightCm" type="number" formControlName="heightCm" min="50" max="250" (input)="clearMessages()">
+
+          @if (heightCm.touched && heightCm.hasError('required')) {
+          <p class="field-error">Vui lòng nhập chiều cao.</p>
+          } @else if (heightCm.touched && (heightCm.hasError('min') || heightCm.hasError('max'))) {
+          <p class="field-error">Chiều cao phải từ 50 đến 250 cm.</p>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="weightKg">Cân nặng (kg) <span>*</span></label>
+          <input id="weightKg" type="number" formControlName="weightKg" min="2" max="300" step="0.1" (input)="clearMessages()">
+
+          @if (weightKg.touched && weightKg.hasError('required')) {
+          <p class="field-error">Vui lòng nhập cân nặng.</p>
+          } @else if (weightKg.touched && (weightKg.hasError('min') || weightKg.hasError('max'))) {
+          <p class="field-error">Cân nặng phải từ 2 đến 300 kg.</p>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="section-heading">
+        <h2>Tiền sử sức khỏe</h2>
+      </div>
+
+      <div class="form-group">
+        <label for="allergies">Dị ứng</label>
+        <textarea id="allergies" rows="3" maxlength="500" formControlName="allergies"
+                  (input)="clearMessages()" placeholder="Ví dụ: Dị ứng Penicillin, hải sản..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="chronicConditions">Bệnh nền</label>
+        <textarea id="chronicConditions" rows="3" maxlength="500" formControlName="chronicConditions"
+                  (input)="clearMessages()" placeholder="Ví dụ: Tăng huyết áp, đái tháo đường..."></textarea>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="section-heading">
+        <h2>Liên hệ khẩn cấp</h2>
+      </div>
+
+      <div class="form-grid two-columns">
+        <div class="form-group">
+          <label for="emergencyContactName">Tên người liên hệ</label>
+          <input id="emergencyContactName" type="text" maxlength="100"
+                 formControlName="emergencyContactName" (input)="clearMessages()">
+        </div>
+
+        <div class="form-group">
+          <label for="emergencyContactPhone">Số điện thoại</label>
+          <input id="emergencyContactPhone" type="tel" maxlength="10"
+                 formControlName="emergencyContactPhone" (input)="clearMessages()"
+                 [class.input-invalid]="emergencyContactPhone.invalid && emergencyContactPhone.touched"
+                 placeholder="0901234567">
+
+          @if (emergencyContactPhone.touched && emergencyContactPhone.hasError('pattern')) {
+          <p class="field-error">Số điện thoại không hợp lệ.</p>
+          }
+        </div>
+      </div>
+    </div>
+
+    @if (errorMessage) {
+    <div class="message error-message">{{ errorMessage }}</div>
+    }
+
+    @if (successMessage) {
+    <div class="message success-message">{{ successMessage }}</div>
+    }
+
+    <button class="save-button" type="submit" [disabled]="isSaving">
+      {{ isSaving ? 'Đang lưu...' : (hasProfile ? 'Cập nhật hồ sơ' : 'Tạo hồ sơ') }}
+    </button>
+  </form>
+  }
+</section>

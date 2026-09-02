@@ -22,4 +22,6 @@ public partial class PrescriptionItem
     public virtual Medication Medication { get; set; } = null!;
 
     public virtual Prescription Prescription { get; set; } = null!;
+
+    public virtual PrescriptionDispenseItem? PrescriptionDispenseItem { get; set; }
 }

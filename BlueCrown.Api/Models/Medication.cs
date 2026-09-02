@@ -14,4 +14,6 @@ public partial class Medication
     public string? Category { get; set; }
 
     public virtual ICollection<PrescriptionItem> PrescriptionItems { get; set; } = new List<PrescriptionItem>();
+
+    public virtual ICollection<Product> Products { get; set; } = new List<Product>();
 }

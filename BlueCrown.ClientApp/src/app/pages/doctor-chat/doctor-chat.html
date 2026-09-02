@@ -1,0 +1,82 @@
+<main class="page">
+  <header class="page-header">
+    <p class="eyebrow">ONLINE CONSULTATION</p>
+    <h1>Tư vấn trực tuyến</h1>
+    <p>Tiếp nhận và trao đổi trực tuyến với Patient.</p>
+  </header>
+
+  @if (errorMessage) {
+  <div class="error-message">{{ errorMessage }}</div>
+  }
+
+  @if (isLoading) {
+  <div class="empty-state">Đang tải yêu cầu tư vấn...</div>
+  } @else {
+  <section class="section">
+    <div class="section-heading">
+      <div>
+        <h2>Yêu cầu đang chờ</h2>
+        <p>Các Patient chưa có bác sĩ tiếp nhận.</p>
+      </div>
+
+      <span class="count">{{ availableSessions.length }}</span>
+    </div>
+
+    @if (availableSessions.length === 0) {
+    <div class="empty-state small">Hiện không có yêu cầu tư vấn đang chờ.</div>
+    } @else {
+    <div class="session-list">
+      @for (session of availableSessions; track session.id) {
+      <article class="session-card">
+        <div>
+          <h3>{{ session.patientName }}</h3>
+
+          @if (session.createdAt) {
+          <p>Gửi yêu cầu lúc {{ session.createdAt | date:'dd/MM/yyyy HH:mm' }}</p>
+          }
+        </div>
+
+        <button type="button" [disabled]="acceptingSessionId === session.id" (click)="acceptSession(session)">
+          {{ acceptingSessionId === session.id ? 'Đang nhận...' : 'Nhận tư vấn' }}
+        </button>
+      </article>
+      }
+    </div>
+    }
+  </section>
+
+  <section class="section">
+    <div class="section-heading">
+      <div>
+        <h2>Cuộc tư vấn của tôi</h2>
+        <p>Các cuộc tư vấn bạn đã tiếp nhận.</p>
+      </div>
+
+      <span class="count">{{ mySessions.length }}</span>
+    </div>
+
+    @if (mySessions.length === 0) {
+    <div class="empty-state small">Bạn chưa tiếp nhận cuộc tư vấn nào.</div>
+    } @else {
+    <div class="session-list">
+      @for (session of mySessions; track session.id) {
+      <article class="session-card">
+        <div>
+          <h3>{{ session.patientName }}</h3>
+          <p>{{ getStatusText(session.status) }}</p>
+
+          @if (session.createdAt) {
+          <span>{{ session.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+          }
+        </div>
+
+        <a [routerLink]="['/doctor/chat', session.id]">
+          {{ session.status?.toLowerCase() === 'closed' ? 'Xem lại' : 'Mở Chat' }}
+        </a>
+      </article>
+      }
+    </div>
+    }
+  </section>
+  }
+</main>

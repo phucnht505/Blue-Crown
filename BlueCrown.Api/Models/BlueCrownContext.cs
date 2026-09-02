@@ -55,6 +55,8 @@ public partial class BlueCrownContext : DbContext
 
     public virtual DbSet<PrescriptionItem> PrescriptionItems { get; set; }
 
+    public virtual DbSet<PrescriptionDispenseItem> PrescriptionDispenseItems { get; set; }
+
     public virtual DbSet<Product> Products { get; set; }
 
     public virtual DbSet<ReceiptDetail> ReceiptDetails { get; set; }
@@ -347,17 +349,34 @@ public partial class BlueCrownContext : DbContext
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("(newid())")
                 .HasColumnName("id");
-            entity.Property(e => e.EndDate).HasColumnName("end_date");
-            entity.Property(e => e.MetricTypeId).HasColumnName("metric_type_id");
-            entity.Property(e => e.PatientId).HasColumnName("patient_id");
-            entity.Property(e => e.StartDate).HasColumnName("start_date");
+
+            entity.Property(e => e.EndDate)
+                .HasColumnName("end_date");
+
+            entity.Property(e => e.MetricTypeId)
+                .HasColumnName("metric_type_id");
+
+            entity.Property(e => e.PatientId)
+                .HasColumnName("patient_id");
+
+            entity.Property(e => e.StartDate)
+                .HasColumnName("start_date");
+
             entity.Property(e => e.Status)
                 .HasMaxLength(20)
                 .HasDefaultValue("in_progress")
                 .HasColumnName("status");
+
             entity.Property(e => e.TargetValue)
                 .HasColumnType("decimal(10, 2)")
                 .HasColumnName("target_value");
+
+            entity.Property(e => e.CreatedByUserId)
+                .HasColumnName("created_by_user_id");
+
+            entity.Property(e => e.CreatedByRole)
+                .HasMaxLength(20)
+                .HasColumnName("created_by_role");
 
             entity.HasOne(d => d.MetricType).WithMany(p => p.HealthGoals)
                 .HasForeignKey(d => d.MetricTypeId)
@@ -367,6 +386,12 @@ public partial class BlueCrownContext : DbContext
             entity.HasOne(d => d.Patient).WithMany(p => p.HealthGoals)
                 .HasForeignKey(d => d.PatientId)
                 .HasConstraintName("FK__health_go__patie__74AE54BC");
+
+            entity.HasOne<User>()
+                .WithMany()
+                .HasForeignKey(d => d.CreatedByUserId)
+                .OnDelete(DeleteBehavior.NoAction)
+                .HasConstraintName("FK_health_goals_created_by_user");
         });
 
         modelBuilder.Entity<HealthMetric>(entity =>
@@ -656,20 +681,36 @@ public partial class BlueCrownContext : DbContext
 
             entity.ToTable("prescriptions");
 
+            entity.HasIndex(e => e.AppointmentId, "UX_prescriptions_appointment_id").IsUnique();
+
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("(newid())")
                 .HasColumnName("id");
+
+            entity.Property(e => e.AppointmentId).HasColumnName("appointment_id");
+
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
                 .HasColumnName("created_at");
+
+            entity.Property(e => e.Diagnosis).HasColumnName("diagnosis");
+
             entity.Property(e => e.DoctorId).HasColumnName("doctor_id");
+
             entity.Property(e => e.MedicalRecordId).HasColumnName("medical_record_id");
+
             entity.Property(e => e.PatientId).HasColumnName("patient_id");
+
             entity.Property(e => e.Status)
                 .HasMaxLength(20)
-                .HasDefaultValue("active")
+                .HasDefaultValue("issued")
                 .HasColumnName("status");
+
+            entity.HasOne(d => d.Appointment).WithMany(p => p.Prescriptions)
+                .HasForeignKey(d => d.AppointmentId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_prescriptions_appointments");
 
             entity.HasOne(d => d.Doctor).WithMany(p => p.Prescriptions)
                 .HasForeignKey(d => d.DoctorId)
@@ -678,7 +719,6 @@ public partial class BlueCrownContext : DbContext
 
             entity.HasOne(d => d.MedicalRecord).WithMany(p => p.Prescriptions)
                 .HasForeignKey(d => d.MedicalRecordId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__prescript__medic__68487DD7");
 
             entity.HasOne(d => d.Patient).WithMany(p => p.Prescriptions)
@@ -715,6 +755,57 @@ public partial class BlueCrownContext : DbContext
                 .HasConstraintName("FK__prescript__presc__6FE99F9F");
         });
 
+        modelBuilder.Entity<PrescriptionDispenseItem>(entity =>
+        {
+            entity.HasKey(e => e.Id)
+                .HasName("PK_prescription_dispense_items");
+
+            entity.ToTable("prescription_dispense_items");
+
+            entity.HasIndex(e => e.PrescriptionItemId)
+                .HasDatabaseName("UQ_prescription_dispense_items_prescription_item")
+                .IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("(newid())")
+                .HasColumnName("id");
+
+            entity.Property(e => e.PrescriptionItemId)
+                .HasColumnName("prescription_item_id");
+
+            entity.Property(e => e.ProductId)
+                .HasColumnName("product_id");
+
+            entity.Property(e => e.QuantityDispensed)
+                .HasColumnName("quantity_dispensed");
+
+            entity.Property(e => e.DispensedBy)
+                .HasColumnName("dispensed_by");
+
+            entity.Property(e => e.DispensedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("dispensed_at");
+
+            entity.HasOne(d => d.PrescriptionItem)
+                .WithOne(p => p.PrescriptionDispenseItem)
+                .HasForeignKey<PrescriptionDispenseItem>(d => d.PrescriptionItemId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_prescription_dispense_items_prescription_item");
+
+            entity.HasOne(d => d.Product)
+                .WithMany(p => p.PrescriptionDispenseItems)
+                .HasForeignKey(d => d.ProductId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_prescription_dispense_items_product");
+
+            entity.HasOne(d => d.DispensedByNavigation)
+                .WithMany()
+                .HasForeignKey(d => d.DispensedBy)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("FK_prescription_dispense_items_user");
+        });
+
         modelBuilder.Entity<Product>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__products__3213E83F1A0CC011");
@@ -724,6 +815,8 @@ public partial class BlueCrownContext : DbContext
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("(newid())")
                 .HasColumnName("id");
+            entity.Property(e => e.MedicationId)
+                .HasColumnName("medication_id");
             entity.Property(e => e.ActiveIngredient)
                 .HasMaxLength(200)
                 .HasColumnName("active_ingredient");
@@ -747,9 +840,15 @@ public partial class BlueCrownContext : DbContext
             entity.Property(e => e.Strength)
                 .HasMaxLength(50)
                 .HasColumnName("strength");
+            entity.Property(e => e.ImageUrl)
+                .HasColumnName("image_url");
             entity.Property(e => e.TherapeuticGroup)
                 .HasMaxLength(200)
                 .HasColumnName("therapeutic_group");
+            entity.HasOne(d => d.Medication).WithMany(p => p.Products)
+                .HasForeignKey(d => d.MedicationId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("FK_products_medications");
         });
 
         modelBuilder.Entity<ReceiptDetail>(entity =>

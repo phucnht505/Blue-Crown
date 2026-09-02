@@ -1,0 +1,365 @@
+:host {
+  display: block;
+  min-height: calc(100vh - 72px);
+  background: #f6f9fe;
+}
+
+.health-goals-page {
+  max-width: 1150px;
+  margin: 0 auto;
+  padding: 42px 30px 70px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 25px;
+  margin-bottom: 28px;
+}
+
+.page-label {
+  margin: 0;
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+
+.page-header h1 {
+  margin: 7px 0;
+  color: #1e3a8a;
+  font-size: 32px;
+}
+
+.page-header p,
+.section-heading p {
+  margin: 0;
+  color: #64748b;
+}
+
+.page-header a {
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.patient-card,
+.goal-form-card,
+.goals-section {
+  margin-bottom: 24px;
+  padding: 25px;
+  border: 1px solid #dbe4f0;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, .04);
+}
+
+.section-heading {
+  margin-bottom: 20px;
+}
+
+  .section-heading h2 {
+    margin: 0 0 6px;
+    color: #1e3a8a;
+    font-size: 20px;
+  }
+
+.patient-select label {
+  display: block;
+  margin-bottom: 7px;
+  color: #334155;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.patient-select select {
+  width: 100%;
+  height: 46px;
+  padding: 0 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+  background: #fff;
+}
+
+.patient-info {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 18px;
+}
+
+  .patient-info > div,
+  .goal-details > div {
+    padding: 14px;
+    border-radius: 10px;
+    background: #f8fafc;
+  }
+
+  .patient-info span,
+  .patient-info strong,
+  .goal-details span,
+  .goal-details strong {
+    display: block;
+  }
+
+  .patient-info span,
+  .goal-details span {
+    margin-bottom: 5px;
+    color: #64748b;
+    font-size: 12px;
+  }
+
+  .patient-info strong,
+  .goal-details strong {
+    color: #334155;
+  }
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 7px;
+  color: #334155;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+  .form-group label span {
+    color: #dc2626;
+  }
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  height: 46px;
+  box-sizing: border-box;
+  padding: 0 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+  background: #fff;
+}
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .patient-select select:focus {
+    border-color: #2563eb;
+    outline: none;
+  }
+
+.value-input {
+  position: relative;
+}
+
+  .value-input input {
+    padding-right: 65px;
+  }
+
+  .value-input span {
+    position: absolute;
+    top: 50%;
+    right: 13px;
+    transform: translateY(-50%);
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+.field-error {
+  margin: 6px 0 0;
+  color: #dc2626;
+  font-size: 12px;
+}
+
+.form-actions,
+.goal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.primary-button,
+.secondary-button,
+.edit-button,
+.cancel-goal-button {
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.primary-button {
+  border: 0;
+  background: #2563eb;
+  color: #fff;
+}
+
+.secondary-button {
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #475569;
+}
+
+.edit-button {
+  border: 1px solid #2563eb;
+  background: #fff;
+  color: #2563eb;
+}
+
+.cancel-goal-button {
+  border: 1px solid #fecaca;
+  background: #fff;
+  color: #dc2626;
+}
+
+  .primary-button:disabled,
+  .cancel-goal-button:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+  }
+
+.goals-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.goal-card {
+  padding: 20px;
+  border: 1px solid #dbe4f0;
+  border-radius: 13px;
+}
+
+.goal-card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 17px;
+}
+
+.goal-code {
+  color: #2563eb;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.goal-card h3 {
+  margin: 4px 0 0;
+  color: #1e3a8a;
+}
+
+.goal-details {
+  display: grid;
+  gap: 10px;
+}
+
+.status-badge {
+  height: fit-content;
+  padding: 5px 9px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.status-active {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.status-completed {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.status-cancelled {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.message {
+  margin-bottom: 20px;
+  padding: 12px 14px;
+  border-radius: 9px;
+}
+
+.error-message {
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.success-message {
+  border: 1px solid #bbf7d0;
+  background: #f0fdf4;
+  color: #15803d;
+}
+
+.empty-state,
+.state-card {
+  padding: 35px 15px;
+  color: #64748b;
+  text-align: center;
+}
+
+.state-card {
+  border: 1px solid #dbe4f0;
+  border-radius: 14px;
+  background: #fff;
+}
+
+.empty-icon {
+  font-size: 36px;
+}
+
+.empty-state h3 {
+  margin: 8px 0 5px;
+  color: #334155;
+}
+
+.empty-state p {
+  margin: 0;
+}
+
+@media (max-width: 800px) {
+  .form-grid,
+  .goals-grid,
+  .patient-info {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .health-goals-page {
+    padding: 30px 16px 50px;
+  }
+
+  .page-header {
+    flex-direction: column;
+  }
+}
+
+.goal-source {
+  display: inline-block;
+  margin-top: 7px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.readonly-goal {
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #f1f5f9;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 700;
+}

@@ -1,0 +1,91 @@
+<section class="dashboard-page">
+  <div class="welcome-section">
+    <div>
+      <span class="dashboard-label">PATIENT DASHBOARD</span>
+      <h1>Xin chào, {{ user?.fullName }}</h1>
+      <p>Quản lý thông tin sức khỏe và các dịch vụ Blue Crown của bạn.</p>
+    </div>
+  </div>
+
+  <div class="dashboard-grid">
+    <a class="dashboard-card" routerLink="/products">
+      <div class="card-icon">💊</div>
+      <div>
+        <h2>Nhà thuốc</h2>
+        <p>Tìm kiếm và mua các sản phẩm chăm sóc sức khỏe.</p>
+      </div>
+    </a>
+
+    <a class="dashboard-card" routerLink="/patient/appointments">
+      <div class="card-icon">🩺</div>
+      <div>
+        <h2>Lịch khám</h2>
+        <p>Đặt lịch và quản lý các cuộc hẹn với bác sĩ.</p>
+      </div>
+    </a>
+
+    <a class="dashboard-card" routerLink="/patient/medical-records">
+      <div class="card-icon">🗂️</div>
+      <div>
+        <h2>Hồ sơ bệnh án</h2>
+        <p>Xem lịch sử chẩn đoán và ghi chú từ các lần khám với bác sĩ.</p>
+      </div>
+    </a>
+
+    <a class="dashboard-card" routerLink="/patient/prescriptions">
+      <div class="card-icon">💊</div>
+      <div>
+        <h2>Đơn thuốc</h2>
+        <p>Xem thuốc, liều dùng và hướng dẫn được bác sĩ kê sau các lần khám.</p>
+      </div>
+    </a>
+
+    <a class="dashboard-card" routerLink="/account/profile">
+      <div class="card-icon">👤</div>
+      <div>
+        <h2>Hồ sơ cá nhân</h2>
+        <p>Xem và cập nhật họ tên, số điện thoại, ngày sinh, giới tính và ảnh đại diện.</p>
+      </div>
+    </a>
+
+    <a class="dashboard-card" routerLink="/patient/profile">
+      <div class="card-icon">📋</div>
+      <div>
+        <h2>Hồ sơ sức khỏe</h2>
+        <p>Cập nhật nhóm máu, chiều cao, cân nặng, dị ứng, bệnh nền và liên hệ khẩn cấp.</p>
+      </div>
+    </a>
+
+    <a class="dashboard-card" routerLink="/patient/health-metrics">
+      <div class="card-icon">❤️</div>
+      <div>
+        <h2>Chỉ số sức khỏe</h2>
+        <p>Ghi nhận và theo dõi nhịp tim, huyết áp, cân nặng và các chỉ số sức khỏe khác.</p>
+      </div>
+    </a>
+
+    <a class="dashboard-card" routerLink="/patient/health-goals">
+      <div class="card-icon">🎯</div>
+      <div>
+        <h2>Mục tiêu sức khỏe</h2>
+        <p>Tạo và theo dõi các mục tiêu sức khỏe dựa trên chỉ số thực tế.</p>
+      </div>
+    </a>
+
+    <a class="dashboard-card" routerLink="/patient/chat">
+      <div class="card-icon">💬</div>
+      <div>
+        <h2>Tư vấn bác sĩ</h2>
+        <p>Trao đổi và tư vấn trực tuyến với bác sĩ.</p>
+      </div>
+    </a>
+
+    <a class="dashboard-card" routerLink="/my-orders">
+      <div class="card-icon">📦</div>
+      <div>
+        <h2>Đơn hàng</h2>
+        <p>Theo dõi các đơn hàng đã đặt tại Blue Crown.</p>
+      </div>
+    </a>
+  </div>
+</section>

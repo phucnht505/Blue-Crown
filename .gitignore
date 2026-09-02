@@ -15,3 +15,10 @@ obj/
 
 # Logs
 *.log
+# Blue Crown AI local files
+BlueCrown.AI/.venv/
+BlueCrown.AI/.hf_cache/
+BlueCrown.AI/models/
+BlueCrown.AI/**/__pycache__/
+BlueCrown.AI/**/*.pyc
+BlueCrown.AI/.pytest_cache/

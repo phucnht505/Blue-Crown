@@ -1,0 +1,308 @@
+:host {
+  display: block;
+  min-height: calc(100vh - 60px);
+  background: #f6f9fe;
+}
+
+.page {
+  width: min(1240px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 34px 0 60px;
+}
+
+.page-header {
+  margin-bottom: 22px;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+
+.page-header h1 {
+  margin: 0;
+  color: #153b8d;
+  font-size: 30px;
+}
+
+.page-header p,
+.section-header p,
+.modal-header p {
+  margin: 7px 0 0;
+  color: #64748b;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+  .tabs button {
+    padding: 10px 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+    background: #fff;
+    color: #475569;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+    .tabs button.active {
+      border-color: #2563eb;
+      background: #2563eb;
+      color: #fff;
+    }
+
+.card {
+  padding: 20px;
+  border: 1px solid #d9e3f2;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, .04);
+}
+
+.section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+  .section-header h2 {
+    margin: 0;
+    color: #153b8d;
+  }
+
+.search-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+  .search-row input {
+    flex: 1;
+    padding: 11px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+    outline: none;
+  }
+
+    .search-row input:focus {
+      border-color: #2563eb;
+    }
+
+.primary-button,
+.secondary-button,
+.action-button {
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.primary-button {
+  padding: 11px 17px;
+  border: 0;
+  background: #2563eb;
+  color: #fff;
+}
+
+.secondary-button {
+  padding: 10px 16px;
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #334155;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 13px 12px;
+  border-bottom: 1px solid #e2e8f0;
+  text-align: left;
+  vertical-align: middle;
+}
+
+th {
+  color: #475569;
+  font-size: 13px;
+}
+
+td {
+  color: #334155;
+  font-size: 14px;
+}
+
+.actions,
+.modal-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.action-button {
+  padding: 7px 10px;
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #334155;
+}
+
+  .action-button.edit {
+    border-color: #93c5fd;
+    color: #1d4ed8;
+  }
+
+  .action-button.danger {
+    border-color: #fecaca;
+    color: #dc2626;
+  }
+
+.state {
+  padding: 30px;
+  color: #64748b;
+  text-align: center;
+}
+
+.message {
+  margin-bottom: 18px;
+  padding: 12px 14px;
+  border-radius: 9px;
+}
+
+.error-message {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.success-message {
+  background: #f0fdf4;
+  color: #15803d;
+}
+
+.overlay {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(15, 23, 42, .55);
+}
+
+.modal {
+  width: min(700px, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 26px;
+  border-radius: 16px;
+  background: #fff;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 22px;
+}
+
+  .modal-header h2 {
+    margin: 0;
+    color: #153b8d;
+  }
+
+.close-button {
+  border: 0;
+  background: transparent;
+  color: #64748b;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 7px;
+  color: #334155;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+  .field label span {
+    color: #dc2626;
+  }
+
+.field input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+  outline: none;
+}
+
+  .field input:focus {
+    border-color: #2563eb;
+  }
+
+.field-error {
+  margin: 5px 0 0;
+  color: #dc2626;
+  font-size: 12px;
+}
+
+.form-error {
+  margin-top: 14px;
+}
+
+.modal-actions {
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+button:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+@media (max-width: 700px) {
+  .section-header {
+    flex-direction: column;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .full-width {
+    grid-column: auto;
+  }
+
+  .search-row {
+    flex-direction: column;
+  }
+
+  .tabs {
+    flex-direction: column;
+  }
+}

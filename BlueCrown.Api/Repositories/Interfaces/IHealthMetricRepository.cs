@@ -9,6 +9,7 @@ namespace BlueCrown.Api.Repositories.Interfaces
         Task<HealthMetric?> GetLatestAsync(Guid patientId);
         Task<bool> MetricTypeExistsAsync(int metricTypeId);
         Task<MetricType?> GetMetricTypeAsync(int metricTypeId);
+        Task<List<MetricType>> GetMetricTypesAsync();
         Task AddAsync(HealthMetric healthMetric);
         Task SaveChangesAsync();
     }

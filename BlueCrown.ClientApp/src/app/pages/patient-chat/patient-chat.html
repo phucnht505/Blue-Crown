@@ -1,0 +1,65 @@
+<main class="page">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">ONLINE CONSULTATION</p>
+      <h1>Tư vấn bác sĩ</h1>
+      <p>Trao đổi trực tuyến với bác sĩ của Blue Crown.</p>
+    </div>
+
+    <button type="button" class="create-btn" [disabled]="isCreating || !!activeSession" (click)="createSession()">
+      {{ isCreating ? 'Đang tạo...' : 'Tạo yêu cầu tư vấn' }}
+    </button>
+  </header>
+
+  @if (errorMessage) {
+  <div class="message error-message">{{ errorMessage }}</div>
+  }
+
+  @if (successMessage) {
+  <div class="message success-message">{{ successMessage }}</div>
+  }
+
+  @if (activeSession && !activeSession.doctorId) {
+  <div class="waiting-message">Yêu cầu tư vấn của bạn đang chờ bác sĩ tiếp nhận.</div>
+  }
+
+  @if (isLoading) {
+  <div class="empty-state">Đang tải các cuộc tư vấn...</div>
+  } @else if (sessions.length === 0) {
+  <div class="empty-state">
+    <span>💬</span>
+    <h2>Chưa có cuộc tư vấn</h2>
+    <p>Bạn có thể tạo yêu cầu để trao đổi trực tuyến với bác sĩ.</p>
+  </div>
+  } @else {
+  <section class="session-list">
+    @for (session of sessions; track session.id) {
+    <article class="session-card">
+      <div class="session-main">
+        <div class="session-icon">💬</div>
+
+        <div>
+          <div class="session-title">
+            <h2>Tư vấn trực tuyến</h2>
+            <span class="status" [class]="getStatusClass(session.status)">{{ getStatusText(session.status) }}</span>
+          </div>
+
+          <p>
+            Bác sĩ:
+            <strong>{{ session.doctorName || 'Đang chờ bác sĩ tiếp nhận' }}</strong>
+          </p>
+
+          @if (session.createdAt) {
+          <span class="date">Tạo lúc {{ session.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+          }
+        </div>
+      </div>
+
+      <button type="button" class="open-btn" (click)="openChat(session)">
+        {{ session.status?.toLowerCase() === 'closed' ? 'Xem lại' : 'Mở cuộc trò chuyện' }}
+      </button>
+    </article>
+    }
+  </section>
+  }
+</main>

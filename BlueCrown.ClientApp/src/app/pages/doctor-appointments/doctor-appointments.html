@@ -1,0 +1,209 @@
+<section class="appointments-page">
+  <div class="page-header">
+    <div>
+      <span class="page-label">DOCTOR APPOINTMENTS</span>
+      <h1>Quản lý lịch khám</h1>
+      <p>Xem và xử lý các lịch khám và tư vấn trực tuyến Patient đã đặt với bạn.</p>
+    </div>
+
+    <a routerLink="/doctor/dashboard">← Quay lại Dashboard</a>
+  </div>
+
+  @if (isLoading) {
+  <div class="state-card">Đang tải lịch khám...</div>
+  } @else {
+  @if (errorMessage) {
+  <div class="message error-message">{{ errorMessage }}</div>
+  }
+
+  @if (successMessage) {
+  <div class="message success-message">{{ successMessage }}</div>
+  }
+
+  <div class="appointments-section">
+    <div class="section-heading">
+      <h2>Lịch chờ xác nhận</h2>
+      <p>{{ pendingAppointments.length }} lịch đang chờ xử lý.</p>
+    </div>
+
+    @if (pendingAppointments.length === 0) {
+    <div class="empty-state">Không có lịch nào đang chờ xác nhận.</div>
+    } @else {
+    <div class="appointments-grid">
+      @for (appointment of pendingAppointments; track appointment.id) {
+      <article class="appointment-card">
+        <div class="card-header">
+          <div>
+            <span class="appointment-type">{{ getTypeText(appointment.type) }}</span>
+            <h3>{{ appointment.patientName }}</h3>
+          </div>
+
+          <span class="status-badge status-pending">Chờ xác nhận</span>
+        </div>
+
+        <div class="appointment-info">
+          <div>
+            <span>{{ getTimeLabel(appointment) }}</span>
+            <strong>{{ appointment.scheduledAt | date:'dd/MM/yyyy HH:mm' }}</strong>
+          </div>
+
+          <div>
+            <span>Hình thức</span>
+            <strong>{{ getTypeText(appointment.type) }}</strong>
+          </div>
+        </div>
+
+        <div class="card-actions">
+          @if (canConfirm(appointment)) {
+          <button type="button"
+                  class="confirm-button"
+                  [disabled]="processingAppointmentId === appointment.id"
+                  (click)="confirmAppointment(appointment)">
+            Xác nhận
+          </button>
+          }
+
+          <button type="button"
+                  class="reject-button"
+                  [disabled]="processingAppointmentId === appointment.id"
+                  (click)="rejectAppointment(appointment)">
+            Từ chối
+          </button>
+        </div>
+      </article>
+      }
+    </div>
+    }
+  </div>
+
+  <div class="appointments-section">
+    <div class="section-heading">
+      <h2>Lịch đã xác nhận</h2>
+      <p>{{ confirmedAppointments.length }} lịch đã được xác nhận.</p>
+    </div>
+
+    @if (confirmedAppointments.length === 0) {
+    <div class="empty-state">Chưa có lịch nào đã xác nhận.</div>
+    } @else {
+    <div class="appointments-grid">
+      @for (appointment of confirmedAppointments; track appointment.id) {
+      <article class="appointment-card">
+        <div class="card-header">
+          <div>
+            <span class="appointment-type">{{ getTypeText(appointment.type) }}</span>
+            <h3>{{ appointment.patientName }}</h3>
+          </div>
+
+          <span class="status-badge status-confirmed">Đã xác nhận</span>
+        </div>
+
+        <div class="appointment-info">
+          <div>
+            <span>{{ getTimeLabel(appointment) }}</span>
+            <strong>{{ appointment.scheduledAt | date:'dd/MM/yyyy HH:mm' }}</strong>
+          </div>
+
+          <div>
+            @if (isOnlineConsult(appointment)) {
+            <span>Hình thức</span>
+            <strong>Tư vấn trực tuyến</strong>
+            } @else {
+            <span>Phòng khám</span>
+            <strong>{{ appointment.clinicName || 'Chưa cập nhật' }}</strong>
+            }
+          </div>
+        </div>
+
+        <div class="card-actions">
+          @if (isOnlineConsult(appointment)) {
+          <span class="waiting-text">Kết thúc tư vấn trong phòng Chat</span>
+          } @else if (canComplete(appointment)) {
+          <button type="button"
+                  class="complete-button"
+                  [disabled]="processingAppointmentId === appointment.id"
+                  (click)="completeAppointment(appointment)">
+            Hoàn thành
+          </button>
+          } @else {
+          <span class="waiting-text">Chưa đến thời gian khám</span>
+          }
+
+          <button type="button"
+                  class="reject-button"
+                  [disabled]="processingAppointmentId === appointment.id"
+                  (click)="cancelConfirmedAppointment(appointment)">
+            Hủy lịch
+          </button>
+        </div>
+      </article>
+      }
+    </div>
+    }
+  </div>
+
+  <div class="appointments-section">
+    <div class="section-heading">
+      <h2>Lịch sử xử lý</h2>
+      <p>{{ historyAppointments.length }} lịch đã hoàn thành hoặc hủy.</p>
+    </div>
+
+    @if (historyAppointments.length === 0) {
+    <div class="empty-state">Chưa có lịch sử khám hoặc tư vấn.</div>
+    } @else {
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Patient</th>
+            <th>Hình thức</th>
+            <th>Thời gian</th>
+            <th>Trạng thái</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (appointment of historyAppointments; track appointment.id) {
+          <tr>
+            <td>{{ appointment.patientName }}</td>
+            <td>{{ getTypeText(appointment.type) }}</td>
+            <td>{{ appointment.scheduledAt | date:'dd/MM/yyyy HH:mm' }}</td>
+
+            <td>
+              <span class="status-badge" [class]="getStatusClass(appointment.status)">
+                {{ getStatusText(appointment.status) }}
+              </span>
+            </td>
+
+            <td>
+              @if (
+              appointment.status?.toLowerCase() === 'completed' &&
+              appointment.type?.toLowerCase() === 'clinic_visit'
+              ) {
+              <a class="medical-record-link"
+                 routerLink="/doctor/medical-records"
+                 [queryParams]="{ appointmentId: appointment.id }">
+                Bệnh án
+              </a>
+              } @else if (
+              appointment.status?.toLowerCase() === 'completed' &&
+              appointment.type?.toLowerCase() === 'online_consult'
+              ) {
+              <a class="medical-record-link"
+                 routerLink="/doctor/prescriptions"
+                 [queryParams]="{ appointmentId: appointment.id }">
+                Kê đơn
+              </a>
+              } @else {
+              <span>-</span>
+              }
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    }
+  </div>
+  }
+</section>

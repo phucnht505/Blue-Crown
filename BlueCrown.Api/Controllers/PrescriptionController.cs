@@ -2,6 +2,7 @@
 using BlueCrown.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace BlueCrown.Api.Controllers
 {
@@ -17,73 +18,251 @@ namespace BlueCrown.Api.Controllers
             _service = service;
         }
 
-        // GET: api/Prescription
-        [HttpGet]
-        public async Task<ActionResult<List<PrescriptionDto>>> GetAll()
+        // =========================================================
+        // PATIENT
+        // =========================================================
+
+        [HttpGet("patient/my")]
+        [Authorize(Roles = "patient")]
+        public async Task<ActionResult<List<PrescriptionDto>>> GetPatientPrescriptions()
         {
-            var prescriptions = await _service.GetAllAsync();
+            try
+            {
+                var userId = GetUserId();
+
+                if (userId == null)
+                    return Unauthorized(new { message = "Không xác định được người dùng." });
+
+                var prescriptions = await _service.GetPatientPrescriptionsAsync(userId.Value);
+
+                return Ok(prescriptions);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("patient/{id:guid}")]
+        [Authorize(Roles = "patient")]
+        public async Task<ActionResult<PrescriptionDto>> GetPatientPrescriptionById(Guid id)
+        {
+            try
+            {
+                var userId = GetUserId();
+
+                if (userId == null)
+                    return Unauthorized(new { message = "Không xác định được người dùng." });
+
+                var prescription = await _service.GetPatientPrescriptionByIdAsync(id, userId.Value);
+
+                if (prescription == null)
+                    return NotFound(new { message = "Không tìm thấy đơn thuốc." });
+
+                return Ok(prescription);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        // =========================================================
+        // DOCTOR
+        // =========================================================
+
+        [HttpGet("doctor/my")]
+        [Authorize(Roles = "doctor")]
+        public async Task<ActionResult<List<PrescriptionDto>>> GetDoctorPrescriptions()
+        {
+            try
+            {
+                var userId = GetUserId();
+
+                if (userId == null)
+                    return Unauthorized(new { message = "Không xác định được người dùng." });
+
+                var prescriptions = await _service.GetDoctorPrescriptionsAsync(userId.Value);
+
+                return Ok(prescriptions);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("doctor/{id:guid}")]
+        [Authorize(Roles = "doctor")]
+        public async Task<ActionResult<PrescriptionDto>> GetDoctorPrescriptionById(Guid id)
+        {
+            try
+            {
+                var userId = GetUserId();
+
+                if (userId == null)
+                    return Unauthorized(new { message = "Không xác định được người dùng." });
+
+                var prescription = await _service.GetDoctorPrescriptionByIdAsync(id, userId.Value);
+
+                if (prescription == null)
+                    return NotFound(new { message = "Không tìm thấy đơn thuốc." });
+
+                return Ok(prescription);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("doctor/medical-record/{medicalRecordId:guid}")]
+        [Authorize(Roles = "doctor")]
+        public async Task<ActionResult<PrescriptionDto>> GetDoctorPrescriptionByMedicalRecord(Guid medicalRecordId)
+        {
+            try
+            {
+                var userId = GetUserId();
+
+                if (userId == null)
+                    return Unauthorized(new { message = "Không xác định được người dùng." });
+
+                var prescription = await _service.GetDoctorPrescriptionByMedicalRecordAsync(medicalRecordId, userId.Value);
+
+                if (prescription == null)
+                    return NotFound(new { message = "Hồ sơ bệnh án này chưa có đơn thuốc." });
+
+                return Ok(prescription);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "doctor")]
+        public async Task<ActionResult<PrescriptionDto>> Create([FromBody] CreatePrescriptionDto dto)
+        {
+            try
+            {
+                var userId = GetUserId();
+
+                if (userId == null)
+                    return Unauthorized(new { message = "Không xác định được người dùng." });
+
+                var prescription = await _service.CreateAsync(userId.Value, dto);
+
+                return CreatedAtAction(
+                    nameof(GetDoctorPrescriptionById),
+                    new { id = prescription.Id },
+                    prescription);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        // =========================================================
+        // PHARMACIST - XEM PRESCRIPTION
+        // =========================================================
+
+        [HttpGet("pharmacist")]
+        [Authorize(Roles = "pharmacist")]
+        public async Task<ActionResult<List<PrescriptionDto>>> GetPharmacistPrescriptions()
+        {
+            var prescriptions = await _service.GetPharmacistPrescriptionsAsync();
 
             return Ok(prescriptions);
         }
 
-        // GET: api/Prescription/{id}
-        [HttpGet("{id:guid}")]
-        public async Task<ActionResult<PrescriptionDto>> GetById(Guid id)
+        [HttpGet("pharmacist/{id:guid}")]
+        [Authorize(Roles = "pharmacist")]
+        public async Task<ActionResult<PrescriptionDto>> GetPharmacistPrescriptionById(Guid id)
         {
-            var prescription = await _service.GetByIdAsync(id);
+            var prescription = await _service.GetPharmacistPrescriptionByIdAsync(id);
 
             if (prescription == null)
-                return NotFound(new
-                {
-                    message = "Prescription not found."
-                });
+                return NotFound(new { message = "Không tìm thấy đơn thuốc." });
 
             return Ok(prescription);
         }
 
-        // POST: api/Prescription
-        [HttpPost]
-        public async Task<ActionResult<PrescriptionDto>> Create(
-            [FromBody] CreatePrescriptionDto dto)
-        {
-            var prescription = await _service.CreateAsync(dto);
+        // =========================================================
+        // PHARMACIST - DUYỆT / HỦY
+        // =========================================================
 
-            return CreatedAtAction(
-                nameof(GetById),
-                new { id = prescription.Id },
-                prescription);
-        }
-
-        // PUT: api/Prescription/{id}
-        [HttpPut("{id:guid}")]
-        public async Task<IActionResult> Update(
+        [HttpPut("pharmacist/{id:guid}/status")]
+        [Authorize(Roles = "pharmacist")]
+        public async Task<ActionResult<PrescriptionDto>> UpdatePharmacistStatus(
             Guid id,
-            [FromBody] UpdatePrescriptionDto dto)
+            [FromBody] UpdatePrescriptionStatusDto dto)
         {
-            var updated = await _service.UpdateAsync(id, dto);
+            try
+            {
+                var prescription = await _service.UpdatePharmacistStatusAsync(id, dto);
 
-            if (!updated)
-                return NotFound(new
-                {
-                    message = "Prescription not found."
-                });
+                if (prescription == null)
+                    return NotFound(new { message = "Không tìm thấy đơn thuốc." });
 
-            return NoContent();
+                return Ok(prescription);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
-        // DELETE: api/Prescription/{id}
-        [HttpDelete("{id:guid}")]
-        public async Task<IActionResult> Delete(Guid id)
+        // =========================================================
+        // PHARMACIST - CẤP THUỐC + TRỪ TỒN KHO
+        // =========================================================
+
+        [HttpPost("pharmacist/{id:guid}/dispense")]
+        [Authorize(Roles = "pharmacist")]
+        public async Task<ActionResult<PrescriptionDto>> Dispense(
+            Guid id,
+            [FromBody] DispensePrescriptionDto dto)
         {
-            var deleted = await _service.DeleteAsync(id);
+            try
+            {
+                var userId = GetUserId();
 
-            if (!deleted)
-                return NotFound(new
-                {
-                    message = "Prescription not found."
-                });
+                if (userId == null)
+                    return Unauthorized(new { message = "Không xác định được Pharmacist." });
 
-            return NoContent();
+                var prescription = await _service.DispenseAsync(id, userId.Value, dto);
+
+                if (prescription == null)
+                    return NotFound(new { message = "Không tìm thấy đơn thuốc." });
+
+                return Ok(prescription);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        private Guid? GetUserId()
+        {
+            var claim = User.FindFirst(ClaimTypes.NameIdentifier);
+
+            return Guid.TryParse(claim?.Value, out var id)
+                ? id
+                : null;
         }
     }
 }

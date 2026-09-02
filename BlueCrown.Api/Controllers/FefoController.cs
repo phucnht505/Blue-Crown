@@ -7,7 +7,7 @@ namespace BlueCrown.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "pharmacist,admin")]
     public class FefoController : ControllerBase
     {
         private readonly IFefoService _fefoService;
@@ -17,12 +17,10 @@ namespace BlueCrown.Api.Controllers
             _fefoService = fefoService;
         }
 
-        [HttpGet("{productId}")]
-        public async Task<ActionResult<List<ReceiptDetailDto>>> GetFefo(
-            Guid productId)
+        [HttpGet("{productId:guid}")]
+        public async Task<ActionResult<List<ReceiptDetailDto>>> GetFefo(Guid productId)
         {
             var result = await _fefoService.GetFefoAsync(productId);
-
             return Ok(result);
         }
     }

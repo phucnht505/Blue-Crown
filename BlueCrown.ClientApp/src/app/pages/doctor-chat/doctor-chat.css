@@ -1,0 +1,149 @@
+:host {
+  display: block;
+  min-height: calc(100vh - 60px);
+  background: #f6f9fe;
+}
+
+.page {
+  width: min(1050px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 40px 0 70px;
+}
+
+.page-header {
+  margin-bottom: 25px;
+}
+
+.eyebrow {
+  margin: 0 0 5px;
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+
+.page-header h1 {
+  margin: 0;
+  color: #153b8d;
+  font-size: 30px;
+}
+
+.page-header p:last-child,
+.section-heading p {
+  margin: 6px 0 0;
+  color: #64748b;
+}
+
+.section {
+  margin-bottom: 25px;
+  padding: 20px;
+  border: 1px solid #d9e3f2;
+  border-radius: 14px;
+  background: #fff;
+}
+
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 16px;
+}
+
+  .section-heading h2 {
+    margin: 0;
+    color: #153b8d;
+    font-size: 20px;
+  }
+
+.count {
+  display: flex;
+  width: 35px;
+  height: 35px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #eff6ff;
+  color: #2563eb;
+  font-weight: 800;
+}
+
+.session-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.session-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 15px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+  .session-card h3 {
+    margin: 0;
+    color: #334155;
+    font-size: 16px;
+  }
+
+  .session-card p {
+    margin: 5px 0;
+    color: #64748b;
+    font-size: 13px;
+  }
+
+  .session-card span {
+    color: #94a3b8;
+    font-size: 12px;
+  }
+
+  .session-card button,
+  .session-card a {
+    padding: 9px 13px;
+    border: none;
+    border-radius: 8px;
+    background: #2563eb;
+    color: #fff;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+    .session-card button:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+.error-message {
+  margin-bottom: 18px;
+  padding: 13px 15px;
+  border: 1px solid #fecaca;
+  border-radius: 9px;
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.empty-state {
+  padding: 45px 20px;
+  color: #64748b;
+  text-align: center;
+}
+
+  .empty-state.small {
+    padding: 25px 10px;
+  }
+
+@media (max-width: 650px) {
+  .session-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+    .session-card a,
+    .session-card button {
+      text-align: center;
+    }
+}

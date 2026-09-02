@@ -1,0 +1,403 @@
+.appointments-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 45px 30px 70px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.page-label {
+  color: #2563eb;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+}
+
+.page-header h1 {
+  margin: 7px 0;
+  color: #1e3a8a;
+  font-size: 32px;
+}
+
+.page-header p {
+  margin: 0;
+  color: #64748b;
+}
+
+.page-header a {
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.booking-card,
+.appointments-section {
+  margin-bottom: 25px;
+  padding: 26px;
+  background: #fff;
+  border: 1px solid #dbe4f0;
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+}
+
+.section-heading {
+  margin-bottom: 22px;
+}
+
+  .section-heading h2 {
+    margin: 0 0 6px;
+    color: #1e3a8a;
+    font-size: 20px;
+  }
+
+  .section-heading p {
+    margin: 0;
+    color: #64748b;
+    font-size: 14px;
+  }
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 7px;
+  color: #334155;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+  .form-group label span {
+    color: #dc2626;
+  }
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  height: 46px;
+  padding: 0 13px;
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+  background: #fff;
+  color: #1e293b;
+  font: inherit;
+  box-sizing: border-box;
+}
+
+  .form-group input:focus,
+  .form-group select:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+  }
+
+.field-error {
+  margin: 6px 0 0;
+  color: #dc2626;
+  font-size: 12px;
+}
+
+.doctor-preview {
+  display: flex;
+  gap: 16px;
+  margin-top: 20px;
+  padding: 18px;
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
+  border-radius: 12px;
+}
+
+.doctor-avatar {
+  width: 54px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: #fff;
+  border-radius: 50%;
+  font-size: 27px;
+}
+
+.doctor-info h3 {
+  margin: 0 0 3px;
+  color: #1e3a8a;
+  font-size: 18px;
+}
+
+.doctor-info p {
+  margin: 0 0 10px;
+  color: #2563eb;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.doctor-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.save-button {
+  padding: 12px 22px;
+  border: none;
+  border-radius: 9px;
+  background: #2563eb;
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+  .save-button:hover:not(:disabled) {
+    background: #1d4ed8;
+  }
+
+.appointment-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.appointment-card {
+  padding: 21px;
+  border: 1px solid #dbe4f0;
+  border-radius: 14px;
+}
+
+.appointment-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.appointment-type {
+  color: #2563eb;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.appointment-header h3 {
+  margin: 5px 0 3px;
+  color: #1e3a8a;
+  font-size: 19px;
+}
+
+.appointment-header p {
+  margin: 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.appointment-details {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 18px;
+}
+
+  .appointment-details div {
+    padding: 12px;
+    background: #f8fafc;
+    border-radius: 9px;
+  }
+
+  .appointment-details span,
+  .appointment-details strong {
+    display: block;
+  }
+
+  .appointment-details span {
+    margin-bottom: 4px;
+    color: #94a3b8;
+    font-size: 11px;
+  }
+
+  .appointment-details strong {
+    color: #334155;
+    font-size: 13px;
+  }
+
+.status-badge {
+  height: fit-content;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.status-pending {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.status-confirmed {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.status-completed {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.status-cancelled {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.appointment-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 17px;
+}
+
+.cancel-appointment-button {
+  padding: 9px 15px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  background: #fff;
+  color: #dc2626;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+  .cancel-appointment-button:hover:not(:disabled) {
+    background: #fef2f2;
+  }
+
+.history-table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 14px 12px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+  white-space: nowrap;
+}
+
+th {
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 12px;
+}
+
+td {
+  color: #475569;
+  font-size: 14px;
+}
+
+.empty-state,
+.empty-doctors,
+.state-card {
+  color: #64748b;
+  text-align: center;
+}
+
+.empty-state {
+  padding: 45px 20px;
+}
+
+  .empty-state > div {
+    font-size: 38px;
+  }
+
+  .empty-state h3 {
+    margin: 10px 0 5px;
+    color: #334155;
+  }
+
+  .empty-state p {
+    margin: 0;
+  }
+
+.empty-doctors {
+  padding: 25px;
+  background: #f8fafc;
+  border-radius: 10px;
+}
+
+.state-card {
+  padding: 55px;
+  border: 1px solid #dbe4f0;
+  border-radius: 15px;
+  background: #fff;
+}
+
+.message {
+  margin-bottom: 20px;
+  padding: 13px 15px;
+  border-radius: 9px;
+}
+
+.error-message {
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.success-message {
+  border: 1px solid #bbf7d0;
+  background: #f0fdf4;
+  color: #15803d;
+}
+
+.save-button:disabled,
+.cancel-appointment-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 950px) {
+  .form-grid,
+  .appointment-details {
+    grid-template-columns: 1fr;
+  }
+
+  .appointment-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .appointments-page {
+    padding: 30px 16px 50px;
+  }
+
+  .page-header {
+    flex-direction: column;
+  }
+
+  .booking-card,
+  .appointments-section {
+    padding: 18px;
+  }
+}

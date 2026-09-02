@@ -1,0 +1,119 @@
+<main class="page">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">ĐƠN HÀNG</p>
+      <h1>Đơn hàng của tôi</h1>
+      <p>Theo dõi các đơn hàng đã đặt và trạng thái xử lý.</p>
+    </div>
+
+    <a routerLink="/products" class="back-link">← Tiếp tục mua sắm</a>
+  </header>
+
+  @if (errorMessage) {
+  <div class="message error-message">{{ errorMessage }}</div>
+  }
+
+  @if (successMessage) {
+  <div class="message success-message">{{ successMessage }}</div>
+  }
+
+  @if (isLoading) {
+  <div class="empty-state">Đang tải đơn hàng...</div>
+  } @else if (orders.length === 0) {
+  <div class="empty-state">
+    <h2>Bạn chưa có đơn hàng</h2>
+    <p>Hãy chọn sản phẩm tại nhà thuốc và tiến hành đặt hàng.</p>
+    <a routerLink="/products" class="shop-button">Mua sắm ngay</a>
+  </div>
+  } @else {
+  <section class="order-list">
+    @for (order of orders; track order.id) {
+    <article class="order-card">
+      <div class="order-header">
+        <div>
+          <span class="order-label">Mã đơn hàng</span>
+          <strong class="order-id">{{ order.id }}</strong>
+
+          @if (order.createdAt) {
+          <span class="order-date">{{ order.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+          }
+        </div>
+
+        <span class="status-badge" [class]="getOrderStatusClass(order.orderStatus)">
+          {{ getOrderStatusText(order.orderStatus) }}
+        </span>
+      </div>
+
+      <div class="order-info">
+        <div>
+          <span>Số điện thoại</span>
+          <strong>{{ order.guestPhone || '-' }}</strong>
+        </div>
+
+        <div>
+          <span>Thanh toán</span>
+          <strong>{{ getPaymentMethodText(order.paymentMethod) }}</strong>
+        </div>
+
+        <div>
+          <span>Trạng thái thanh toán</span>
+          <strong>{{ getPaymentStatusText(order.paymentStatus) }}</strong>
+        </div>
+
+        @if (order.prescriptionId) {
+        <div>
+          <span>Prescription</span>
+          <strong class="prescription-id">{{ order.prescriptionId }}</strong>
+        </div>
+        }
+      </div>
+
+      <div class="address">
+        <span>Địa chỉ giao hàng</span>
+        <strong>{{ order.shippingAddress }}</strong>
+      </div>
+
+      <div class="items">
+        @for (item of order.items; track item.id) {
+        <div class="order-item">
+          <div class="product-image">
+            @if (item.productImageUrl) {
+            <img [src]="item.productImageUrl" [alt]="item.productName">
+            } @else {
+            <span>💊</span>
+            }
+          </div>
+
+          <div class="product-info">
+            <strong>{{ item.productName }}</strong>
+            <span>{{ item.unitPrice | currency:'VND':'symbol':'1.0-0' }} × {{ item.quantity }}</span>
+          </div>
+
+          <strong class="line-total">{{ item.unitPrice * item.quantity | currency:'VND':'symbol':'1.0-0' }}</strong>
+        </div>
+        }
+      </div>
+
+      <div class="order-footer">
+        <div class="total">
+          <span>Tổng cộng</span>
+          <strong>{{ order.totalAmount | currency:'VND':'symbol':'1.0-0' }}</strong>
+        </div>
+
+        @if (canCancel(order)) {
+        <button type="button" class="cancel-button" [disabled]="cancellingOrderId === order.id" (click)="cancelOrder(order)">
+          {{ cancellingOrderId === order.id ? 'Đang hủy...' : 'Hủy đơn hàng' }}
+        </button>
+        } @else if (order.orderStatus?.toLowerCase() === 'shipped') {
+        <span class="status-note">Đơn hàng đang được giao nên không thể hủy.</span>
+        } @else if (order.orderStatus?.toLowerCase() === 'delivered') {
+        <span class="status-note">Đơn hàng đã hoàn tất.</span>
+        } @else if (order.orderStatus?.toLowerCase() === 'cancelled') {
+        <span class="status-note cancelled-note">Đơn hàng đã được hủy.</span>
+        }
+      </div>
+    </article>
+    }
+  </section>
+  }
+</main>

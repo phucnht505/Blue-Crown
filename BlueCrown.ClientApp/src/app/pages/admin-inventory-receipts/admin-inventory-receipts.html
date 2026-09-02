@@ -1,0 +1,114 @@
+<main class="page">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">ADMIN</p>
+      <h1>Quản lý phiếu nhập</h1>
+      <p>Xem, duyệt hoặc từ chối các phiếu nhập được tạo bởi Pharmacist.</p>
+    </div>
+    <a routerLink="/admin/dashboard" class="back-link">← Quay lại Dashboard</a>
+  </header>
+
+  <section class="filter-bar">
+    <button type="button" [class.active]="statusFilter === 'all'" (click)="setStatusFilter('all')">Tất cả</button>
+    <button type="button" [class.active]="statusFilter === 'pending_approval'" (click)="setStatusFilter('pending_approval')">Chờ duyệt</button>
+    <button type="button" [class.active]="statusFilter === 'approved'" (click)="setStatusFilter('approved')">Đã duyệt</button>
+    <button type="button" [class.active]="statusFilter === 'rejected'" (click)="setStatusFilter('rejected')">Đã từ chối</button>
+  </section>
+
+  @if (errorMessage) {
+  <div class="message error-message">{{ errorMessage }}</div>
+  }
+
+  @if (successMessage) {
+  <div class="message success-message">{{ successMessage }}</div>
+  }
+
+  @if (isLoading) {
+  <div class="empty-state">Đang tải danh sách phiếu nhập...</div>
+  } @else if (filteredReceipts.length === 0) {
+  <div class="empty-state">Không có phiếu nhập ở trạng thái này.</div>
+  } @else {
+  <section class="receipt-list">
+    @for (receipt of filteredReceipts; track receipt.id) {
+    <article class="receipt-card">
+      <div class="receipt-header">
+        <div>
+          <span class="supplier-label">NHÀ CUNG CẤP</span>
+          <h2>{{ receipt.supplierName || 'Không xác định' }}</h2>
+        </div>
+        <span class="status" [class]="getStatusClass(receipt.status)">{{ getStatusText(receipt.status) }}</span>
+      </div>
+
+      <div class="meta-grid">
+        <div>
+          <span>Người tạo</span>
+          <strong>{{ receipt.createdByName || '-' }}</strong>
+        </div>
+
+        <div>
+          <span>Ngày tạo</span>
+          <strong>{{ receipt.receiptDate ? (receipt.receiptDate | date:'dd/MM/yyyy HH:mm') : '-' }}</strong>
+        </div>
+
+        <div>
+          <span>Tổng tiền</span>
+          <strong>{{ (receipt.totalCost ?? 0) | currency:'VND':'symbol':'1.0-0' }}</strong>
+        </div>
+
+        <div>
+          <span>Người xử lý</span>
+          <strong>{{ receipt.approvedByName || 'Chưa xử lý' }}</strong>
+        </div>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Số lô</th>
+              <th>Hạn dùng</th>
+              <th>Số lượng nhập</th>
+              <th>Tồn kho hiện tại</th>
+              <th>Giá nhập</th>
+              <th>Thành tiền</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (detail of receipt.details; track detail.id) {
+            <tr>
+              <td><strong>{{ detail.productName || '-' }}</strong></td>
+              <td>{{ detail.batchNumber }}</td>
+              <td>{{ detail.expirationDate | date:'dd/MM/yyyy' }}</td>
+              <td>{{ detail.quantityImported }}</td>
+              <td><strong>{{ detail.stockQuantity ?? 0 }}</strong></td>
+              <td>{{ detail.importPrice | currency:'VND':'symbol':'1.0-0' }}</td>
+              <td>{{ detail.quantityImported * detail.importPrice | currency:'VND':'symbol':'1.0-0' }}</td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      @if (receipt.status?.toLowerCase() === 'pending_approval') {
+      <div class="card-actions">
+        <button type="button" class="reject-button" [disabled]="processingReceiptId === receipt.id" (click)="reject(receipt)">Từ chối</button>
+        <button type="button" class="approve-button" [disabled]="processingReceiptId === receipt.id" (click)="approve(receipt)">
+          {{ processingReceiptId === receipt.id ? 'Đang xử lý...' : 'Duyệt phiếu' }}
+        </button>
+      </div>
+      }
+
+      @if (receipt.status?.toLowerCase() === 'approved') {
+      <div class="approved-note">Phiếu đã được duyệt. Tồn kho Product đã được cập nhật.</div>
+      }
+
+      @if (receipt.status?.toLowerCase() === 'rejected') {
+      <div class="rejected-note">Phiếu đã bị từ chối. Tồn kho không thay đổi.</div>
+      }
+    </article>
+    }
+  </section>
+  }
+</main>

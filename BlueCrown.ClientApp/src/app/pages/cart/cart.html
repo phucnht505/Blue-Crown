@@ -1,1 +1,99 @@
-<p>cart works!</p>
+<section class="cart-page">
+  <div class="page-header">
+    <span>GIỎ HÀNG</span>
+    <h1>Giỏ hàng của bạn</h1>
+    <p>Kiểm tra sản phẩm trước khi tiến hành thanh toán.</p>
+  </div>
+
+  @if (items.length === 0) {
+  <div class="empty-cart">
+    <div class="empty-icon">🛒</div>
+    <h2>Giỏ hàng đang trống</h2>
+    <p>Bạn chưa thêm sản phẩm nào vào giỏ hàng.</p>
+    <a routerLink="/products" class="continue-button">Tiếp tục mua sắm</a>
+  </div>
+  } @else {
+  <div class="cart-layout">
+    <div class="cart-list">
+      @for (item of items; track item.product.id) {
+      <article class="cart-item">
+        <div class="product-image">
+          @if (item.product.imageUrl) {
+          <img [src]="item.product.imageUrl" [alt]="item.product.name">
+          } @else {
+          <span>💊</span>
+          }
+        </div>
+
+        <div class="product-info">
+          <span class="category">{{ item.product.therapeuticGroup || 'Sản phẩm y tế' }}</span>
+          <a [routerLink]="['/products', item.product.id]" class="product-name">{{ item.product.name }}</a>
+          <p>{{ item.product.activeIngredient || 'Không áp dụng' }}</p>
+          <strong class="unit-price">{{ item.product.price | number }}đ</strong>
+        </div>
+
+        <div class="quantity-section">
+          <span class="label">Số lượng</span>
+
+          <div class="quantity-control">
+            <button type="button" (click)="decreaseQuantity(item)" [disabled]="item.quantity <= 1">−</button>
+            <span>{{ item.quantity }}</span>
+            <button type="button"
+                    (click)="increaseQuantity(item)"
+                    [disabled]="item.product.stockQuantity !== null && item.quantity >= item.product.stockQuantity">
+              +
+            </button>
+          </div>
+
+          <small>Còn {{ item.product.stockQuantity ?? 0 }} sản phẩm</small>
+        </div>
+
+        <div class="item-total">
+          <span>Thành tiền</span>
+          <strong>{{ item.product.price * item.quantity | number }}đ</strong>
+        </div>
+
+        <button type="button" class="remove-button" (click)="removeProduct(item.product.id)">Xóa</button>
+      </article>
+      }
+
+      @if (message) {
+      <div class="cart-message">{{ message }}</div>
+      }
+
+      <div class="cart-actions">
+        <a routerLink="/products" class="continue-shopping">← Tiếp tục mua sắm</a>
+        <button type="button" class="clear-button" (click)="clearCart()">Xóa toàn bộ giỏ hàng</button>
+      </div>
+    </div>
+
+    <aside class="order-summary">
+      <h2>Tóm tắt đơn hàng</h2>
+
+      <div class="summary-row">
+        <span>Số loại sản phẩm</span>
+        <strong>{{ items.length }}</strong>
+      </div>
+
+      <div class="summary-row">
+        <span>Tạm tính</span>
+        <strong>{{ totalAmount | number }}đ</strong>
+      </div>
+
+      <div class="summary-row">
+        <span>Phí vận chuyển</span>
+        <strong>Tính khi thanh toán</strong>
+      </div>
+
+      <div class="summary-total">
+        <span>Tổng cộng</span>
+        <strong>{{ totalAmount | number }}đ</strong>
+      </div>
+
+      <a routerLink="/checkout" class="checkout-button">Tiến hành thanh toán</a>
+
+      <p class="checkout-note">Giá cuối cùng và phí vận chuyển sẽ được xác nhận tại bước thanh toán.</p>
+    </aside>
+  </div>
+  }
+</section>

@@ -1,0 +1,143 @@
+<button class="ai-floating-button" type="button" (click)="toggle()" aria-label="Mở trợ lý sức khỏe AI">
+  AI
+</button>
+
+@if (isOpen) {
+<section class="ai-panel">
+  <div class="ai-header">
+    <div>
+      <h3>Trợ lý sức khỏe Blue Crown</h3>
+      <p>Phân tích triệu chứng bằng AI</p>
+    </div>
+
+    <button class="close-button" type="button" (click)="close()" aria-label="Đóng">×</button>
+  </div>
+
+  <div class="ai-content">
+    <label for="symptoms">Mô tả triệu chứng của bạn</label>
+
+    <textarea id="symptoms"
+              [(ngModel)]="symptomsDescription"
+              maxlength="2000"
+              placeholder="Ví dụ: Tôi bị ho, đau họng, nghẹt mũi và hơi sốt..."
+              [disabled]="isLoading">
+      </textarea>
+
+    <div class="character-count">{{ symptomsDescription.length }}/2000</div>
+
+    @if (errorMessage) {
+    <div class="error-message">{{ errorMessage }}</div>
+    }
+
+    <button class="analyze-button" type="button" (click)="analyze()" [disabled]="isLoading">
+      {{ isLoading ? 'Đang phân tích...' : 'Phân tích triệu chứng' }}
+    </button>
+
+    @if (isLoading) {
+    <div class="loading">AI đang phân tích triệu chứng của bạn...</div>
+    }
+
+    @if (result) {
+    <div class="result">
+      <div class="severity-box">
+        <span>Mức cảnh báo</span>
+        <strong>{{ getSeverityLabel(result.severityLevel) }}</strong>
+      </div>
+
+      @if (result.isLowConfidence) {
+      <div class="confidence-warning">
+        <strong>AI chưa đủ độ tin cậy</strong>
+        <p>Độ tin cậy hiện tại: {{ formatConfidence(result.confidence) }}</p>
+        <p>Hãy mô tả triệu chứng cụ thể hơn để AI có thêm thông tin phân tích.</p>
+      </div>
+      } @else {
+      <div class="result-title">Tình trạng có thể liên quan</div>
+
+      <div class="primary-result">
+        <span>{{ result.predictedDisease }}</span>
+        <strong>{{ formatConfidence(result.confidence) }}</strong>
+      </div>
+
+      <div class="prediction-list">
+        @for (prediction of result.topPredictions; track prediction.disease; let i = $index) {
+        <div class="prediction-item">
+          <div>
+            <span class="prediction-number">{{ i + 1 }}</span>
+            {{ prediction.disease }}
+          </div>
+          <strong>{{ formatConfidence(prediction.confidence) }}</strong>
+        </div>
+        }
+      </div>
+      }
+
+      @if (result.isEmergency) {
+      <div class="emergency-message">
+        <strong>Cần hỗ trợ y tế khẩn cấp</strong>
+        <p>{{ result.advice }}</p>
+      </div>
+      } @else if (result.shouldSeeDoctor) {
+      <div class="doctor-message">
+        <strong>Nên trao đổi với bác sĩ</strong>
+        <p>{{ result.advice }}</p>
+      </div>
+
+      <button class="doctor-button" type="button" (click)="consultDoctor()">
+        Tư vấn bác sĩ
+      </button>
+      } @else {
+      <div class="advice-message">
+        <strong>Gợi ý theo dõi</strong>
+        <p>{{ result.advice }}</p>
+      </div>
+      }
+
+      @if (result.recommendedProductName) {
+      <div class="product-recommendation">
+        <span>Sản phẩm tham khảo</span>
+        <strong>{{ result.recommendedProductName }}</strong>
+
+        @if (result.dosageInstructions) {
+        <p>{{ result.dosageInstructions }}</p>
+        }
+      </div>
+      }
+
+      <button class="clear-button" type="button" (click)="clear()">
+        Phân tích triệu chứng khác
+      </button>
+    </div>
+    }
+
+    <div class="disclaimer">
+      Kết quả AI chỉ mang tính tham khảo và không thay thế chẩn đoán hoặc tư vấn của bác sĩ.
+    </div>
+  </div>
+</section>
+}
+
+@if (showAccountPrompt) {
+<div class="account-prompt-backdrop">
+  <div class="account-prompt">
+    <div class="account-prompt-icon">👨‍⚕️</div>
+
+    <h3>Tư vấn bác sĩ</h3>
+
+    <p>Bạn cần tài khoản bệnh nhân Blue Crown để sử dụng chức năng tư vấn trực tuyến với bác sĩ.</p>
+
+    <p class="account-question">Bạn đã có tài khoản Blue Crown chưa?</p>
+
+    <button class="login-option-button" type="button" (click)="goToLogin()">
+      Đã có tài khoản - Đăng nhập
+    </button>
+
+    <button class="register-option-button" type="button" (click)="goToRegister()">
+      Chưa có tài khoản - Đăng ký
+    </button>
+
+    <button class="later-button" type="button" (click)="closeAccountPrompt()">
+      Để sau
+    </button>
+  </div>
+</div>
+}
