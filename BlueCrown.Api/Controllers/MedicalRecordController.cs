@@ -2,6 +2,7 @@
 using BlueCrown.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace BlueCrown.Api.Controllers
 {
@@ -17,93 +18,169 @@ namespace BlueCrown.Api.Controllers
             _service = service;
         }
 
-        // GET: api/MedicalRecord
-        [HttpGet]
-        public async Task<ActionResult<List<MedicalRecordDto>>> GetAll()
+        [HttpGet("patient/my")]
+        [Authorize(Roles = "patient")]
+        public async Task<ActionResult<List<MedicalRecordDto>>> GetPatientRecords()
         {
-            var records = await _service.GetAllAsync();
+            try
+            {
+                var userId = GetUserId();
 
-            return Ok(records);
+                if (userId == null)
+                    return Unauthorized(new { message = "Không xác định được người dùng." });
+
+                return Ok(await _service.GetPatientRecordsAsync(userId.Value));
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
-        // GET: api/MedicalRecord/{id}
-        [HttpGet("{id:guid}")]
-        public async Task<ActionResult<MedicalRecordDto>> GetById(Guid id)
+        [HttpGet("patient/{id:guid}")]
+        [Authorize(Roles = "patient")]
+        public async Task<ActionResult<MedicalRecordDto>> GetPatientRecordById(Guid id)
         {
-            var record = await _service.GetByIdAsync(id);
+            try
+            {
+                var userId = GetUserId();
 
-            if (record == null)
-                return NotFound();
+                if (userId == null)
+                    return Unauthorized(new { message = "Không xác định được người dùng." });
 
-            return Ok(record);
+                var record = await _service.GetPatientRecordByIdAsync(id, userId.Value);
+
+                if (record == null)
+                    return NotFound(new { message = "Không tìm thấy hồ sơ bệnh án." });
+
+                return Ok(record);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
-        // GET: api/MedicalRecord/patient/{patientId}
-        [HttpGet("patient/{patientId:guid}")]
-        public async Task<ActionResult<List<MedicalRecordDto>>> GetByPatientId(Guid patientId)
+        [HttpGet("doctor/my")]
+        [Authorize(Roles = "doctor")]
+        public async Task<ActionResult<List<MedicalRecordDto>>> GetDoctorRecords()
         {
-            var records = await _service.GetByPatientIdAsync(patientId);
+            try
+            {
+                var userId = GetUserId();
 
-            return Ok(records);
+                if (userId == null)
+                    return Unauthorized(new { message = "Không xác định được người dùng." });
+
+                return Ok(await _service.GetDoctorRecordsAsync(userId.Value));
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
-        // GET: api/MedicalRecord/doctor/{doctorId}
-        [HttpGet("doctor/{doctorId:guid}")]
-        public async Task<ActionResult<List<MedicalRecordDto>>> GetByDoctorId(Guid doctorId)
+        [HttpGet("doctor/{id:guid}")]
+        [Authorize(Roles = "doctor")]
+        public async Task<ActionResult<MedicalRecordDto>> GetDoctorRecordById(Guid id)
         {
-            var records = await _service.GetByDoctorIdAsync(doctorId);
+            try
+            {
+                var userId = GetUserId();
 
-            return Ok(records);
+                if (userId == null)
+                    return Unauthorized(new { message = "Không xác định được người dùng." });
+
+                var record = await _service.GetDoctorRecordByIdAsync(id, userId.Value);
+
+                if (record == null)
+                    return NotFound(new { message = "Không tìm thấy hồ sơ bệnh án." });
+
+                return Ok(record);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
-        // GET: api/MedicalRecord/appointment/{appointmentId}
-        [HttpGet("appointment/{appointmentId:guid}")]
-        public async Task<ActionResult<MedicalRecordDto>> GetByAppointmentId(Guid appointmentId)
+        [HttpGet("doctor/appointment/{appointmentId:guid}")]
+        [Authorize(Roles = "doctor")]
+        public async Task<ActionResult<MedicalRecordDto>> GetDoctorRecordByAppointment(Guid appointmentId)
         {
-            var record = await _service.GetByAppointmentIdAsync(appointmentId);
+            try
+            {
+                var userId = GetUserId();
 
-            if (record == null)
-                return NotFound();
+                if (userId == null)
+                    return Unauthorized(new { message = "Không xác định được người dùng." });
 
-            return Ok(record);
+                var record = await _service.GetDoctorRecordByAppointmentAsync(appointmentId, userId.Value);
+
+                if (record == null)
+                    return NotFound(new { message = "Lịch khám này chưa có hồ sơ bệnh án." });
+
+                return Ok(record);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
-        // POST: api/MedicalRecord
         [HttpPost]
-        public async Task<ActionResult<MedicalRecordDto>> Create(
-            [FromBody] CreateMedicalRecordDto dto)
+        [Authorize(Roles = "doctor")]
+        public async Task<ActionResult<MedicalRecordDto>> Create([FromBody] CreateMedicalRecordDto dto)
         {
-            var record = await _service.CreateAsync(dto);
+            try
+            {
+                var userId = GetUserId();
 
-            return CreatedAtAction(nameof(GetById),
-                new { id = record.Id },
-                record);
+                if (userId == null)
+                    return Unauthorized(new { message = "Không xác định được người dùng." });
+
+                var record = await _service.CreateAsync(userId.Value, dto);
+
+                return CreatedAtAction(nameof(GetDoctorRecordById), new { id = record.Id }, record);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
-        // PUT: api/MedicalRecord/{id}
         [HttpPut("{id:guid}")]
-        public async Task<ActionResult<MedicalRecordDto>> Update(
-            Guid id,
-            [FromBody] CreateMedicalRecordDto dto)
+        [Authorize(Roles = "doctor")]
+        public async Task<ActionResult<MedicalRecordDto>> Update(Guid id, [FromBody] UpdateMedicalRecordDto dto)
         {
-            var record = await _service.UpdateAsync(id, dto);
+            try
+            {
+                var userId = GetUserId();
 
-            if (record == null)
-                return NotFound();
+                if (userId == null)
+                    return Unauthorized(new { message = "Không xác định được người dùng." });
 
-            return Ok(record);
+                var record = await _service.UpdateAsync(id, userId.Value, dto);
+
+                if (record == null)
+                    return NotFound(new { message = "Không tìm thấy hồ sơ bệnh án." });
+
+                return Ok(record);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
-        // DELETE: api/MedicalRecord/{id}
-        [HttpDelete("{id:guid}")]
-        public async Task<IActionResult> Delete(Guid id)
+        private Guid? GetUserId()
         {
-            var deleted = await _service.DeleteAsync(id);
-
-            if (!deleted)
-                return NotFound();
-
-            return NoContent();
+            var claim = User.FindFirst(ClaimTypes.NameIdentifier);
+            return Guid.TryParse(claim?.Value, out var id) ? id : null;
         }
     }
 }

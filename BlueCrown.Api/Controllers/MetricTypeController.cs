@@ -30,19 +30,18 @@ namespace BlueCrown.Api.Controllers
             var metricType = await _service.GetByIdAsync(id);
 
             if (metricType == null)
-                return NotFound(new { message = "Không tìm thấy MetricType." });
+                return NotFound(new { message = "Không tìm thấy loại chỉ số sức khỏe." });
 
             return Ok(metricType);
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Create(CreateMetricTypeDto dto)
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> Create([FromBody] CreateMetricTypeDto dto)
         {
             try
             {
                 var metricType = await _service.CreateAsync(dto);
-
                 return CreatedAtAction(nameof(GetById), new { id = metricType.Id }, metricType);
             }
             catch (ArgumentException ex)
@@ -56,17 +55,17 @@ namespace BlueCrown.Api.Controllers
         }
 
         [HttpPut("{id:int}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Update(int id, UpdateMetricTypeDto dto)
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateMetricTypeDto dto)
         {
             try
             {
                 var result = await _service.UpdateAsync(id, dto);
 
                 if (!result)
-                    return NotFound(new { message = "Không tìm thấy MetricType." });
+                    return NotFound(new { message = "Không tìm thấy loại chỉ số sức khỏe." });
 
-                return Ok(new { message = "Cập nhật MetricType thành công." });
+                return Ok(new { message = "Cập nhật loại chỉ số sức khỏe thành công." });
             }
             catch (ArgumentException ex)
             {
@@ -79,7 +78,7 @@ namespace BlueCrown.Api.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(int id)
         {
             try
@@ -87,9 +86,9 @@ namespace BlueCrown.Api.Controllers
                 var result = await _service.DeleteAsync(id);
 
                 if (!result)
-                    return NotFound(new { message = "Không tìm thấy MetricType." });
+                    return NotFound(new { message = "Không tìm thấy loại chỉ số sức khỏe." });
 
-                return Ok(new { message = "Xóa MetricType thành công." });
+                return Ok(new { message = "Xóa loại chỉ số sức khỏe thành công." });
             }
             catch (InvalidOperationException ex)
             {

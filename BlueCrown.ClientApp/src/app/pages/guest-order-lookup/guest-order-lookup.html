@@ -1,0 +1,176 @@
+<main class="lookup-page">
+  <section class="lookup-header">
+    <p class="eyebrow">BLUE CROWN</p>
+    <h1>Tra cứu đơn hàng</h1>
+    <p>Nhập số điện thoại đã dùng khi đặt hàng. Nếu còn lưu mã đơn hàng, bạn có thể nhập thêm để tìm chính xác đơn cần xem.</p>
+  </section>
+
+  <section class="lookup-card">
+    <form [formGroup]="lookupForm" (ngSubmit)="lookup()" novalidate>
+      <div class="form-grid">
+        <div class="field">
+          <label>
+            Mã đơn hàng
+            <small>(không bắt buộc)</small>
+          </label>
+
+          <input type="text"
+                 formControlName="orderId"
+                 placeholder="Nhập nếu bạn còn lưu mã đơn">
+
+          @if (lookupForm.controls.orderId.touched && lookupForm.controls.orderId.invalid) {
+          <p class="field-error">Mã đơn hàng không hợp lệ.</p>
+          }
+        </div>
+
+        <div class="field">
+          <label>Số điện thoại <span>*</span></label>
+
+          <input type="text"
+                 formControlName="guestPhone"
+                 placeholder="Ví dụ: 0901234567">
+
+          @if (lookupForm.controls.guestPhone.touched && lookupForm.controls.guestPhone.invalid) {
+          <p class="field-error">Số điện thoại không hợp lệ.</p>
+          }
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="secondary-button" type="button" (click)="reset()">
+          Đặt lại
+        </button>
+
+        <button class="primary-button" type="submit" [disabled]="isLoading">
+          {{ isLoading ? 'Đang tra cứu...' : 'Tra cứu đơn hàng' }}
+        </button>
+      </div>
+    </form>
+  </section>
+
+  @if (errorMessage) {
+  <div class="error-message">
+    {{ errorMessage }}
+  </div>
+  }
+
+  @if (orders.length > 1) {
+  <section class="order-card">
+    <div class="result-header">
+      <div>
+        <h2>Đơn hàng của bạn</h2>
+        <p>Tìm thấy {{ orders.length }} đơn hàng. Chọn một đơn để xem chi tiết.</p>
+      </div>
+    </div>
+
+    <div class="result-list">
+      @for (item of orders; track item.id) {
+      <div class="lookup-result">
+        <div class="result-order-info">
+          <span class="result-label">Mã đơn hàng</span>
+          <strong>{{ item.id }}</strong>
+          <span>{{ item.createdAt ? (item.createdAt | date:'dd/MM/yyyy HH:mm') : '-' }}</span>
+        </div>
+
+        <div class="result-summary">
+          <span class="result-label">Tổng tiền</span>
+          <strong>{{ item.totalAmount | number }}đ</strong>
+          <span>{{ getOrderStatusLabel(item.orderStatus) }}</span>
+        </div>
+
+        <button type="button"
+                class="primary-button"
+                (click)="selectOrder(item)">
+          Xem chi tiết
+        </button>
+      </div>
+      }
+    </div>
+  </section>
+  }
+
+  @if (selectedOrder; as order) {
+  <section class="order-card detail-card">
+    <div class="order-header">
+      <div>
+        <p class="order-label">MÃ ĐƠN HÀNG</p>
+        <h2>{{ order.id }}</h2>
+      </div>
+
+      <span class="status-badge"
+            [class.processing]="order.orderStatus === 'processing'"
+            [class.confirmed]="order.orderStatus === 'confirmed'"
+            [class.shipped]="order.orderStatus === 'shipped'"
+            [class.delivered]="order.orderStatus === 'delivered'"
+            [class.cancelled]="order.orderStatus === 'cancelled'">
+        {{ getOrderStatusLabel(order.orderStatus) }}
+      </span>
+    </div>
+
+    <div class="order-info">
+      <div>
+        <span>Ngày đặt</span>
+        <strong>
+          {{ order.createdAt ? (order.createdAt | date:'dd/MM/yyyy HH:mm') : '-' }}
+        </strong>
+      </div>
+
+      <div>
+        <span>Số điện thoại</span>
+        <strong>{{ order.guestPhone || '-' }}</strong>
+      </div>
+
+      <div>
+        <span>Phương thức thanh toán</span>
+        <strong>{{ getPaymentMethodLabel(order.paymentMethod) }}</strong>
+      </div>
+
+      <div>
+        <span>Trạng thái thanh toán</span>
+        <strong>{{ getPaymentStatusLabel(order.paymentStatus) }}</strong>
+      </div>
+
+      <div>
+        <span>Trạng thái đơn hàng</span>
+        <strong>{{ getOrderStatusLabel(order.orderStatus) }}</strong>
+      </div>
+
+      <div class="full-width">
+        <span>Địa chỉ giao hàng</span>
+        <strong>{{ order.shippingAddress }}</strong>
+      </div>
+    </div>
+
+    <div class="products">
+      <h3>Sản phẩm trong đơn</h3>
+
+      @for (item of order.items; track item.id) {
+      <div class="product-row">
+        <div class="product-image">
+          @if (item.productImageUrl) {
+          <img [src]="item.productImageUrl" [alt]="item.productName">
+          } @else {
+          <span>💊</span>
+          }
+        </div>
+
+        <div class="product-content">
+          <strong>{{ item.productName }}</strong>
+          <span>Số lượng: {{ item.quantity }}</span>
+        </div>
+
+        <div class="product-price">
+          <span>{{ item.unitPrice | number }}đ × {{ item.quantity }}</span>
+          <strong>{{ getOrderTotal(item) | number }}đ</strong>
+        </div>
+      </div>
+      }
+    </div>
+
+    <div class="order-total">
+      <span>Tổng tiền</span>
+      <strong>{{ order.totalAmount | number }}đ</strong>
+    </div>
+  </section>
+  }
+</main>

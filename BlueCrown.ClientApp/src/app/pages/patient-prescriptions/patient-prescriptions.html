@@ -1,0 +1,112 @@
+<section class="prescriptions-page">
+  <div class="page-header">
+    <div>
+      <span class="page-label">PRESCRIPTIONS</span>
+      <h1>Đơn thuốc của tôi</h1>
+      <p>Xem các đơn thuốc được bác sĩ kê sau mỗi lần khám hoặc tư vấn trực tuyến.</p>
+    </div>
+
+    <a routerLink="/patient/dashboard">← Quay lại Dashboard</a>
+  </div>
+
+  @if (isLoading) {
+  <div class="state-card">Đang tải đơn thuốc...</div>
+  } @else {
+  @if (errorMessage) {
+  <div class="message error-message">{{ errorMessage }}</div>
+  }
+
+  @if (prescriptions.length === 0 && !errorMessage) {
+  <div class="empty-state">
+    <div>💊</div>
+    <h2>Chưa có đơn thuốc</h2>
+    <p>Đơn thuốc sẽ xuất hiện sau khi bác sĩ kê thuốc cho bạn.</p>
+  </div>
+  } @else {
+  <div class="prescription-list">
+    @for (prescription of prescriptions; track prescription.id) {
+    <article class="prescription-card">
+      <div class="prescription-header">
+        <div>
+          <span class="doctor-label">BÁC SĨ</span>
+          <h2>{{ prescription.doctorName }}</h2>
+          <p>{{ prescription.doctorSpecialty }}</p>
+        </div>
+
+        <span class="status-badge" [class]="getStatusClass(prescription.status)">
+          {{ getStatusText(prescription.status) }}
+        </span>
+      </div>
+
+      <div class="record-info">
+        <div>
+          <span>
+            {{ prescription.appointmentType?.toLowerCase() === 'online_consult' ? 'Ngày tư vấn' : 'Ngày khám' }}
+          </span>
+          <strong>{{ prescription.appointmentScheduledAt | date:'dd/MM/yyyy HH:mm' }}</strong>
+        </div>
+
+        <div>
+          <span>Chẩn đoán</span>
+          <strong>{{ prescription.diagnosis || prescription.medicalRecordDiagnosis }}</strong>
+        </div>
+
+        <div>
+          <span>Ngày kê đơn</span>
+          <strong>{{ prescription.createdAt | date:'dd/MM/yyyy HH:mm' }}</strong>
+        </div>
+      </div>
+
+      <div class="medicine-section">
+        <h3>Thuốc được kê</h3>
+
+        <div class="medicine-list">
+          @for (item of prescription.items; track item.id) {
+          <div class="medicine-card">
+            <div class="medicine-name">
+              <div>
+                <h4>{{ item.medicationName }}</h4>
+
+                @if (item.genericName) {
+                <p>{{ item.genericName }}</p>
+                }
+              </div>
+
+              @if (item.category) {
+              <span>{{ item.category }}</span>
+              }
+            </div>
+
+            <div class="medicine-details">
+              <div>
+                <span>Liều dùng</span>
+                <strong>{{ item.dosage || 'Không ghi' }}</strong>
+              </div>
+
+              <div>
+                <span>Số lần/ngày</span>
+                <strong>{{ item.frequencyPerDay ?? 'Không ghi' }}</strong>
+              </div>
+
+              <div>
+                <span>Số ngày dùng</span>
+                <strong>{{ item.durationDays ?? 'Không ghi' }}</strong>
+              </div>
+            </div>
+
+            @if (item.instructions) {
+            <div class="instructions">
+              <span>Hướng dẫn</span>
+              <p>{{ item.instructions }}</p>
+            </div>
+            }
+          </div>
+          }
+        </div>
+      </div>
+    </article>
+    }
+  </div>
+  }
+  }
+</section>

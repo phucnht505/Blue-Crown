@@ -17,6 +17,7 @@ namespace BlueCrown.Api.Repositories.Implementations
         {
             return await _context.AutoPrescriptions
                 .AsNoTracking()
+                .Include(x => x.RecommendedProduct)
                 .OrderBy(x => x.DiseaseName)
                 .ToListAsync();
         }
@@ -25,6 +26,7 @@ namespace BlueCrown.Api.Repositories.Implementations
         {
             return await _context.AutoPrescriptions
                 .AsNoTracking()
+                .Include(x => x.RecommendedProduct)
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
@@ -34,6 +36,7 @@ namespace BlueCrown.Api.Repositories.Implementations
 
             return await _context.AutoPrescriptions
                 .AsNoTracking()
+                .Include(x => x.RecommendedProduct)
                 .FirstOrDefaultAsync(x => x.DiseaseName.ToLower() == name);
         }
 

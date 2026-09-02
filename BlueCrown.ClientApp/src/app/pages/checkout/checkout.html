@@ -1,1 +1,206 @@
-<p>checkout works!</p>
+<section class="checkout-page">
+  @if (order) {
+  <div class="success-card">
+    <div class="success-icon">✓</div>
+
+    <h1>Đặt hàng thành công</h1>
+    <p>Đơn hàng của bạn đã được tạo và đang chờ xử lý.</p>
+
+    <div class="order-code">
+      <span>Mã đơn hàng</span>
+      <strong>{{ order.id }}</strong>
+    </div>
+
+    <div class="success-row">
+      <span>Tổng tiền</span>
+      <strong>{{ order.totalAmount | number }}đ</strong>
+    </div>
+
+    <div class="success-row">
+      <span>Trạng thái đơn</span>
+      <strong>{{ getOrderStatusText(order.orderStatus) }}</strong>
+    </div>
+
+    <div class="success-row">
+      <span>Thanh toán</span>
+      <strong>{{ getPaymentStatusText(order.paymentStatus) }}</strong>
+    </div>
+
+    <div class="success-row">
+      <span>Phương thức</span>
+      <strong>{{ getPaymentMethodText(order.paymentMethod) }}</strong>
+    </div>
+
+    <button type="button" (click)="continueShopping()">Tiếp tục mua sắm</button>
+  </div>
+  } @else if (items.length === 0) {
+  <div class="empty-checkout">
+    <h2>Không có sản phẩm để thanh toán</h2>
+    <p>Hãy thêm sản phẩm vào giỏ hàng trước.</p>
+    <a routerLink="/products">Quay lại nhà thuốc</a>
+  </div>
+  } @else {
+  <div class="page-header">
+    <span>THANH TOÁN</span>
+    <h1>Thông tin đặt hàng</h1>
+    <p>Kiểm tra thông tin nhận hàng và đơn hàng trước khi xác nhận.</p>
+  </div>
+
+  <div class="checkout-layout">
+    <form class="checkout-form" (ngSubmit)="submitOrder()">
+      <h2>Thông tin nhận hàng</h2>
+
+      <div class="form-group">
+        <label for="guestPhone">Số điện thoại <span>*</span></label>
+
+        <input id="guestPhone"
+               name="guestPhone"
+               type="tel"
+               inputmode="tel"
+               autocomplete="tel"
+               maxlength="15"
+               [(ngModel)]="guestPhone"
+               (blur)="validateGuestPhone()"
+               (input)="clearFieldError('guestPhone')"
+               [class.input-invalid]="fieldErrors.guestPhone"
+               placeholder="Ví dụ: 0901234567">
+
+        @if (fieldErrors.guestPhone) {
+        <p class="field-error">{{ fieldErrors.guestPhone }}</p>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="shippingAddress">Địa chỉ giao hàng <span>*</span></label>
+
+        <textarea id="shippingAddress"
+                  name="shippingAddress"
+                  rows="4"
+                  maxlength="500"
+                  [(ngModel)]="shippingAddress"
+                  (blur)="validateShippingAddress()"
+                  (input)="clearFieldError('shippingAddress')"
+                  [class.input-invalid]="fieldErrors.shippingAddress"
+                  placeholder="Số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành phố"></textarea>
+
+        <div class="field-meta">
+          @if (fieldErrors.shippingAddress) {
+          <p class="field-error">{{ fieldErrors.shippingAddress }}</p>
+          }
+
+          <span>{{ shippingAddress.length }}/500</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Phương thức thanh toán <span>*</span></label>
+
+        <label class="payment-option">
+          <input type="radio"
+                 name="paymentMethod"
+                 value="cod"
+                 [(ngModel)]="paymentMethod"
+                 (change)="clearFieldError('paymentMethod')">
+
+          <div>
+            <strong>Thanh toán khi nhận hàng</strong>
+            <span>Thanh toán trực tiếp khi nhận sản phẩm.</span>
+          </div>
+        </label>
+
+        @if (fieldErrors.paymentMethod) {
+        <p class="field-error">{{ fieldErrors.paymentMethod }}</p>
+        }
+      </div>
+
+      @if (hasPrescriptionRequiredProduct) {
+      <div class="form-group prescription-group">
+        <label for="prescriptionId">Prescription <span>*</span></label>
+
+        <p class="prescription-help">
+          Giỏ hàng có Product cần đơn thuốc. Prescription phải đã được Pharmacist duyệt và chứa đúng Medication cần mua.
+        </p>
+
+        @if (isLoadingPrescriptions) {
+        <div class="prescription-message">Đang tải Prescription...</div>
+        } @else if (eligiblePrescriptions.length > 0) {
+        <select id="prescriptionId"
+                name="prescriptionId"
+                [(ngModel)]="prescriptionId"
+                (change)="clearFieldError('prescriptionId')"
+                [class.input-invalid]="fieldErrors.prescriptionId">
+          <option value="">Chọn Prescription</option>
+
+          @for (prescription of eligiblePrescriptions; track prescription.id) {
+          <option [value]="prescription.id">
+            {{ prescription.doctorName }} - {{ prescription.medicalRecordDiagnosis }} - {{ prescription.createdAt ? (prescription.createdAt.substring(0, 10)) : '' }}
+          </option>
+          }
+        </select>
+        }
+
+        @if (prescriptionMessage) {
+        <div class="prescription-message">{{ prescriptionMessage }}</div>
+        }
+
+        @if (fieldErrors.prescriptionId) {
+        <p class="field-error">{{ fieldErrors.prescriptionId }}</p>
+        }
+      </div>
+      }
+
+      @if (errorMessage) {
+      <div class="error-message">{{ errorMessage }}</div>
+      }
+
+      <button type="submit" class="submit-button" [disabled]="isSubmitting">
+        {{ isSubmitting ? 'Đang xử lý...' : 'Đặt hàng' }}
+      </button>
+    </form>
+
+    <aside class="order-summary">
+      <h2>Đơn hàng của bạn</h2>
+
+      <div class="order-items">
+        @for (item of items; track item.product.id) {
+        <div class="order-item">
+          <div class="item-image">
+            @if (item.product.imageUrl) {
+            <img [src]="item.product.imageUrl" [alt]="item.product.name">
+            } @else {
+            <span>💊</span>
+            }
+          </div>
+
+          <div class="item-info">
+            <strong>{{ item.product.name }}</strong>
+            <span>Số lượng: {{ item.quantity }}</span>
+
+            @if (item.product.isPrescriptionRequired) {
+            <span class="rx-label">Cần đơn thuốc</span>
+            }
+          </div>
+
+          <strong class="item-price">{{ item.product.price * item.quantity | number }}đ</strong>
+        </div>
+        }
+      </div>
+
+      <div class="summary-row">
+        <span>Tạm tính</span>
+        <strong>{{ totalAmount | number }}đ</strong>
+      </div>
+
+      <div class="summary-row">
+        <span>Phí vận chuyển</span>
+        <strong>Miễn phí</strong>
+      </div>
+
+      <div class="summary-total">
+        <span>Tổng cộng</span>
+        <strong>{{ totalAmount | number }}đ</strong>
+      </div>
+    </aside>
+  </div>
+  }
+</section>

@@ -40,12 +40,22 @@ namespace BlueCrown.Api.Repositories.Implementations
 
         public async Task<bool> MetricTypeExistsAsync(int metricTypeId)
         {
-            return await _context.MetricTypes.AnyAsync(x => x.Id == metricTypeId);
+            return await _context.MetricTypes
+                .AnyAsync(x => x.Id == metricTypeId);
         }
 
         public async Task<MetricType?> GetMetricTypeAsync(int metricTypeId)
         {
-            return await _context.MetricTypes.FirstOrDefaultAsync(x => x.Id == metricTypeId);
+            return await _context.MetricTypes
+                .FirstOrDefaultAsync(x => x.Id == metricTypeId);
+        }
+
+        // THÊM MỚI: không hard-code MetricType ở Angular.
+        public async Task<List<MetricType>> GetMetricTypesAsync()
+        {
+            return await _context.MetricTypes
+                .OrderBy(x => x.Name)
+                .ToListAsync();
         }
 
         public async Task AddAsync(HealthMetric healthMetric)

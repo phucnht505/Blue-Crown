@@ -6,6 +6,7 @@ namespace BlueCrown.Api.Services.Interfaces
     {
         Task<IEnumerable<ProductDto>> GetAllAsync();
         Task<ProductDto?> GetByIdAsync(Guid id);
+        Task<IEnumerable<ProductDto>> GetByMedicationIdAsync(Guid medicationId);
         Task<IEnumerable<ProductDto>> SearchAsync(string keyword);
         Task CreateAsync(CreateProductDto dto);
         Task<bool> UpdateAsync(Guid id, UpdateProductDto dto);

@@ -1,0 +1,259 @@
+<section class="health-goals-page">
+  <div class="page-header">
+    <div>
+      <span class="page-label">HEALTH GOALS</span>
+      <h1>Mục tiêu sức khỏe</h1>
+      <p>Tạo và theo dõi các mục tiêu sức khỏe dựa trên chỉ số thực tế của bạn.</p>
+    </div>
+
+    <a routerLink="/patient/dashboard">← Quay lại Dashboard</a>
+  </div>
+
+  @if (isLoading) {
+  <div class="state-card">Đang tải mục tiêu sức khỏe...</div>
+  } @else {
+  @if (errorMessage) {
+  <div class="message error-message">{{ errorMessage }}</div>
+  }
+
+  @if (successMessage) {
+  <div class="message success-message">{{ successMessage }}</div>
+  }
+
+  <div class="goal-form-card">
+    <div class="section-heading">
+      <h2>{{ editingGoalId ? 'Cập nhật mục tiêu' : 'Tạo mục tiêu mới' }}</h2>
+      <p>Chọn một chỉ số sức khỏe và đặt giá trị bạn muốn hướng tới.</p>
+    </div>
+
+    <form [formGroup]="goalForm" (ngSubmit)="save()">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="metricTypeId">Loại chỉ số <span>*</span></label>
+
+          <select id="metricTypeId"
+                  formControlName="metricTypeId"
+                  (change)="clearMessages()">
+            <option [ngValue]="0">Chọn loại chỉ số</option>
+
+            @for (type of metricTypes; track type.id) {
+            <option [ngValue]="type.id">
+              {{ type.name }} ({{ type.unit }})
+            </option>
+            }
+          </select>
+
+          @if (metricTypeId.touched && metricTypeId.hasError('min')) {
+          <p class="field-error">
+            Vui lòng chọn loại chỉ số sức khỏe.
+          </p>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="targetValue">Giá trị mục tiêu <span>*</span></label>
+
+          <div class="value-input">
+            <input id="targetValue"
+                   type="number"
+                   min="0.01"
+                   step="0.01"
+                   formControlName="targetValue"
+                   (input)="clearMessages()">
+
+            @if (selectedMetricType; as type) {
+            <span>{{ type.unit }}</span>
+            }
+          </div>
+
+          @if (targetValue.touched && targetValue.hasError('min')) {
+          <p class="field-error">
+            Giá trị mục tiêu phải lớn hơn 0.
+          </p>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="startDate">Ngày bắt đầu</label>
+
+          <input id="startDate"
+                 type="date"
+                 formControlName="startDate"
+                 (change)="clearMessages()">
+        </div>
+
+        <div class="form-group">
+          <label for="endDate">Ngày kết thúc</label>
+
+          <input id="endDate"
+                 type="date"
+                 formControlName="endDate"
+                 (change)="clearMessages()">
+        </div>
+
+        @if (editingGoalId) {
+        <div class="form-group">
+          <label for="status">Trạng thái</label>
+
+          <select id="status"
+                  formControlName="status"
+                  (change)="clearMessages()">
+            <option value="active">Đang thực hiện</option>
+            <option value="completed">Hoàn thành</option>
+            <option value="cancelled">Đã hủy</option>
+          </select>
+        </div>
+        }
+      </div>
+
+      @if (selectedMetricType; as type) {
+      <div class="metric-info">
+        <div>
+          <span>Đơn vị</span>
+          <strong>{{ type.unit }}</strong>
+        </div>
+
+        <div>
+          <span>Khoảng bình thường</span>
+
+          <strong>
+            @if (type.normalMin !== null && type.normalMax !== null) {
+            {{ type.normalMin }} - {{ type.normalMax }} {{ type.unit }}
+            } @else {
+            Chưa thiết lập
+            }
+          </strong>
+        </div>
+      </div>
+      }
+
+      @if (dateErrorMessage) {
+      <div class="message error-message">{{ dateErrorMessage }}</div>
+      }
+
+      <div class="form-actions">
+        @if (editingGoalId) {
+        <button type="button"
+                class="cancel-button"
+                (click)="cancelEdit()">
+          Hủy chỉnh sửa
+        </button>
+        }
+
+        <button type="submit"
+                class="save-button"
+                [disabled]="isSaving">
+          {{
+ isSaving
+          ? 'Đang lưu...'
+          : (editingGoalId ? 'Cập nhật mục tiêu' : 'Tạo mục tiêu')
+          }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="goals-section">
+    <div class="section-heading">
+      <h2>Danh sách mục tiêu</h2>
+      <p>{{ goals.length }} mục tiêu sức khỏe.</p>
+    </div>
+
+    @if (goals.length === 0) {
+    <div class="empty-state">
+      <div>🎯</div>
+      <h3>Chưa có mục tiêu sức khỏe</h3>
+      <p>Hãy tạo mục tiêu đầu tiên để bắt đầu theo dõi.</p>
+    </div>
+    } @else {
+    <div class="goals-grid">
+      @for (goal of goals; track goal.id) {
+      <article class="goal-card">
+        <div class="goal-card-header">
+          <div>
+            <span class="goal-code">{{ goal.metricTypeCode }}</span>
+            <h3>{{ goal.metricTypeName }}</h3>
+
+            <span class="goal-source"
+                  [class.doctor-source]="goal.createdByRole === 'doctor'">
+              {{ getCreatorText(goal) }}
+            </span>
+          </div>
+
+          <span class="status-badge"
+                [class]="getStatusClass(goal.status)">
+            {{ getStatusText(goal.status) }}
+          </span>
+        </div>
+
+        <div class="goal-values">
+          <div>
+            <span>Hiện tại</span>
+
+            @if (getLatestMetric(goal); as metric) {
+            <strong>
+              {{ metric.value | number:'1.0-2' }}
+              {{ goal.metricTypeUnit }}
+            </strong>
+            } @else {
+            <strong>Chưa có dữ liệu</strong>
+            }
+          </div>
+
+          <div>
+            <span>Mục tiêu</span>
+
+            <strong>
+              {{ goal.targetValue | number:'1.0-2' }}
+              {{ goal.metricTypeUnit }}
+            </strong>
+          </div>
+        </div>
+
+        <p class="comparison-text">
+          {{ getDifferenceText(goal) }}
+        </p>
+
+        <div class="goal-dates">
+          <div>
+            <span>Bắt đầu</span>
+            <strong>{{ formatDate(goal.startDate) }}</strong>
+          </div>
+
+          <div>
+            <span>Kết thúc</span>
+            <strong>{{ formatDate(goal.endDate) }}</strong>
+          </div>
+        </div>
+
+        <div class="goal-actions">
+          @if (canPatientManage(goal)) {
+          <button type="button"
+                  class="edit-button"
+                  (click)="startEdit(goal)">
+            Chỉnh sửa
+          </button>
+
+          <button type="button"
+                  class="delete-button"
+                  [disabled]="deletingGoalId === goal.id"
+                  (click)="deleteGoal(goal)">
+            {{
+ deletingGoalId === goal.id
+            ? 'Đang xóa...'
+            : 'Xóa'
+            }}
+          </button>
+          } @else {
+          <span class="doctor-managed-text">
+            Mục tiêu do bác sĩ quản lý
+          </span>
+          }
+        </div>
+      </article>
+      }
+    </div>
+    }
+  </div>
+  }
+</section>

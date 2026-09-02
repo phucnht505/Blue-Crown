@@ -7,21 +7,27 @@ public partial class Prescription
 {
     public Guid Id { get; set; }
 
-    public Guid MedicalRecordId { get; set; }
+    public Guid AppointmentId { get; set; }
+
+    public Guid? MedicalRecordId { get; set; }
 
     public Guid PatientId { get; set; }
 
     public Guid DoctorId { get; set; }
 
+    public string? Diagnosis { get; set; }
+
     public string? Status { get; set; }
 
     public DateTime? CreatedAt { get; set; }
+
+    public virtual Appointment Appointment { get; set; } = null!;
 
     public virtual DoctorProfile Doctor { get; set; } = null!;
 
     public virtual ICollection<EcommerceOrder> EcommerceOrders { get; set; } = new List<EcommerceOrder>();
 
-    public virtual MedicalRecord MedicalRecord { get; set; } = null!;
+    public virtual MedicalRecord? MedicalRecord { get; set; }
 
     public virtual PatientProfile Patient { get; set; } = null!;
 

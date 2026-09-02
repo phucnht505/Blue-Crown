@@ -1,0 +1,305 @@
+<main class="page">
+  <section class="page-header">
+    <div>
+      <p class="eyebrow">ADMIN</p>
+      <h1>Quản lý bác sĩ</h1>
+      <p>Quản lý tài khoản, hồ sơ chuyên môn, giấy phép và phòng khám của bác sĩ.</p>
+    </div>
+
+    <button class="primary-button" type="button" (click)="openCreate()">+ Thêm bác sĩ</button>
+  </section>
+
+  @if (errorMessage) {
+  <div class="message error">{{ errorMessage }}</div>
+  }
+
+  @if (successMessage) {
+  <div class="message success">{{ successMessage }}</div>
+  }
+
+  <section class="card">
+    <form [formGroup]="filterForm" (ngSubmit)="loadDoctors()" class="filters">
+      <div class="field">
+        <label>Tìm kiếm</label>
+        <input formControlName="search" placeholder="Tên, email, điện thoại, giấy phép">
+      </div>
+
+      <div class="field">
+        <label>Chuyên khoa</label>
+        <select formControlName="specialty">
+          <option value="">Tất cả chuyên khoa</option>
+
+          @for (specialty of meta.specialties; track specialty) {
+          <option [value]="specialty">{{ specialty }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Trạng thái</label>
+        <select formControlName="status">
+          <option value="">Tất cả</option>
+          <option value="active">Hoạt động</option>
+          <option value="suspended">Đã khóa</option>
+          <option value="pending">Chờ kích hoạt</option>
+        </select>
+      </div>
+
+      <div class="filter-actions">
+        <button class="primary-button" type="submit">Lọc</button>
+        <button class="secondary-button" type="button" (click)="resetFilters()">Đặt lại</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="card">
+    @if (isLoading) {
+    <div class="state">Đang tải danh sách bác sĩ...</div>
+    } @else if (doctors.length === 0) {
+    <div class="state">Không tìm thấy bác sĩ phù hợp.</div>
+    } @else {
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Bác sĩ</th>
+            <th>Chuyên khoa</th>
+            <th>Phòng khám</th>
+            <th>Giấy phép</th>
+            <th>Phí khám</th>
+            <th>Trạng thái</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (doctor of doctors; track doctor.id) {
+          <tr>
+            <td>
+              <strong>{{ doctor.fullName || '-' }}</strong>
+              <small>{{ doctor.email }}</small>
+            </td>
+
+            <td>{{ doctor.specialty }}</td>
+            <td>{{ doctor.clinicName || 'Chưa phân công' }}</td>
+
+            <td>
+              <div>{{ doctor.licenseNumber }}</div>
+              <span class="badge"
+                    [class.verified]="doctor.licenseVerified"
+                    [class.unverified]="!doctor.licenseVerified">
+                {{ doctor.licenseVerified ? 'Đã xác minh' : 'Chưa xác minh' }}
+              </span>
+            </td>
+
+            <td>{{ formatMoney(doctor.consultationFee) }}</td>
+
+            <td>
+              <span class="badge"
+                    [class.active]="doctor.userStatus === 'active'"
+                    [class.suspended]="doctor.userStatus === 'suspended'"
+                    [class.pending]="doctor.userStatus === 'pending'">
+                {{ getStatusLabel(doctor.userStatus) }}
+              </span>
+            </td>
+
+            <td>
+              <div class="actions">
+                <button class="action-button" type="button" (click)="viewDetail(doctor.id)">Chi tiết</button>
+                <button class="action-button edit" type="button" (click)="openEdit(doctor.id)">Sửa</button>
+
+                <button class="action-button"
+                        type="button"
+                        [class.verify]="!doctor.licenseVerified"
+                        (click)="toggleVerified(doctor)">
+                  {{ doctor.licenseVerified ? 'Hủy xác minh' : 'Xác minh' }}
+                </button>
+
+                <button class="action-button"
+                        type="button"
+                        [class.danger]="doctor.userStatus === 'active'"
+                        [class.verify]="doctor.userStatus !== 'active'"
+                        (click)="toggleStatus(doctor)">
+                  {{ doctor.userStatus === 'active' ? 'Khóa' : 'Mở khóa' }}
+                </button>
+
+                <button class="action-button danger" type="button" (click)="deactivate(doctor)">Xóa</button>
+              </div>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    }
+  </section>
+
+  @if (isFormOpen) {
+  <div class="overlay">
+    <section class="modal">
+      <div class="modal-header">
+        <div>
+          <h2>{{ editingId ? 'Cập nhật bác sĩ' : 'Thêm bác sĩ' }}</h2>
+          <p>Thông tin tài khoản và hồ sơ chuyên môn.</p>
+        </div>
+
+        <button class="close-button" type="button" (click)="closeForm()">×</button>
+      </div>
+
+      <form [formGroup]="doctorForm" (ngSubmit)="submit()" novalidate>
+        <h3>Thông tin tài khoản</h3>
+
+        <div class="form-grid">
+          <div class="field">
+            <label>Họ tên <span>*</span></label>
+            <input formControlName="fullName">
+          </div>
+
+          <div class="field">
+            <label>Email <span>*</span></label>
+            <input type="email" formControlName="email">
+          </div>
+
+          <div class="field">
+            <label>Số điện thoại <span>*</span></label>
+            <input formControlName="phone">
+          </div>
+
+          @if (!editingId) {
+          <div class="field">
+            <label>Mật khẩu <span>*</span></label>
+            <input type="password" formControlName="password">
+          </div>
+          }
+
+          <div class="field">
+            <label>Ngày sinh</label>
+            <input type="date" formControlName="dateOfBirth">
+          </div>
+
+          <div class="field">
+            <label>Giới tính</label>
+            <select formControlName="gender">
+              <option value="">Chưa chọn</option>
+              <option value="male">Nam</option>
+              <option value="female">Nữ</option>
+              <option value="other">Khác</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Trạng thái</label>
+            <select formControlName="status">
+              <option value="active">Hoạt động</option>
+              <option value="suspended">Đã khóa</option>
+              <option value="pending">Chờ kích hoạt</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Avatar URL</label>
+            <input formControlName="avatarUrl">
+          </div>
+        </div>
+
+        <h3>Thông tin chuyên môn</h3>
+
+        <div class="form-grid">
+          <div class="field">
+            <label>Chuyên khoa <span>*</span></label>
+            <input formControlName="specialty" list="specialties">
+
+            <datalist id="specialties">
+              @for (specialty of meta.specialties; track specialty) {
+              <option [value]="specialty"></option>
+              }
+            </datalist>
+          </div>
+
+          <div class="field">
+            <label>Số giấy phép <span>*</span></label>
+            <input formControlName="licenseNumber">
+          </div>
+
+          <div class="field">
+            <label>Kinh nghiệm</label>
+            <input type="number" min="0" max="80" formControlName="yearsExperience">
+          </div>
+
+          <div class="field">
+            <label>Phí khám</label>
+            <input type="number" min="0" formControlName="consultationFee">
+          </div>
+
+          <div class="field">
+            <label>Phòng khám</label>
+            <select formControlName="clinicId">
+              <option value="">Chưa phân công</option>
+
+              @for (clinic of meta.clinics; track clinic.id) {
+              <option [value]="clinic.id">{{ clinic.name }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="field checkbox-field">
+            <label>
+              <input type="checkbox" formControlName="licenseVerified">
+              Đã xác minh giấy phép
+            </label>
+          </div>
+
+          <div class="field full-width">
+            <label>Giới thiệu</label>
+            <textarea rows="4" formControlName="bio"></textarea>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="secondary-button" type="button" (click)="closeForm()">Hủy</button>
+          <button class="primary-button" type="submit" [disabled]="isSaving">
+            {{ isSaving ? 'Đang lưu...' : 'Lưu bác sĩ' }}
+          </button>
+        </div>
+      </form>
+    </section>
+  </div>
+  }
+
+  @if (selectedDoctor && !isFormOpen) {
+  <div class="overlay">
+    <section class="modal detail-modal">
+      <div class="modal-header">
+        <div>
+          <h2>Chi tiết bác sĩ</h2>
+          <p>{{ selectedDoctor.fullName }}</p>
+        </div>
+
+        <button class="close-button" type="button" (click)="closeDetail()">×</button>
+      </div>
+
+      <div class="detail-grid">
+        <div><span>Email</span><strong>{{ selectedDoctor.email || '-' }}</strong></div>
+        <div><span>Điện thoại</span><strong>{{ selectedDoctor.phone || '-' }}</strong></div>
+        <div><span>Ngày sinh</span><strong>{{ selectedDoctor.dateOfBirth || '-' }}</strong></div>
+        <div><span>Giới tính</span><strong>{{ getGenderLabel(selectedDoctor.gender) }}</strong></div>
+        <div><span>Chuyên khoa</span><strong>{{ selectedDoctor.specialty }}</strong></div>
+        <div><span>Giấy phép</span><strong>{{ selectedDoctor.licenseNumber }}</strong></div>
+        <div><span>Xác minh</span><strong>{{ selectedDoctor.licenseVerified ? 'Đã xác minh' : 'Chưa xác minh' }}</strong></div>
+        <div><span>Kinh nghiệm</span><strong>{{ selectedDoctor.yearsExperience ?? '-' }} năm</strong></div>
+        <div><span>Phòng khám</span><strong>{{ selectedDoctor.clinicName || '-' }}</strong></div>
+        <div><span>Phí khám</span><strong>{{ formatMoney(selectedDoctor.consultationFee) }}</strong></div>
+        <div><span>Đánh giá</span><strong>{{ selectedDoctor.ratingAvg ?? 0 }}/5 ({{ selectedDoctor.ratingCount ?? 0 }})</strong></div>
+        <div><span>Trạng thái</span><strong>{{ getStatusLabel(selectedDoctor.userStatus) }}</strong></div>
+        <div class="detail-full"><span>Địa chỉ phòng khám</span><strong>{{ selectedDoctor.clinicAddress || '-' }}</strong></div>
+        <div class="detail-full"><span>Giới thiệu</span><strong>{{ selectedDoctor.bio || '-' }}</strong></div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="secondary-button" type="button" (click)="closeDetail()">Đóng</button>
+        <button class="primary-button" type="button" (click)="openEdit(selectedDoctor.id)">Chỉnh sửa</button>
+      </div>
+    </section>
+  </div>
+  }
+</main>

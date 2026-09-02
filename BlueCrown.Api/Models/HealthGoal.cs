@@ -19,6 +19,10 @@ public partial class HealthGoal
 
     public string? Status { get; set; }
 
+    public Guid CreatedByUserId { get; set; }
+
+    public string CreatedByRole { get; set; } = string.Empty;
+
     public virtual MetricType MetricType { get; set; } = null!;
 
     public virtual PatientProfile Patient { get; set; } = null!;

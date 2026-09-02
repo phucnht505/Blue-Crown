@@ -13,47 +13,82 @@ namespace BlueCrown.Api.Repositories.Implementations
             _context = context;
         }
 
-        public async Task<List<Appointment>> GetAllAsync()
-        {
-            return await _context.Appointments
-                .AsNoTracking()
-                .ToListAsync();
-        }
-
         public async Task<Appointment?> GetByIdAsync(Guid id)
         {
             return await _context.Appointments
-                .AsNoTracking()
+                .Include(a => a.Patient)
+                    .ThenInclude(p => p.User)
+                .Include(a => a.Doctor)
+                    .ThenInclude(d => d.User)
+                .Include(a => a.Doctor)
+                    .ThenInclude(d => d.Clinic)
                 .FirstOrDefaultAsync(a => a.Id == id);
         }
 
         public async Task<List<Appointment>> GetByPatientIdAsync(Guid patientId)
         {
             return await _context.Appointments
-                .AsNoTracking()
+                .Include(a => a.Patient)
+                    .ThenInclude(p => p.User)
+                .Include(a => a.Doctor)
+                    .ThenInclude(d => d.User)
+                .Include(a => a.Doctor)
+                    .ThenInclude(d => d.Clinic)
                 .Where(a => a.PatientId == patientId)
+                .OrderByDescending(a => a.ScheduledAt)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
-        public async Task<Appointment> AddAsync(Appointment appointment)
+        public async Task<List<Appointment>> GetByDoctorIdAsync(Guid doctorId)
         {
-            await _context.Appointments.AddAsync(appointment);
-
-            return appointment;
+            return await _context.Appointments
+                .Include(a => a.Patient)
+                    .ThenInclude(p => p.User)
+                .Include(a => a.Doctor)
+                    .ThenInclude(d => d.User)
+                .Include(a => a.Doctor)
+                    .ThenInclude(d => d.Clinic)
+                .Where(a => a.DoctorId == doctorId)
+                .OrderByDescending(a => a.ScheduledAt)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
-        public async Task<bool> DeleteAsync(Guid id)
+        public async Task<bool> HasDoctorPatientAccessAsync(Guid doctorId, Guid patientId)
         {
-            var appointment = await _context.Appointments.FirstOrDefaultAsync(a => a.Id == id);
+            // BR-HG-DOCTOR-001: Doctor chỉ quản lý mục tiêu của Patient có lịch confirmed hoặc completed với mình.
+            return await _context.Appointments.AnyAsync(a =>
+                a.DoctorId == doctorId &&
+                a.PatientId == patientId &&
+                (a.Status == "confirmed" || a.Status == "completed"));
+        }
 
-            if (appointment == null)
-            {
-                return false;
-            }
+        public async Task<bool> HasDoctorScheduleConflictAsync(Guid doctorId, DateTime scheduledAt)
+        {
+            return await _context.Appointments.AnyAsync(a =>
+                a.DoctorId == doctorId &&
+                a.ScheduledAt == scheduledAt &&
+                (a.Status == null || a.Status != "cancelled"));
+        }
 
+        public async Task<bool> HasPatientScheduleConflictAsync(Guid patientId, DateTime scheduledAt)
+        {
+            return await _context.Appointments.AnyAsync(a =>
+                a.PatientId == patientId &&
+                a.ScheduledAt == scheduledAt &&
+                (a.Status == null || a.Status != "cancelled"));
+        }
+
+        public async Task AddAsync(Appointment appointment)
+        {
+            await _context.Appointments.AddAsync(appointment);
+        }
+
+        public Task DeleteAsync(Appointment appointment)
+        {
             _context.Appointments.Remove(appointment);
-
-            return true;
+            return Task.CompletedTask;
         }
 
         public async Task SaveChangesAsync()

@@ -1,0 +1,282 @@
+<section class="health-metrics-page">
+  <div class="page-header">
+    <div>
+      <span class="page-label">HEALTH METRICS</span>
+      <h1>Chỉ số sức khỏe</h1>
+      <p>Ghi nhận và theo dõi các chỉ số sức khỏe của bạn theo thời gian.</p>
+    </div>
+
+    <a routerLink="/patient/dashboard">← Quay lại Dashboard</a>
+  </div>
+
+  @if (isLoading) {
+  <div class="state-card">
+    Đang tải dữ liệu sức khỏe...
+  </div>
+  } @else {
+  @if (errorMessage) {
+  <div class="message error-message">
+    {{ errorMessage }}
+  </div>
+  }
+
+  <div class="content-grid">
+    <div class="metric-form-card">
+      <div class="section-heading">
+        <h2>Ghi nhận chỉ số mới</h2>
+        <p>Chọn loại chỉ số và nhập giá trị đo được.</p>
+      </div>
+
+      <form [formGroup]="metricForm" (ngSubmit)="save()">
+        <div class="form-group">
+          <label for="metricType">
+            Loại chỉ số <span>*</span>
+          </label>
+
+          <select id="metricType"
+                  formControlName="metricTypeId"
+                  (change)="clearMessages()">
+            <option [ngValue]="0">
+              Chọn loại chỉ số
+            </option>
+
+            @for (type of metricTypes; track type.id) {
+            <option [ngValue]="type.id">
+              {{ type.name }}
+            </option>
+            }
+          </select>
+
+          @if (
+          metricTypeId.touched &&
+          metricTypeId.hasError('min')
+          ) {
+          <p class="field-error">
+            Vui lòng chọn loại chỉ số sức khỏe.
+          </p>
+          }
+        </div>
+
+        @if (selectedMetricType; as type) {
+        <div class="metric-type-info">
+          <div>
+            <span>Đơn vị</span>
+            <strong>{{ type.unit }}</strong>
+          </div>
+
+          <div>
+            <span>Khoảng bình thường</span>
+
+            <strong>
+              @if (
+              type.normalMin !== null &&
+              type.normalMax !== null
+              ) {
+              {{ type.normalMin }} - {{ type.normalMax }}
+              {{ type.unit }}
+              } @else if (type.normalMin !== null) {
+              Từ {{ type.normalMin }} {{ type.unit }}
+              } @else if (type.normalMax !== null) {
+              Tối đa {{ type.normalMax }} {{ type.unit }}
+              } @else {
+              Chưa thiết lập
+              }
+            </strong>
+          </div>
+        </div>
+        }
+
+        <div class="form-group">
+          <label for="metricValue">
+            Giá trị <span>*</span>
+          </label>
+
+          <div class="value-input">
+            <input id="metricValue"
+                   type="number"
+                   min="0"
+                   step="0.01"
+                   formControlName="value"
+                   (input)="clearMessages()">
+
+            @if (selectedMetricType; as type) {
+            <span>{{ type.unit }}</span>
+            }
+          </div>
+
+          @if (
+          value.touched &&
+          value.hasError('required')
+          ) {
+          <p class="field-error">
+            Vui lòng nhập giá trị chỉ số.
+          </p>
+          } @else if (
+          value.touched &&
+          value.hasError('min')
+          ) {
+          <p class="field-error">
+            Giá trị chỉ số không được âm.
+          </p>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="recordedAt">
+            Thời điểm đo
+          </label>
+
+          <input id="recordedAt"
+                 type="datetime-local"
+                 formControlName="recordedAt"
+                 (change)="clearMessages()">
+
+          <p class="field-hint">
+            Nếu để trống, hệ thống sẽ sử dụng thời điểm hiện tại.
+          </p>
+        </div>
+
+        @if (successMessage) {
+        <div class="message success-message">
+          {{ successMessage }}
+        </div>
+        }
+
+        <button class="save-button"
+                type="submit"
+                [disabled]="isSaving">
+          {{
+              isSaving
+                ? 'Đang lưu...'
+                : 'Ghi nhận chỉ số'
+          }}
+        </button>
+      </form>
+    </div>
+
+    <div class="latest-card">
+      <div class="section-heading">
+        <h2>Chỉ số mới nhất</h2>
+        <p>Dữ liệu được ghi nhận gần đây nhất.</p>
+      </div>
+
+      @if (latestMetric; as metric) {
+      <div class="latest-content">
+        <div class="latest-icon">❤️</div>
+
+        <p class="latest-type">
+          {{ metric.metricTypeName }}
+        </p>
+
+        <div class="latest-value">
+          {{ metric.value | number:'1.0-2' }}
+          <span>{{ metric.metricTypeUnit }}</span>
+        </div>
+
+        <span class="status-badge"
+              [class.status-normal]="getMetricStatus(metric) === 'normal'"
+              [class.status-low]="getMetricStatus(metric) === 'low'"
+              [class.status-high]="getMetricStatus(metric) === 'high'"
+              [class.status-unknown]="getMetricStatus(metric) === 'unknown'">
+          {{ getMetricStatusText(metric) }}
+        </span>
+
+        <div class="latest-details">
+          <div>
+            <span>Khoảng bình thường</span>
+            <strong>{{ getNormalRange(metric) }}</strong>
+          </div>
+
+          <div>
+            <span>Thời điểm đo</span>
+            <strong>
+              {{ metric.recordedAt | date:'dd/MM/yyyy HH:mm' }}
+            </strong>
+          </div>
+        </div>
+      </div>
+      } @else {
+      <div class="empty-latest">
+        <div>📊</div>
+        <p>Chưa có chỉ số sức khỏe nào được ghi nhận.</p>
+      </div>
+      }
+    </div>
+  </div>
+
+  <div class="history-section">
+    <div class="section-heading">
+      <h2>Lịch sử chỉ số</h2>
+      <p>
+        {{ metrics.length }}
+        lần ghi nhận sức khỏe.
+      </p>
+    </div>
+
+    @if (metrics.length === 0) {
+    <div class="empty-history">
+      <div>📋</div>
+      <h3>Chưa có dữ liệu</h3>
+      <p>
+        Hãy ghi nhận chỉ số sức khỏe đầu tiên của bạn.
+      </p>
+    </div>
+    } @else {
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Chỉ số</th>
+            <th>Giá trị</th>
+            <th>Khoảng bình thường</th>
+            <th>Trạng thái</th>
+            <th>Thời điểm</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (metric of metrics; track metric.id) {
+          <tr>
+            <td>
+              <div class="metric-name">
+                <strong>
+                  {{ metric.metricTypeName }}
+                </strong>
+
+                <span>
+                  {{ metric.metricTypeCode }}
+                </span>
+              </div>
+            </td>
+
+            <td class="metric-value-cell">
+              {{ metric.value | number:'1.0-2' }}
+              {{ metric.metricTypeUnit }}
+            </td>
+
+            <td>
+              {{ getNormalRange(metric) }}
+            </td>
+
+            <td>
+              <span class="status-badge"
+                    [class.status-normal]="getMetricStatus(metric) === 'normal'"
+                    [class.status-low]="getMetricStatus(metric) === 'low'"
+                    [class.status-high]="getMetricStatus(metric) === 'high'"
+                    [class.status-unknown]="getMetricStatus(metric) === 'unknown'">
+                {{ getMetricStatusText(metric) }}
+              </span>
+            </td>
+
+            <td>
+              {{ metric.recordedAt | date:'dd/MM/yyyy HH:mm' }}
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    }
+  </div>
+  }
+</section>

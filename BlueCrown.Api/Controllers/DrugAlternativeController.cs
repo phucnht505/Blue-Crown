@@ -17,14 +17,14 @@ namespace BlueCrown.Api.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> GetAll()
         {
             return Ok(await _service.GetAllAsync());
         }
 
         [HttpGet("{id:guid}")]
-        [Authorize]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> GetById(Guid id)
         {
             var alternative = await _service.GetByIdAsync(id);
@@ -35,8 +35,9 @@ namespace BlueCrown.Api.Controllers
             return Ok(alternative);
         }
 
+        // UC06: Guest được xem thuốc thay thế khi sản phẩm hết hàng.
         [HttpGet("product/{productId:guid}")]
-        [Authorize]
+        [AllowAnonymous]
         public async Task<IActionResult> GetByProductId(Guid productId)
         {
             try
@@ -50,17 +51,13 @@ namespace BlueCrown.Api.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Create(CreateDrugAlternativeDto dto)
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> Create([FromBody] CreateDrugAlternativeDto dto)
         {
             try
             {
                 var alternative = await _service.CreateAsync(dto);
-
-                return CreatedAtAction(
-                    nameof(GetById),
-                    new { id = alternative.Id },
-                    alternative);
+                return CreatedAtAction(nameof(GetById), new { id = alternative.Id }, alternative);
             }
             catch (ArgumentException ex)
             {
@@ -73,8 +70,8 @@ namespace BlueCrown.Api.Controllers
         }
 
         [HttpPut("{id:guid}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Update(Guid id, UpdateDrugAlternativeDto dto)
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateDrugAlternativeDto dto)
         {
             try
             {
@@ -96,7 +93,7 @@ namespace BlueCrown.Api.Controllers
         }
 
         [HttpDelete("{id:guid}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var result = await _service.DeleteAsync(id);

@@ -15,16 +15,12 @@ namespace BlueCrown.Api.Repositories.Implementations
 
         public async Task<IEnumerable<InventoryReceipt>> GetAllAsync()
         {
-            return await _context.InventoryReceipts
-                .Include(r => r.ReceiptDetails)
-                .ToListAsync();
+            return await BuildQuery().OrderByDescending(r => r.ReceiptDate).ToListAsync();
         }
 
         public async Task<InventoryReceipt?> GetByIdAsync(Guid id)
         {
-            return await _context.InventoryReceipts
-                .Include(r => r.ReceiptDetails)
-                .FirstOrDefaultAsync(r => r.Id == id);
+            return await BuildQuery().FirstOrDefaultAsync(r => r.Id == id);
         }
 
         public async Task AddAsync(InventoryReceipt receipt)
@@ -35,6 +31,15 @@ namespace BlueCrown.Api.Repositories.Implementations
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();
+        }
+
+        private IQueryable<InventoryReceipt> BuildQuery()
+        {
+            return _context.InventoryReceipts
+                .Include(r => r.Supplier)
+                .Include(r => r.CreatedByNavigation)
+                .Include(r => r.ApprovedByNavigation)
+                .Include(r => r.ReceiptDetails).ThenInclude(d => d.Product);
         }
     }
 }

@@ -19,6 +19,7 @@ namespace BlueCrown.Api.Repositories.Implementations
                 .Include(x => x.MetricType)
                 .Where(x => x.PatientId == patientId)
                 .OrderByDescending(x => x.StartDate)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -27,6 +28,14 @@ namespace BlueCrown.Api.Repositories.Implementations
             return await _context.HealthGoals
                 .Include(x => x.MetricType)
                 .FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<List<MetricType>> GetMetricTypesAsync()
+        {
+            return await _context.MetricTypes
+                .OrderBy(x => x.Name)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task AddAsync(HealthGoal healthGoal)

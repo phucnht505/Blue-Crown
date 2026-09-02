@@ -1,0 +1,233 @@
+<section class="appointments-page">
+  <div class="page-header">
+    <div>
+      <span class="page-label">APPOINTMENTS</span>
+      <h1>Lịch khám</h1>
+      <p>Đặt lịch và quản lý các cuộc hẹn với bác sĩ Blue Crown.</p>
+    </div>
+
+    <a routerLink="/patient/dashboard">← Quay lại Dashboard</a>
+  </div>
+
+  @if (isLoading) {
+  <div class="state-card">Đang tải lịch khám...</div>
+  } @else {
+  @if (errorMessage) {
+  <div class="message error-message">{{ errorMessage }}</div>
+  }
+
+  @if (successMessage) {
+  <div class="message success-message">{{ successMessage }}</div>
+  }
+
+  <div class="booking-card">
+    <div class="section-heading">
+      <h2>Đặt lịch khám mới</h2>
+      <p>Chọn bác sĩ, hình thức khám và thời gian phù hợp.</p>
+    </div>
+
+    @if (doctors.length === 0) {
+    <div class="empty-doctors">
+      Hiện chưa có bác sĩ đủ điều kiện nhận lịch.
+    </div>
+    } @else {
+    <form [formGroup]="appointmentForm" (ngSubmit)="save()">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="doctorId">Bác sĩ <span>*</span></label>
+
+          <select id="doctorId" formControlName="doctorId" (change)="clearMessages()">
+            <option value="">Chọn bác sĩ</option>
+
+            @for (doctor of doctors; track doctor.id) {
+            <option [value]="doctor.id">
+              {{ doctor.fullName }} - {{ doctor.specialty }}
+            </option>
+            }
+          </select>
+
+          @if (doctorId.touched && doctorId.hasError('required')) {
+          <p class="field-error">Vui lòng chọn bác sĩ.</p>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="type">Hình thức khám <span>*</span></label>
+
+          <select id="type" formControlName="type" (change)="clearMessages()">
+            <option value="">Chọn hình thức khám</option>
+            <option value="clinic_visit">Khám tại phòng khám</option>
+            <option value="online_consult">Tư vấn trực tuyến - Miễn phí</option>
+          </select>
+
+          @if (type.touched && type.hasError('required')) {
+          <p class="field-error">Vui lòng chọn hình thức khám.</p>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="scheduledAt">Ngày giờ khám <span>*</span></label>
+
+          <input id="scheduledAt" type="datetime-local" [min]="minDateTime" formControlName="scheduledAt" (change)="clearMessages()">
+
+          @if (scheduledAt.touched && scheduledAt.hasError('required')) {
+          <p class="field-error">Vui lòng chọn ngày giờ khám.</p>
+          }
+        </div>
+      </div>
+
+      @if (selectedDoctor; as doctor) {
+      <div class="doctor-preview">
+        <div class="doctor-avatar">🩺</div>
+
+        <div class="doctor-info">
+          <h3>{{ doctor.fullName }}</h3>
+          <p>{{ doctor.specialty }}</p>
+
+          <div class="doctor-details">
+            <span>🏥 {{ doctor.clinicName || 'Chưa cập nhật phòng khám' }}</span>
+
+            @if (doctor.yearsExperience !== null) {
+            <span>💼 {{ doctor.yearsExperience }} năm kinh nghiệm</span>
+            }
+
+            @if (doctor.ratingAvg !== null) {
+            <span>⭐ {{ doctor.ratingAvg | number:'1.1-1' }}</span>
+            }
+
+            @if (isOnlineConsult) {
+            <span>💳 Miễn phí</span>
+            } @else if (doctor.consultationFee !== null) {
+            <span>💳 {{ doctor.consultationFee | number:'1.0-0' }}đ</span>
+            } @else {
+            <span>💳 Chưa cập nhật phí khám</span>
+            }
+          </div>
+        </div>
+      </div>
+      }
+
+      @if (dateErrorMessage) {
+      <div class="message error-message">{{ dateErrorMessage }}</div>
+      }
+
+      <div class="form-actions">
+        <button type="submit" class="save-button" [disabled]="isSaving">
+          {{ isSaving ? 'Đang đặt lịch...' : 'Đặt lịch khám' }}
+        </button>
+      </div>
+    </form>
+    }
+  </div>
+
+  <div class="appointments-section">
+    <div class="section-heading">
+      <h2>Lịch sắp tới</h2>
+      <p>{{ upcomingAppointments.length }} lịch khám sắp tới.</p>
+    </div>
+
+    @if (upcomingAppointments.length === 0) {
+    <div class="empty-state">
+      <div>📅</div>
+      <h3>Chưa có lịch khám sắp tới</h3>
+      <p>Bạn có thể đặt một lịch khám mới ở phía trên.</p>
+    </div>
+    } @else {
+    <div class="appointment-grid">
+      @for (appointment of upcomingAppointments; track appointment.id) {
+      <article class="appointment-card">
+        <div class="appointment-header">
+          <div>
+            <span class="appointment-type">{{ getTypeText(appointment.type) }}</span>
+            <h3>{{ appointment.doctorName }}</h3>
+            <p>{{ appointment.doctorSpecialty }}</p>
+          </div>
+
+          <span class="status-badge" [class]="getStatusClass(appointment.status)">
+            {{ getStatusText(appointment.status) }}
+          </span>
+        </div>
+
+        <div class="appointment-details">
+          <div>
+            <span>Thời gian</span>
+            <strong>{{ appointment.scheduledAt | date:'dd/MM/yyyy HH:mm' }}</strong>
+          </div>
+
+          <div>
+            <span>Phòng khám</span>
+            <strong>{{ appointment.type?.toLowerCase() === 'online_consult' ? 'Không áp dụng' : (appointment.clinicName || 'Chưa cập nhật') }}</strong>
+          </div>
+
+          <div>
+            <span>Phí khám</span>
+
+            @if (isAppointmentFree(appointment)) {
+            <strong>Miễn phí</strong>
+            } @else if (appointment.consultationFee !== null) {
+            <strong>{{ appointment.consultationFee | number:'1.0-0' }}đ</strong>
+            } @else {
+            <strong>Chưa cập nhật</strong>
+            }
+          </div>
+        </div>
+
+        @if (canCancel(appointment)) {
+        <div class="appointment-actions">
+          <button type="button" class="cancel-appointment-button" [disabled]="cancellingAppointmentId === appointment.id" (click)="cancelAppointment(appointment)">
+            {{ cancellingAppointmentId === appointment.id ? 'Đang hủy...' : 'Hủy lịch' }}
+          </button>
+        </div>
+        }
+      </article>
+      }
+    </div>
+    }
+  </div>
+
+  <div class="appointments-section">
+    <div class="section-heading">
+      <h2>Lịch sử khám</h2>
+      <p>{{ appointmentHistory.length }} lịch đã qua.</p>
+    </div>
+
+    @if (appointmentHistory.length === 0) {
+    <div class="empty-state">
+      <div>📋</div>
+      <h3>Chưa có lịch sử khám</h3>
+      <p>Các lịch khám đã diễn ra sẽ được hiển thị tại đây.</p>
+    </div>
+    } @else {
+    <div class="history-table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Bác sĩ</th>
+            <th>Chuyên khoa</th>
+            <th>Hình thức</th>
+            <th>Thời gian</th>
+            <th>Trạng thái</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (appointment of appointmentHistory; track appointment.id) {
+          <tr>
+            <td>{{ appointment.doctorName }}</td>
+            <td>{{ appointment.doctorSpecialty }}</td>
+            <td>{{ getTypeText(appointment.type) }}</td>
+            <td>{{ appointment.scheduledAt | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td>
+              <span class="status-badge" [class]="getStatusClass(appointment.status)">
+                {{ getStatusText(appointment.status) }}
+              </span>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    }
+  </div>
+  }
+</section>

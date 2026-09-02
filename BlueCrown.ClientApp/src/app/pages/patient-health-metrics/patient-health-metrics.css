@@ -1,0 +1,413 @@
+.health-metrics-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 45px 30px 70px;
+}
+
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.page-label {
+  color: #2563eb;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+}
+
+.page-header h1 {
+  margin: 7px 0;
+  color: #1e3a8a;
+  font-size: 32px;
+}
+
+.page-header p {
+  margin: 0;
+  color: #64748b;
+}
+
+.page-header a {
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 30px;
+}
+
+.metric-form-card,
+.latest-card,
+.history-section {
+  padding: 26px;
+  background: #fff;
+  border: 1px solid #dbe4f0;
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+}
+
+.section-heading {
+  margin-bottom: 22px;
+}
+
+  .section-heading h2 {
+    margin: 0 0 6px;
+    color: #1e3a8a;
+    font-size: 20px;
+  }
+
+  .section-heading p {
+    margin: 0;
+    color: #64748b;
+    font-size: 14px;
+  }
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+  .form-group label {
+    display: block;
+    margin-bottom: 7px;
+    color: #334155;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+    .form-group label span {
+      color: #dc2626;
+    }
+
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    height: 46px;
+    padding: 0 13px;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+    background: #fff;
+    color: #1e293b;
+    font: inherit;
+    box-sizing: border-box;
+  }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+    }
+
+.value-input {
+  position: relative;
+}
+
+  .value-input input {
+    padding-right: 70px;
+  }
+
+  .value-input > span {
+    position: absolute;
+    top: 50%;
+    right: 14px;
+    transform: translateY(-50%);
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+.metric-type-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: -6px 0 20px;
+  padding: 14px;
+  background: #eff6ff;
+  border-radius: 10px;
+}
+
+  .metric-type-info div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .metric-type-info span {
+    color: #64748b;
+    font-size: 12px;
+  }
+
+  .metric-type-info strong {
+    color: #1e3a8a;
+    font-size: 14px;
+  }
+
+.field-error {
+  margin: 6px 0 0;
+  color: #dc2626;
+  font-size: 12px;
+}
+
+.field-hint {
+  margin: 6px 0 0;
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.save-button {
+  width: 100%;
+  padding: 13px 20px;
+  border: none;
+  border-radius: 9px;
+  background: #2563eb;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+  .save-button:hover:not(:disabled) {
+    background: #1d4ed8;
+  }
+
+  .save-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+.latest-content {
+  text-align: center;
+}
+
+.latest-icon {
+  width: 62px;
+  height: 62px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 5px auto 14px;
+  background: #eff6ff;
+  border-radius: 50%;
+  font-size: 28px;
+}
+
+.latest-type {
+  margin: 0 0 6px;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.latest-value {
+  margin-bottom: 12px;
+  color: #1e3a8a;
+  font-size: 38px;
+  font-weight: 800;
+}
+
+  .latest-value span {
+    color: #64748b;
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+.latest-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+  .latest-details div {
+    padding: 13px;
+    background: #f8fafc;
+    border-radius: 9px;
+  }
+
+  .latest-details span,
+  .latest-details strong {
+    display: block;
+  }
+
+  .latest-details span {
+    margin-bottom: 4px;
+    color: #94a3b8;
+    font-size: 11px;
+  }
+
+  .latest-details strong {
+    color: #334155;
+    font-size: 13px;
+  }
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.status-normal {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.status-low {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.status-high {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.status-unknown {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.history-section {
+  overflow: hidden;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 14px 12px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+  white-space: nowrap;
+}
+
+th {
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+td {
+  color: #475569;
+  font-size: 14px;
+}
+
+.metric-name {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+  .metric-name strong {
+    color: #1e3a8a;
+  }
+
+  .metric-name span {
+    color: #94a3b8;
+    font-size: 11px;
+  }
+
+.metric-value-cell {
+  color: #1e293b;
+  font-weight: 700;
+}
+
+.empty-history,
+.empty-latest,
+.state-card {
+  color: #64748b;
+  text-align: center;
+}
+
+.empty-history {
+  padding: 45px 20px;
+}
+
+  .empty-history > div,
+  .empty-latest > div {
+    margin-bottom: 10px;
+    font-size: 36px;
+  }
+
+  .empty-history h3 {
+    margin: 0 0 7px;
+    color: #334155;
+  }
+
+  .empty-history p,
+  .empty-latest p {
+    margin: 0;
+  }
+
+.empty-latest {
+  padding: 55px 20px;
+}
+
+.state-card {
+  padding: 55px;
+  border: 1px solid #dbe4f0;
+  border-radius: 15px;
+  background: #fff;
+}
+
+.message {
+  margin-bottom: 20px;
+  padding: 13px 15px;
+  border-radius: 9px;
+}
+
+.error-message {
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.success-message {
+  border: 1px solid #bbf7d0;
+  background: #f0fdf4;
+  color: #15803d;
+}
+
+@media (max-width: 850px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 650px) {
+  .health-metrics-page {
+    padding: 30px 16px 50px;
+  }
+
+  .page-header {
+    flex-direction: column;
+  }
+
+  .metric-type-info,
+  .latest-details {
+    grid-template-columns: 1fr;
+  }
+
+  .metric-form-card,
+  .latest-card,
+  .history-section {
+    padding: 18px;
+  }
+}

@@ -1,0 +1,294 @@
+.appointments-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 45px 30px 70px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.page-label {
+  color: #2563eb;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+}
+
+.page-header h1 {
+  margin: 7px 0;
+  color: #1e3a8a;
+  font-size: 32px;
+}
+
+.page-header p {
+  margin: 0;
+  color: #64748b;
+}
+
+.page-header a {
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.appointments-section {
+  margin-bottom: 25px;
+  padding: 26px;
+  background: #fff;
+  border: 1px solid #dbe4f0;
+  border-radius: 16px;
+}
+
+.section-heading {
+  margin-bottom: 22px;
+}
+
+  .section-heading h2 {
+    margin: 0 0 6px;
+    color: #1e3a8a;
+    font-size: 20px;
+  }
+
+  .section-heading p {
+    margin: 0;
+    color: #64748b;
+    font-size: 14px;
+  }
+
+.appointments-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.appointment-card {
+  padding: 21px;
+  border: 1px solid #dbe4f0;
+  border-radius: 14px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.appointment-type {
+  color: #2563eb;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.card-header h3 {
+  margin: 5px 0 0;
+  color: #1e3a8a;
+  font-size: 19px;
+}
+
+.appointment-info {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 18px;
+}
+
+  .appointment-info div {
+    padding: 12px;
+    background: #f8fafc;
+    border-radius: 9px;
+  }
+
+  .appointment-info span,
+  .appointment-info strong {
+    display: block;
+  }
+
+  .appointment-info span {
+    margin-bottom: 4px;
+    color: #94a3b8;
+    font-size: 11px;
+  }
+
+  .appointment-info strong {
+    color: #334155;
+    font-size: 13px;
+  }
+
+.status-badge {
+  height: fit-content;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.status-pending {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.status-confirmed {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.status-completed {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.status-cancelled {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 9px;
+  margin-top: 18px;
+}
+
+.confirm-button,
+.complete-button,
+.reject-button {
+  padding: 9px 15px;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.confirm-button {
+  border: none;
+  background: #2563eb;
+  color: #fff;
+}
+
+.complete-button {
+  border: none;
+  background: #16a34a;
+  color: #fff;
+}
+
+.reject-button {
+  border: 1px solid #fecaca;
+  background: #fff;
+  color: #dc2626;
+}
+
+  .confirm-button:disabled,
+  .complete-button:disabled,
+  .reject-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+.waiting-text {
+  margin-right: auto;
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.empty-state,
+.state-card {
+  padding: 35px 20px;
+  color: #64748b;
+  text-align: center;
+}
+
+.state-card {
+  border: 1px solid #dbe4f0;
+  border-radius: 15px;
+  background: #fff;
+}
+
+.message {
+  margin-bottom: 20px;
+  padding: 13px 15px;
+  border-radius: 9px;
+}
+
+.error-message {
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.success-message {
+  border: 1px solid #bbf7d0;
+  background: #f0fdf4;
+  color: #15803d;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 14px 12px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+  white-space: nowrap;
+}
+
+th {
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 12px;
+}
+
+td {
+  color: #475569;
+  font-size: 14px;
+}
+
+.medical-record-link {
+  display: inline-block;
+  padding: 7px 12px;
+  border: 1px solid #2563eb;
+  border-radius: 7px;
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+  .medical-record-link:hover {
+    background: #eff6ff;
+  }
+
+@media (max-width: 800px) {
+  .appointments-grid,
+  .appointment-info {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .appointments-page {
+    padding: 30px 16px 50px;
+  }
+
+  .page-header {
+    flex-direction: column;
+  }
+
+  .appointments-section {
+    padding: 18px;
+  }
+}

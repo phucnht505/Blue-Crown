@@ -1,32 +1,32 @@
 <header class="header">
-
   <div class="header-container">
-
     <a routerLink="/" class="logo">
       <span class="logo-icon">✚</span>
       <span>Blue Crown</span>
     </a>
 
     <nav class="nav">
-
       <a routerLink="/">Trang chủ</a>
-
-      <a routerLink="/products">
-        Sản phẩm
-      </a>
-
-      <a routerLink="/products">
-        Thuốc
-      </a>
-
-      <a routerLink="/cart">
-        Giỏ hàng
-      </a>
-
+      <a routerLink="/products">Sản phẩm</a>
+      <a routerLink="/products">Thuốc</a>
+      <a routerLink="/cart">Giỏ hàng</a>
+      <a routerLink="/order-lookup">Tra cứu đơn hàng</a>
     </nav>
 
     <div class="header-actions">
+      @if (currentUser$ | async; as user) {
+      <span class="user-name">
+        Xin chào, {{ user.fullName }}
+      </span>
 
+      <a [routerLink]="getDashboardPath(user.role)" class="account-btn">
+        Tài khoản
+      </a>
+
+      <button type="button" class="logout-btn" (click)="logout()">
+        Đăng xuất
+      </button>
+      } @else {
       <a routerLink="/login" class="login-btn">
         Đăng nhập
       </a>
@@ -34,9 +34,7 @@
       <a routerLink="/register" class="register-btn">
         Đăng ký
       </a>
-
+      }
     </div>
-
   </div>
-
 </header>

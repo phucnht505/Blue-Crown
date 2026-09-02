@@ -1,0 +1,78 @@
+<section class="medical-record-page">
+  <div class="page-header">
+    <div>
+      <span class="page-label">MEDICAL RECORDS</span>
+      <h1>Hồ sơ bệnh án của tôi</h1>
+      <p>Xem lịch sử chẩn đoán và ghi chú từ các lần khám tại Blue Crown.</p>
+    </div>
+
+    <a routerLink="/patient/dashboard">← Quay lại Dashboard</a>
+  </div>
+
+  @if (isLoading) {
+  <div class="state-card">Đang tải hồ sơ bệnh án...</div>
+  } @else {
+  @if (errorMessage) {
+  <div class="message error-message">{{ errorMessage }}</div>
+  }
+
+  @if (records.length === 0 && !errorMessage) {
+  <div class="empty-state">
+    <div>📋</div>
+    <h2>Chưa có hồ sơ bệnh án</h2>
+    <p>Hồ sơ sẽ được tạo bởi bác sĩ sau khi hoàn thành buổi khám.</p>
+  </div>
+  } @else {
+  <div class="records-list">
+    @for (record of records; track record.id) {
+    <article class="record-card">
+      <div class="record-header">
+        <div>
+          <span class="record-label">BÁC SĨ</span>
+          <h2>{{ record.doctorName }}</h2>
+          <p>{{ record.doctorSpecialty }}</p>
+        </div>
+
+        @if (record.appointmentScheduledAt) {
+        <span class="record-date">{{ record.appointmentScheduledAt | date:'dd/MM/yyyy' }}</span>
+        }
+      </div>
+
+      <div class="visit-info">
+        <div>
+          <span>Thời gian khám</span>
+          <strong>{{ record.appointmentScheduledAt | date:'dd/MM/yyyy HH:mm' }}</strong>
+        </div>
+
+        <div>
+          <span>Hình thức</span>
+          <strong>{{ getAppointmentTypeText(record.appointmentType) }}</strong>
+        </div>
+      </div>
+
+      <div class="content-section diagnosis-section">
+        <h3>Chẩn đoán</h3>
+        <p>{{ record.diagnosis }}</p>
+      </div>
+
+      <div class="content-section">
+        <h3>Ghi chú của bác sĩ</h3>
+
+        @if (record.notes) {
+        <p>{{ record.notes }}</p>
+        } @else {
+        <p class="empty-note">Không có ghi chú thêm.</p>
+        }
+      </div>
+
+      @if (record.createdAt) {
+      <div class="record-created">
+        Hồ sơ được tạo: {{ record.createdAt | date:'dd/MM/yyyy HH:mm' }}
+      </div>
+      }
+    </article>
+    }
+  </div>
+  }
+  }
+</section>

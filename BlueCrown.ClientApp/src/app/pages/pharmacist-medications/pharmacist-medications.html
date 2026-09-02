@@ -1,0 +1,104 @@
+<main class="page">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">PHARMACIST</p>
+      <h1>Quản lý Medication</h1>
+      <p>Quản lý danh mục thuốc chuẩn dùng cho kê đơn và liên kết Product.</p>
+    </div>
+    <a routerLink="/pharmacist/dashboard" class="back-link">← Quay lại Dashboard</a>
+  </header>
+
+  @if (errorMessage) {
+  <div class="message error-message">{{ errorMessage }}</div>
+  }
+
+  @if (successMessage) {
+  <div class="message success-message">{{ successMessage }}</div>
+  }
+
+  <section class="form-card">
+    <h2>{{ editingId ? 'Cập nhật Medication' : 'Thêm Medication' }}</h2>
+
+    <div class="form-grid">
+      <label>
+        Tên Medication *
+        <input type="text" maxlength="150" [(ngModel)]="name" [class.invalid-control]="fieldErrors['name']" placeholder="Ví dụ: Paracetamol">
+        @if (fieldErrors['name']) {
+        <span class="field-error">{{ fieldErrors['name'] }}</span>
+        }
+      </label>
+
+      <label>
+        Tên generic
+        <input type="text" maxlength="150" [(ngModel)]="genericName" [class.invalid-control]="fieldErrors['genericName']" placeholder="Ví dụ: Acetaminophen">
+        @if (fieldErrors['genericName']) {
+        <span class="field-error">{{ fieldErrors['genericName'] }}</span>
+        }
+      </label>
+
+      <label>
+        Nhóm thuốc
+        <input type="text" maxlength="100" [(ngModel)]="category" [class.invalid-control]="fieldErrors['category']" placeholder="Ví dụ: Giảm đau - hạ sốt">
+        @if (fieldErrors['category']) {
+        <span class="field-error">{{ fieldErrors['category'] }}</span>
+        }
+      </label>
+    </div>
+
+    <div class="form-actions">
+      @if (editingId) {
+      <button type="button" class="secondary-button" (click)="cancelEdit()">Hủy chỉnh sửa</button>
+      }
+
+      <button type="button" class="primary-button" [disabled]="isSaving" (click)="save()">
+        {{ isSaving ? 'Đang lưu...' : editingId ? 'Cập nhật' : 'Thêm Medication' }}
+      </button>
+    </div>
+  </section>
+
+  <section class="list-card">
+    <div class="toolbar">
+      <div>
+        <h2>Danh sách Medication</h2>
+        <span>{{ filteredMedications.length }} / {{ medications.length }} Medication</span>
+      </div>
+
+      <input type="text" maxlength="100" [(ngModel)]="searchTerm" placeholder="Tìm tên, generic hoặc nhóm thuốc...">
+    </div>
+
+    @if (isLoading) {
+    <div class="empty-state">Đang tải Medication...</div>
+    } @else if (filteredMedications.length === 0) {
+    <div class="empty-state">Không tìm thấy Medication.</div>
+    } @else {
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Tên Medication</th>
+            <th>Generic</th>
+            <th>Nhóm thuốc</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (medication of filteredMedications; track medication.id) {
+          <tr>
+            <td><strong>{{ medication.name }}</strong></td>
+            <td>{{ medication.genericName || '-' }}</td>
+            <td>{{ medication.category || '-' }}</td>
+            <td>
+              <div class="row-actions">
+                <button type="button" class="edit-button" (click)="edit(medication)">Sửa</button>
+                <button type="button" class="delete-button" (click)="deleteMedication(medication)">Xóa</button>
+              </div>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    }
+  </section>
+</main>

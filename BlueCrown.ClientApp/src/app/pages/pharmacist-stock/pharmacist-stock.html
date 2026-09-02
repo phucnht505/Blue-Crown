@@ -1,0 +1,254 @@
+<main class="page">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">PHARMACIST</p>
+      <h1>Tồn kho</h1>
+      <p>Theo dõi số lượng tồn hiện tại và thứ tự ưu tiên xuất lô theo nguyên tắc FEFO.</p>
+    </div>
+
+    <a routerLink="/pharmacist/dashboard" class="back-link">← Quay lại Dashboard</a>
+  </header>
+
+  @if (errorMessage) {
+  <div class="message error-message">{{ errorMessage }}</div>
+  }
+
+  <section class="summary-grid">
+    <button type="button"
+            class="summary-card"
+            [class.active]="stockFilter === 'all'"
+            (click)="setStockFilter('all')">
+      <span>Tổng Product</span>
+      <strong>{{ totalProducts }}</strong>
+    </button>
+
+    <button type="button"
+            class="summary-card"
+            [class.active]="stockFilter === 'in_stock'"
+            (click)="setStockFilter('in_stock')">
+      <span>Còn hàng</span>
+      <strong>{{ inStockCount }}</strong>
+    </button>
+
+    <button type="button"
+            class="summary-card"
+            [class.active]="stockFilter === 'low_stock'"
+            (click)="setStockFilter('low_stock')">
+      <span>Sắp hết hàng</span>
+      <strong>{{ lowStockCount }}</strong>
+    </button>
+
+    <button type="button"
+            class="summary-card"
+            [class.active]="stockFilter === 'out_of_stock'"
+            (click)="setStockFilter('out_of_stock')">
+      <span>Hết hàng</span>
+      <strong>{{ outOfStockCount }}</strong>
+    </button>
+  </section>
+
+  <section class="toolbar">
+    <div class="search-box">
+      <label for="stockSearch">Tìm Product / Medication</label>
+
+      <div class="search-row">
+        <input id="stockSearch"
+               type="text"
+               maxlength="100"
+               [(ngModel)]="searchTerm"
+               placeholder="Nhập tên Product, Medication hoặc hoạt chất...">
+
+        @if (searchTerm) {
+        <button type="button"
+                class="clear-button"
+                (click)="clearSearch()">
+          Xóa
+        </button>
+        }
+      </div>
+
+      @if (searchTerm.length >= 100) {
+      <span class="field-warning">
+        Từ khóa tìm kiếm tối đa 100 ký tự.
+      </span>
+      }
+    </div>
+
+    <div class="result-count">
+      Hiển thị <strong>{{ filteredProducts.length }}</strong> / {{ totalProducts }} Product
+    </div>
+  </section>
+
+  @if (isLoading) {
+  <div class="empty-state">
+    Đang tải dữ liệu tồn kho...
+  </div>
+  } @else if (products.length === 0) {
+  <div class="empty-state">
+    Chưa có Product trong hệ thống.
+  </div>
+  } @else if (filteredProducts.length === 0) {
+  <div class="empty-state">
+    Không tìm thấy Product phù hợp.
+  </div>
+  } @else {
+  <section class="stock-card">
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Medication</th>
+            <th>Hoạt chất</th>
+            <th>Dạng bào chế</th>
+            <th>Hàm lượng</th>
+            <th>Giá bán</th>
+            <th>Tồn kho</th>
+            <th>Trạng thái</th>
+            <th>Lô FEFO</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (product of filteredProducts; track product.id) {
+          <tr [class.low-row]="(product.stockQuantity ?? 0) > 0 && (product.stockQuantity ?? 0) <= 10"
+              [class.out-row]="(product.stockQuantity ?? 0) === 0">
+            <td>
+              <strong>{{ product.name }}</strong>
+            </td>
+
+            <td>
+              @if (product.medicationName) {
+              <strong>{{ product.medicationName }}</strong>
+
+              @if (product.medicationGenericName) {
+              <small>{{ product.medicationGenericName }}</small>
+              }
+              } @else {
+              <span class="muted">Chưa liên kết</span>
+              }
+            </td>
+
+            <td>{{ product.activeIngredient || '-' }}</td>
+            <td>{{ product.dosageForm || '-' }}</td>
+            <td>{{ product.strength || '-' }}</td>
+
+            <td>
+              {{ product.price | currency:'VND':'symbol':'1.0-0' }}
+            </td>
+
+            <td class="stock-number">
+              {{ product.stockQuantity ?? 0 }}
+            </td>
+
+            <td>
+              <span class="status-badge"
+                    [class]="getStockClass(product.stockQuantity)">
+                {{ getStockText(product.stockQuantity) }}
+              </span>
+            </td>
+
+            <td>
+              <button type="button"
+                      class="fefo-button"
+                      (click)="viewFefo(product)">
+                Xem lô FEFO
+              </button>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+  }
+
+  @if (selectedFefoProduct) {
+  <section class="fefo-card">
+    <div class="fefo-header">
+      <div>
+        <p class="eyebrow">FEFO</p>
+        <h2>Thứ tự ưu tiên xuất lô</h2>
+        <p>
+          Product:
+          <strong>{{ selectedFefoProduct.name }}</strong>
+        </p>
+      </div>
+
+      <button type="button"
+              class="close-button"
+              (click)="closeFefo()">
+        Đóng
+      </button>
+    </div>
+
+    <div class="fefo-note">
+      Chỉ hiển thị các lô thuộc phiếu nhập đã được Admin duyệt và còn hạn sử dụng.
+      Lô có hạn sử dụng gần nhất được ưu tiên trước.
+    </div>
+
+    @if (fefoErrorMessage) {
+    <div class="message error-message">
+      {{ fefoErrorMessage }}
+    </div>
+    }
+
+    @if (isLoadingFefo) {
+    <div class="fefo-empty">
+      Đang tải danh sách lô...
+    </div>
+    } @else if (fefoDetails.length === 0) {
+    <div class="fefo-empty">
+      Không có lô đã duyệt và còn hạn sử dụng cho Product này.
+    </div>
+    } @else {
+    <div class="table-wrapper">
+      <table class="fefo-table">
+        <thead>
+          <tr>
+            <th>Ưu tiên</th>
+            <th>Số lô</th>
+            <th>Hạn sử dụng</th>
+            <th>Số lượng nhập</th>
+            <th>Giá nhập</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (detail of fefoDetails; track detail.id; let i = $index) {
+          <tr [class.first-priority]="i === 0">
+            <td>
+              <span class="priority-badge"
+                    [class.priority-first]="i === 0">
+                {{ getFefoPriority(i) }}
+              </span>
+            </td>
+
+            <td>
+              <strong>{{ detail.batchNumber }}</strong>
+            </td>
+
+            <td>
+              {{ detail.expirationDate | date:'dd/MM/yyyy' }}
+            </td>
+
+            <td>
+              {{ detail.quantityImported }}
+            </td>
+
+            <td>
+              {{ detail.importPrice | currency:'VND':'symbol':'1.0-0' }}
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <p class="quantity-note">
+      * Số lượng hiển thị là số lượng nhập ban đầu của từng lô, không phải tồn còn lại theo lô.
+    </p>
+    }
+  </section>
+  }
+</main>

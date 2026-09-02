@@ -13,92 +13,107 @@ namespace BlueCrown.Api.Controllers
     {
         private readonly IInventoryReceiptService _receiptService;
 
-        public InventoryReceiptController(
-            IInventoryReceiptService receiptService)
+        public InventoryReceiptController(IInventoryReceiptService receiptService)
         {
             _receiptService = receiptService;
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin,Pharmacist")]
+        [Authorize(Roles = "admin,pharmacist")]
         public async Task<IActionResult> GetAll()
         {
-            var receipts = await _receiptService.GetAllAsync();
-
-            return Ok(receipts);
+            return Ok(await _receiptService.GetAllAsync());
         }
 
         [HttpGet("{id:guid}")]
-        [Authorize(Roles = "Admin,Pharmacist")]
+        [Authorize(Roles = "admin,pharmacist")]
         public async Task<IActionResult> GetById(Guid id)
         {
             var receipt = await _receiptService.GetByIdAsync(id);
 
             if (receipt == null)
-            {
-                return NotFound(new
-                {
-                    message = "Không tìm thấy phiếu nhập."
-                });
-            }
+                return NotFound(new { message = "Không tìm thấy phiếu nhập." });
 
             return Ok(receipt);
         }
 
         [HttpPost]
-        [Authorize(Roles = "Pharmacist")]
-        public async Task<IActionResult> Create(
-            [FromBody] CreateInventoryReceiptDto dto)
+        [Authorize(Roles = "pharmacist")]
+        public async Task<IActionResult> Create([FromBody] CreateInventoryReceiptDto dto)
         {
-            var userIdClaim =
-                User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (!Guid.TryParse(userIdClaim, out Guid userId))
+            try
             {
-                return Unauthorized(new
-                {
-                    message = "Không xác định được người dùng."
-                });
+                var userId = GetUserId();
+
+                if (userId == null)
+                    return Unauthorized(new { message = "Không xác định được Pharmacist." });
+
+                await _receiptService.CreateAsync(dto, userId.Value);
+
+                return Ok(new { message = "Tạo phiếu nhập thành công." });
             }
-
-            await _receiptService.CreateAsync(dto, userId);
-
-            return Ok(new
+            catch (ArgumentException ex)
             {
-                message = "Tạo phiếu nhập thành công."
-            });
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpPut("{id:guid}/approve")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Approve(Guid id)
         {
-            var adminIdClaim =
-                User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (!Guid.TryParse(adminIdClaim, out Guid adminId))
+            try
             {
-                return Unauthorized(new
-                {
-                    message = "Không xác định được quản trị viên."
-                });
+                var adminId = GetUserId();
+
+                if (adminId == null)
+                    return Unauthorized(new { message = "Không xác định được quản trị viên." });
+
+                var result = await _receiptService.ApproveAsync(id, adminId.Value);
+
+                if (!result)
+                    return NotFound(new { message = "Không tìm thấy phiếu nhập." });
+
+                return Ok(new { message = "Duyệt phiếu nhập thành công." });
             }
-
-            var result =
-                await _receiptService.ApproveAsync(id, adminId);
-
-            if (!result)
+            catch (InvalidOperationException ex)
             {
-                return NotFound(new
-                {
-                    message = "Không tìm thấy phiếu nhập."
-                });
+                return BadRequest(new { message = ex.Message });
             }
+        }
 
-            return Ok(new
+        [HttpPut("{id:guid}/reject")]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> Reject(Guid id)
+        {
+            try
             {
-                message = "Duyệt phiếu nhập thành công."
-            });
+                var adminId = GetUserId();
+
+                if (adminId == null)
+                    return Unauthorized(new { message = "Không xác định được quản trị viên." });
+
+                var result = await _receiptService.RejectAsync(id, adminId.Value);
+
+                if (!result)
+                    return NotFound(new { message = "Không tìm thấy phiếu nhập." });
+
+                return Ok(new { message = "Đã từ chối phiếu nhập." });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        private Guid? GetUserId()
+        {
+            var claim = User.FindFirst(ClaimTypes.NameIdentifier);
+            return Guid.TryParse(claim?.Value, out var id) ? id : null;
         }
     }
 }

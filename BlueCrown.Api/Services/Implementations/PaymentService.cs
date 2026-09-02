@@ -8,16 +8,17 @@ namespace BlueCrown.Api.Services.Implementations
     public class PaymentService : IPaymentService
     {
         private readonly IPaymentRepository _paymentRepository;
+        private readonly IAppointmentRepository _appointmentRepository;
 
-        public PaymentService(IPaymentRepository paymentRepository)
+        public PaymentService(IPaymentRepository paymentRepository, IAppointmentRepository appointmentRepository)
         {
             _paymentRepository = paymentRepository;
+            _appointmentRepository = appointmentRepository;
         }
 
         public async Task<IEnumerable<PaymentDto>> GetAllAsync()
         {
             var payments = await _paymentRepository.GetAllAsync();
-
             return payments.Select(MapToDto);
         }
 
@@ -31,11 +32,9 @@ namespace BlueCrown.Api.Services.Implementations
             return MapToDto(payment);
         }
 
-        public async Task<IEnumerable<PaymentDto>> GetByAppointmentIdAsync(
-            Guid appointmentId)
+        public async Task<IEnumerable<PaymentDto>> GetByAppointmentIdAsync(Guid appointmentId)
         {
             var payments = await _paymentRepository.GetByAppointmentIdAsync(appointmentId);
-
             return payments.Select(MapToDto);
         }
 
@@ -47,32 +46,42 @@ namespace BlueCrown.Api.Services.Implementations
             if (dto.PatientId == Guid.Empty)
                 throw new Exception("PatientId không hợp lệ.");
 
-            if (dto.Amount <= 0)
-                throw new Exception("Số tiền thanh toán phải lớn hơn 0.");
+            var appointment = await _appointmentRepository.GetByIdAsync(dto.AppointmentId);
+
+            if (appointment == null)
+                throw new Exception("Không tìm thấy lịch khám.");
+
+            // BR-PAY-001: Tư vấn trực tuyến được miễn phí và không phát sinh Payment.
+            if (string.Equals(appointment.Type, "online_consult", StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException("Tư vấn trực tuyến được miễn phí và không cần thanh toán.");
+
+            // BR-PAY-002: Payment phải thuộc đúng Patient của lịch khám.
+            if (appointment.PatientId != dto.PatientId)
+                throw new InvalidOperationException("Patient không thuộc lịch khám này.");
+
+            // BR-PAY-003: Chỉ lịch khám trực tiếp mới phát sinh phí khám.
+            if (!string.Equals(appointment.Type, "clinic_visit", StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException("Hình thức khám này không hỗ trợ thanh toán.");
+
+            var consultationFee = appointment.Doctor.ConsultationFee;
+
+            if (!consultationFee.HasValue || consultationFee.Value <= 0)
+                throw new InvalidOperationException("Bác sĩ chưa được cấu hình phí khám.");
 
             var payment = new Payment
             {
                 Id = Guid.NewGuid(),
-
-                AppointmentId = dto.AppointmentId,
-
-                PatientId = dto.PatientId,
-
-                Amount = dto.Amount,
-
+                AppointmentId = appointment.Id,
+                PatientId = appointment.PatientId,
+                Amount = consultationFee.Value,
                 PlatformFee = dto.PlatformFee,
-
                 Status = "pending",
-
                 PaymentMethod = dto.PaymentMethod,
-
                 TransactionRef = dto.TransactionRef,
-
                 CreatedAt = DateTime.Now
             };
 
             await _paymentRepository.AddAsync(payment);
-
             await _paymentRepository.SaveChangesAsync();
 
             return MapToDto(payment);
@@ -91,7 +100,6 @@ namespace BlueCrown.Api.Services.Implementations
             payment.Status = status;
 
             await _paymentRepository.UpdateAsync(payment);
-
             await _paymentRepository.SaveChangesAsync();
 
             return true;
@@ -102,21 +110,13 @@ namespace BlueCrown.Api.Services.Implementations
             return new PaymentDto
             {
                 Id = payment.Id,
-
                 AppointmentId = payment.AppointmentId,
-
                 PatientId = payment.PatientId,
-
                 Amount = payment.Amount,
-
                 PlatformFee = payment.PlatformFee,
-
                 Status = payment.Status,
-
                 PaymentMethod = payment.PaymentMethod,
-
                 TransactionRef = payment.TransactionRef,
-
                 CreatedAt = payment.CreatedAt
             };
         }
