@@ -13,18 +13,21 @@ namespace BlueCrown.Api
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddControllers();
             builder.Services.AddMemoryCache();
+
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AngularClient", policy =>
-                    {
-                        policy.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod();
-                    });
+                {
+                    policy.WithOrigins("http://localhost:4200")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
             });
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -38,77 +41,112 @@ namespace BlueCrown.Api
                         ValidateIssuerSigningKey = true,
                         ValidIssuer = builder.Configuration["Jwt:Issuer"],
                         ValidAudience = builder.Configuration["Jwt:Audience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)
+                        )
                     };
                 });
-            
+
             builder.Services.AddAuthorization();
 
             builder.Services.AddDbContext<BlueCrownContext>(options =>
                 options.UseSqlServer(
                     builder.Configuration.GetConnectionString("DefaultConnection")));
+
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IAccountService, AccountService>();
+
             builder.Services.AddScoped<IPatientProfileRepository, PatientProfileRepository>();
             builder.Services.AddScoped<IPatientProfileService, PatientProfileService>();
+
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<IProductService, ProductService>();
+
             builder.Services.AddScoped<IInventoryReceiptRepository, InventoryReceiptRepository>();
             builder.Services.AddScoped<IInventoryReceiptService, InventoryReceiptService>();
+
             builder.Services.AddScoped<IReceiptDetailRepository, ReceiptDetailRepository>();
             builder.Services.AddScoped<IFefoService, FefoService>();
+
             builder.Services.AddScoped<ICheckoutRepository, CheckoutRepository>();
             builder.Services.AddScoped<ICheckoutService, CheckoutService>();
+
             builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
             builder.Services.AddScoped<IPaymentService, PaymentService>();
+
             builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
             builder.Services.AddScoped<IAppointmentService, AppointmentService>();
+
             builder.Services.AddScoped<IMedicalRecordRepository, MedicalRecordRepository>();
             builder.Services.AddScoped<IMedicalRecordService, MedicalRecordService>();
+
             builder.Services.AddScoped<IPrescriptionRepository, PrescriptionRepository>();
             builder.Services.AddScoped<IPrescriptionService, PrescriptionService>();
+
             builder.Services.AddScoped<IEcommerceOrderRepository, EcommerceOrderRepository>();
             builder.Services.AddScoped<IEcommerceOrderService, EcommerceOrderService>();
+
             builder.Services.AddScoped<IDoctorProfileRepository, DoctorProfileRepository>();
             builder.Services.AddScoped<IDoctorProfileService, DoctorProfileService>();
+
             builder.Services.AddScoped<IChatSessionRepository, ChatSessionRepository>();
             builder.Services.AddScoped<IChatSessionService, ChatSessionService>();
+
             builder.Services.AddScoped<IChatMessageRepository, ChatMessageRepository>();
             builder.Services.AddScoped<IChatMessageService, ChatMessageService>();
+
             builder.Services.AddScoped<IMedicationRepository, MedicationRepository>();
             builder.Services.AddScoped<IMedicationService, MedicationService>();
+
             builder.Services.AddScoped<IPrescriptionDispenseRepository, PrescriptionDispenseRepository>();
+
             builder.Services.AddScoped<ISymptomLogRepository, SymptomLogRepository>();
             builder.Services.AddScoped<ISymptomLogService, SymptomLogService>();
 
             builder.Services.AddHttpClient<ISymptomAnalysisService, SymptomAnalysisService>(client =>
             {
-                client.BaseAddress = new Uri(builder.Configuration["AiService:BaseUrl"] ?? "http://127.0.0.1:8001/");
+                client.BaseAddress = new Uri(
+                    builder.Configuration["AiService:BaseUrl"] ??
+                    "http://127.0.0.1:8001/"
+                );
+
                 client.Timeout = TimeSpan.FromSeconds(120);
             });
+
             builder.Services.AddScoped<IAutoPrescriptionRepository, AutoPrescriptionRepository>();
             builder.Services.AddScoped<IAutoPrescriptionService, AutoPrescriptionService>();
+
             builder.Services.AddScoped<IClinicRepository, ClinicRepository>();
             builder.Services.AddScoped<IClinicService, ClinicService>();
+
             builder.Services.AddScoped<IHealthGoalRepository, HealthGoalRepository>();
             builder.Services.AddScoped<IHealthGoalService, HealthGoalService>();
+
             builder.Services.AddScoped<IHealthMetricRepository, HealthMetricRepository>();
             builder.Services.AddScoped<IHealthMetricService, HealthMetricService>();
+
             builder.Services.AddScoped<IDrugAlternativeRepository, DrugAlternativeRepository>();
             builder.Services.AddScoped<IDrugAlternativeService, DrugAlternativeService>();
+
             builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
             builder.Services.AddScoped<INotificationService, NotificationService>();
+
             builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
             builder.Services.AddScoped<ISupplierService, SupplierService>();
+
             builder.Services.AddScoped<IMetricTypeRepository, MetricTypeRepository>();
             builder.Services.AddScoped<IMetricTypeService, MetricTypeService>();
+
+            builder.Services.AddScoped<IAdminStatisticsRepository, AdminStatisticsRepository>();
+            builder.Services.AddScoped<IAdminStatisticsService, AdminStatisticsService>();
 
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IJwtService, JwtService>();
             builder.Services.AddScoped<IEmailService, EmailService>();
 
             builder.Services.AddEndpointsApiExplorer();
+
             builder.Services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
@@ -156,10 +194,29 @@ namespace BlueCrown.Api
             app.UseCors("AngularClient");
 
             app.UseAuthentication();
-
             app.UseAuthorization();
 
             app.MapControllers();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<BlueCrownContext>();
+
+                try
+                {
+                    await db.EcommerceOrders
+                        .AsNoTracking()
+                        .AnyAsync();
+
+                    await db.InventoryReceipts
+                        .AsNoTracking()
+                        .AnyAsync();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Database warm-up failed: {ex.Message}");
+                }
+            }
 
             app.Run();
         }
