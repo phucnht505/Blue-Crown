@@ -9,6 +9,7 @@ namespace BlueCrown.Api.Services.Interfaces
         Task<SymptomLogDto?> GetByIdAsync(Guid id, Guid patientId);
         Task<SymptomLogDto?> GetLatestAsync(Guid patientId);
         Task<SymptomLogDto> CreateAsync(Guid patientId, CreateSymptomLogDto dto);
+        Task<SymptomAnalysisDto> AnalyzeAsync(Guid? patientId, CreateSymptomLogDto dto);
         Task<bool> UpdateAiResultAsync(Guid id, UpdateAiResultDto dto);
     }
 }

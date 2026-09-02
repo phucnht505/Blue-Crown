@@ -1,17 +1,17 @@
-﻿using System;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace BlueCrown.Api.DTOs.MedicalRecords
 {
     public class CreateMedicalRecordDto
     {
-        public Guid? AppointmentId { get; set; }
+        [Required(ErrorMessage = "Vui lòng chọn lịch khám.")]
+        public Guid AppointmentId { get; set; }
 
-        public Guid PatientId { get; set; }
+        [Required(ErrorMessage = "Vui lòng nhập chẩn đoán.")]
+        [StringLength(500, MinimumLength = 2, ErrorMessage = "Chẩn đoán phải từ 2 đến 500 ký tự.")]
+        public string Diagnosis { get; set; } = string.Empty;
 
-        public Guid DoctorId { get; set; }
-
-        public string Diagnosis { get; set; } = null!;
-
+        [StringLength(3000, ErrorMessage = "Ghi chú không được vượt quá 3000 ký tự.")]
         public string? Notes { get; set; }
     }
 }

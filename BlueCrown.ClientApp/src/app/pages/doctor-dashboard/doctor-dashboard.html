@@ -1,0 +1,59 @@
+<section class="dashboard-page">
+  <div class="welcome-section">
+    <div>
+      <span class="dashboard-label">DOCTOR DASHBOARD</span>
+      <h1>Xin chào, {{ user?.fullName }}</h1>
+      <p>Quản lý lịch khám, bệnh nhân và hoạt động chuyên môn tại Blue Crown.</p>
+    </div>
+  </div>
+
+  <div class="dashboard-grid">
+    <a class="dashboard-card" routerLink="/doctor/appointments">
+      <div class="card-icon">📅</div>
+      <div>
+        <h2>Lịch khám</h2>
+        <p>Xem, xác nhận và xử lý các lịch khám được Patient đặt.</p>
+      </div>
+    </a>
+
+    <a class="dashboard-card" routerLink="/account/profile">
+      <div class="card-icon">👨‍⚕️</div>
+      <div>
+        <h2>Hồ sơ cá nhân & chuyên môn</h2>
+        <p>Cập nhật thông tin cá nhân, chuyên khoa, kinh nghiệm và thông tin phòng khám.</p>
+      </div>
+    </a>
+
+    <a class="dashboard-card" routerLink="/doctor/medical-records">
+      <div class="card-icon">📋</div>
+      <div>
+        <h2>Hồ sơ bệnh án</h2>
+        <p>Tạo và cập nhật hồ sơ bệnh án sau khi hoàn thành lịch khám.</p>
+      </div>
+    </a>
+
+    <a class="dashboard-card" routerLink="/doctor/prescriptions">
+      <div class="card-icon">💊</div>
+      <div>
+        <h2>Đơn thuốc</h2>
+        <p>Kê và xem các đơn thuốc dựa trên hồ sơ bệnh án của Patient.</p>
+      </div>
+    </a>
+
+    <a class="dashboard-card" routerLink="/doctor/health-goals">
+      <div class="card-icon">🎯</div>
+      <div>
+        <h2>Mục tiêu sức khỏe</h2>
+        <p>Tạo, cập nhật và theo dõi mục tiêu sức khỏe cho các Patient đang được bạn chăm sóc.</p>
+      </div>
+    </a>
+
+    <a class="dashboard-card" routerLink="/doctor/chat">
+      <div class="card-icon">💬</div>
+      <div>
+        <h2>Tư vấn trực tuyến</h2>
+        <p>Tiếp nhận và trao đổi với Patient trong các phiên tư vấn online.</p>
+      </div>
+    </a>
+  </div>
+</section>

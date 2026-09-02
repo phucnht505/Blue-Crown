@@ -1,0 +1,206 @@
+<main class="page">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">PHARMACIST</p>
+      <h1>Quản lý đơn thuốc</h1>
+      <p>Duyệt đơn thuốc và cấp Product thực tế theo Medication bác sĩ đã kê.</p>
+    </div>
+
+    <a routerLink="/pharmacist/dashboard" class="back-link">← Quay lại Dashboard</a>
+  </header>
+
+  <section class="filter-bar">
+    <button type="button" [class.active]="statusFilter === 'all'" (click)="setStatusFilter('all')">Tất cả</button>
+    <button type="button" [class.active]="statusFilter === 'pending'" (click)="setStatusFilter('pending')">Chờ xử lý</button>
+    <button type="button" [class.active]="statusFilter === 'approved'" (click)="setStatusFilter('approved')">Đã duyệt</button>
+    <button type="button" [class.active]="statusFilter === 'dispensed'" (click)="setStatusFilter('dispensed')">Đã cấp thuốc</button>
+    <button type="button" [class.active]="statusFilter === 'cancelled'" (click)="setStatusFilter('cancelled')">Đã hủy</button>
+  </section>
+
+  @if (errorMessage) {
+  <div class="message error-message">{{ errorMessage }}</div>
+  }
+
+  @if (successMessage) {
+  <div class="message success-message">{{ successMessage }}</div>
+  }
+
+  @if (isLoading) {
+  <div class="state-box">Đang tải danh sách đơn thuốc...</div>
+  } @else if (filteredPrescriptions.length === 0) {
+  <div class="state-box">Không có đơn thuốc ở trạng thái này.</div>
+  } @else {
+  <section class="prescription-list">
+    @for (prescription of filteredPrescriptions; track prescription.id) {
+    <article class="prescription-card">
+      <div class="card-header">
+        <div>
+          <span class="patient-label">BỆNH NHÂN</span>
+          <h2>{{ prescription.patientName }}</h2>
+        </div>
+
+        <span class="status" [class]="getStatusClass(prescription.status)">
+          {{ getStatusText(prescription.status) }}
+        </span>
+      </div>
+
+      <div class="meta-grid">
+        <div>
+          <span>Bác sĩ</span>
+          <strong>{{ prescription.doctorName }}</strong>
+        </div>
+
+        <div>
+          <span>Chuyên khoa</span>
+          <strong>{{ prescription.doctorSpecialty || '-' }}</strong>
+        </div>
+
+        <div>
+          <span>Ngày khám</span>
+          <strong>{{ prescription.appointmentScheduledAt ? (prescription.appointmentScheduledAt | date:'dd/MM/yyyy HH:mm') : '-' }}</strong>
+        </div>
+
+        <div>
+          <span>Ngày kê đơn</span>
+          <strong>{{ prescription.createdAt ? (prescription.createdAt | date:'dd/MM/yyyy HH:mm') : '-' }}</strong>
+        </div>
+      </div>
+
+      <div class="diagnosis">
+        <span>Chẩn đoán</span>
+        <strong>{{ prescription.medicalRecordDiagnosis }}</strong>
+      </div>
+
+      <div class="medication-section">
+        <h3>Thuốc được kê</h3>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Medication</th>
+                <th>Liều dùng</th>
+                <th>Lần/ngày</th>
+                <th>Số ngày</th>
+                <th>Hướng dẫn</th>
+                <th>Thực cấp</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              @for (item of prescription.items; track item.id) {
+              <tr>
+                <td>
+                  <strong>{{ item.medicationName }}</strong>
+                  @if (item.genericName) {
+                  <small>{{ item.genericName }}</small>
+                  }
+                </td>
+                <td>{{ item.dosage || '-' }}</td>
+                <td>{{ item.frequencyPerDay ?? '-' }}</td>
+                <td>{{ item.durationDays ?? '-' }}</td>
+                <td>{{ item.instructions || '-' }}</td>
+                <td>
+                  @if (item.dispense) {
+                  <strong>{{ item.dispense.productName }}</strong>
+                  <small>Số lượng: {{ item.dispense.quantityDispensed }}</small>
+                  } @else {
+                  <span>-</span>
+                  }
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      @if (prescription.status?.toLowerCase() === 'pending') {
+      <div class="card-actions">
+        <button type="button" class="cancel-button" [disabled]="processingPrescriptionId === prescription.id" (click)="cancelPrescription(prescription)">Hủy đơn</button>
+        <button type="button" class="approve-button" [disabled]="processingPrescriptionId === prescription.id" (click)="approve(prescription)">
+          {{ processingPrescriptionId === prescription.id ? 'Đang xử lý...' : 'Duyệt đơn' }}
+        </button>
+      </div>
+      }
+
+      @if (prescription.status?.toLowerCase() === 'approved') {
+      <div class="card-actions">
+        <button type="button" class="cancel-button" [disabled]="processingPrescriptionId === prescription.id" (click)="cancelPrescription(prescription)">Hủy đơn</button>
+
+        @if (openDispensePrescriptionId !== prescription.id) {
+        <button type="button" class="dispense-button" [disabled]="loadingDispensePrescriptionId === prescription.id" (click)="prepareDispense(prescription)">
+          {{ loadingDispensePrescriptionId === prescription.id ? 'Đang tải Product...' : 'Chuẩn bị cấp thuốc' }}
+        </button>
+        }
+      </div>
+      }
+
+      @if (openDispensePrescriptionId === prescription.id) {
+      <section class="dispense-panel">
+        <div class="dispense-heading">
+          <div>
+            <h3>Cấp thuốc</h3>
+            <p>Chọn Product thực tế tương ứng với từng Medication và nhập số lượng cần cấp.</p>
+          </div>
+          <button type="button" class="close-button" (click)="closeDispense()">Đóng</button>
+        </div>
+
+        @for (item of prescription.items; track item.id) {
+        <div class="dispense-item">
+          <div class="dispense-medication">
+            <strong>{{ item.medicationName }}</strong>
+            <span>{{ item.dosage || '-' }} · {{ item.frequencyPerDay ?? '-' }} lần/ngày · {{ item.durationDays ?? '-' }} ngày</span>
+          </div>
+
+          <div class="dispense-fields">
+            <label>
+              Product thực tế
+              <select [(ngModel)]="selectedProductIdByItem[item.id]">
+                <option value="">Chọn Product</option>
+                @for (product of productOptionsByItem[item.id] ?? []; track product.id) {
+                <option [value]="product.id">{{ product.name }} - {{ product.strength || 'N/A' }} - Tồn: {{ product.stockQuantity ?? 0 }}</option>
+                }
+              </select>
+            </label>
+
+            <label>
+              Số lượng cấp
+              <input type="number" min="1" step="1" [(ngModel)]="quantityByItem[item.id]">
+            </label>
+          </div>
+
+          @if ((productOptionsByItem[item.id]?.length ?? 0) === 0) {
+          <p class="no-product">Medication này chưa có Product được liên kết.</p>
+          }
+
+          @if (getSelectedProduct(item); as selectedProduct) {
+          <div class="stock-info">
+            <span>Tồn kho hiện tại: <strong>{{ selectedProduct.stockQuantity ?? 0 }}</strong></span>
+            <span>Giá: <strong>{{ selectedProduct.price | number:'1.0-0' }} đ</strong></span>
+          </div>
+          }
+        </div>
+        }
+
+        <div class="dispense-actions">
+          <button type="button" class="close-button" (click)="closeDispense()">Hủy thao tác</button>
+          <button type="button" class="dispense-button" [disabled]="processingPrescriptionId === prescription.id" (click)="dispense(prescription)">
+            {{ processingPrescriptionId === prescription.id ? 'Đang cấp thuốc...' : 'Xác nhận cấp thuốc' }}
+          </button>
+        </div>
+      </section>
+      }
+
+      @if (prescription.status?.toLowerCase() === 'dispensed') {
+      <div class="completed-note">Đơn thuốc đã được cấp hoàn tất và tồn kho đã được cập nhật.</div>
+      }
+
+      @if (prescription.status?.toLowerCase() === 'cancelled') {
+      <div class="cancelled-note">Đơn thuốc đã bị hủy và không thể tiếp tục xử lý.</div>
+      }
+    </article>
+    }
+  </section>
+  }
+</main>

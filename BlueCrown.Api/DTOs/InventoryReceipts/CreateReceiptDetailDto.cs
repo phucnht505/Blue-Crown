@@ -7,18 +7,17 @@ namespace BlueCrown.Api.DTOs.InventoryReceipts
         [Required]
         public Guid ProductId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Số lô không được để trống.")]
+        [StringLength(100, ErrorMessage = "Số lô tối đa 100 ký tự.")]
         public string BatchNumber { get; set; } = string.Empty;
 
         [Required]
         public DateOnly ExpirationDate { get; set; }
 
-        [Required]
-        [Range(1, int.MaxValue)]
+        [Range(1, int.MaxValue, ErrorMessage = "Số lượng nhập phải lớn hơn 0.")]
         public int QuantityImported { get; set; }
 
-        [Required]
-        [Range(0, double.MaxValue)]
+        [Range(0.01, double.MaxValue, ErrorMessage = "Giá nhập phải lớn hơn 0.")]
         public decimal ImportPrice { get; set; }
     }
 }

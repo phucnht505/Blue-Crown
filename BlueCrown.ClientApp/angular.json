@@ -2,7 +2,8 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "cli": {
-    "packageManager": "npm"
+    "packageManager": "npm",
+    "analytics": "52350f7c-d078-44c7-bde3-7bd2d1acea1f"
   },
   "newProjectRoot": "projects",
   "projects": {
@@ -54,6 +55,14 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+            "host": "127.0.0.1",
+            "port": 4200,
+            "allowedHosts": [
+              "bluecrown.kangaroo-tench.ts.net"
+            ],
+            "proxyConfig": "src/proxy.conf.json"
+          },
           "configurations": {
             "production": {
               "buildTarget": "BlueCrown.ClientApp:build:production"

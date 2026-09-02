@@ -7,6 +7,8 @@ public partial class Product
 {
     public Guid Id { get; set; }
 
+    public Guid? MedicationId { get; set; }
+
     public string Name { get; set; } = null!;
 
     public string? Description { get; set; }
@@ -25,7 +27,11 @@ public partial class Product
 
     public string? Strength { get; set; }
 
+    public string? ImageUrl { get; set; }
+
     public bool PrescriptionRequired { get; set; }
+
+    public virtual Medication? Medication { get; set; }
 
     public virtual ICollection<AutoPrescription> AutoPrescriptions { get; set; } = new List<AutoPrescription>();
 
@@ -36,4 +42,6 @@ public partial class Product
     public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 
     public virtual ICollection<ReceiptDetail> ReceiptDetails { get; set; } = new List<ReceiptDetail>();
+
+    public virtual ICollection<PrescriptionDispenseItem> PrescriptionDispenseItems { get; set; } = new List<PrescriptionDispenseItem>();
 }

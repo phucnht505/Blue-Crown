@@ -1,0 +1,250 @@
+<main class="health-goals-page">
+  <section class="page-header">
+    <div>
+      <p class="page-label">DOCTOR HEALTH GOALS</p>
+      <h1>Quản lý mục tiêu sức khỏe</h1>
+      <p>Tạo và theo dõi mục tiêu sức khỏe cho các Patient đang được bạn chăm sóc.</p>
+    </div>
+
+    <a routerLink="/doctor/dashboard">← Quay lại Dashboard</a>
+  </section>
+
+  @if (isLoading) {
+  <div class="state-card">Đang tải dữ liệu...</div>
+  } @else {
+  @if (errorMessage) {
+  <div class="message error-message">{{ errorMessage }}</div>
+  }
+
+  @if (successMessage) {
+  <div class="message success-message">{{ successMessage }}</div>
+  }
+
+  <section class="patient-card">
+    <div class="section-heading">
+      <h2>Chọn bệnh nhân</h2>
+      <p>Chỉ hiển thị Patient có lịch đã xác nhận hoặc đã hoàn thành với bạn.</p>
+    </div>
+
+    @if (patients.length === 0) {
+    <div class="empty-state">
+      Chưa có Patient đủ điều kiện để quản lý mục tiêu sức khỏe.
+    </div>
+    } @else {
+    <div class="patient-select">
+      <label>Bệnh nhân</label>
+
+      <select [value]="selectedPatientId"
+              (change)="selectPatient($any($event.target).value)">
+        @for (patient of patients; track patient.patientId) {
+        <option [value]="patient.patientId">
+          {{ patient.fullName }}
+        </option>
+        }
+      </select>
+    </div>
+
+    @if (selectedPatient; as patient) {
+    <div class="patient-info">
+      <div>
+        <span>Họ tên</span>
+        <strong>{{ patient.fullName }}</strong>
+      </div>
+
+      <div>
+        <span>Số lần khám/tư vấn</span>
+        <strong>{{ patient.appointmentCount }}</strong>
+      </div>
+
+      <div>
+        <span>Lịch gần nhất</span>
+        <strong>
+          {{ patient.lastAppointmentAt ? (patient.lastAppointmentAt | date:'dd/MM/yyyy HH:mm') : '-' }}
+        </strong>
+      </div>
+    </div>
+    }
+    }
+  </section>
+
+  @if (selectedPatientId) {
+  <section class="goal-form-card">
+    <div class="section-heading">
+      <h2>{{ editingGoalId ? 'Cập nhật mục tiêu' : 'Tạo mục tiêu mới' }}</h2>
+      <p>
+        {{
+ editingGoalId
+        ? 'Điều chỉnh mục tiêu sức khỏe hiện tại của bệnh nhân.'
+        : 'Thiết lập mục tiêu sức khỏe mới cho bệnh nhân.'
+        }}
+      </p>
+    </div>
+
+    <form [formGroup]="goalForm" (ngSubmit)="save()">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Loại chỉ số <span>*</span></label>
+
+          <select formControlName="metricTypeId">
+            <option [ngValue]="0">Chọn loại chỉ số</option>
+
+            @for (type of metricTypes; track type.id) {
+            <option [ngValue]="type.id">
+              {{ type.name }} ({{ type.unit }})
+            </option>
+            }
+          </select>
+
+          @if (goalForm.controls.metricTypeId.touched && goalForm.controls.metricTypeId.invalid) {
+          <p class="field-error">Vui lòng chọn loại chỉ số.</p>
+          }
+        </div>
+
+        <div class="form-group">
+          <label>Giá trị mục tiêu <span>*</span></label>
+
+          <div class="value-input">
+            <input type="number"
+                   min="0.01"
+                   step="0.01"
+                   formControlName="targetValue">
+
+            @if (selectedMetricType; as type) {
+            <span>{{ type.unit }}</span>
+            }
+          </div>
+
+          @if (goalForm.controls.targetValue.touched && goalForm.controls.targetValue.invalid) {
+          <p class="field-error">Giá trị mục tiêu phải lớn hơn 0.</p>
+          }
+        </div>
+
+        <div class="form-group">
+          <label>Ngày bắt đầu</label>
+          <input type="date" formControlName="startDate">
+        </div>
+
+        <div class="form-group">
+          <label>Ngày kết thúc</label>
+          <input type="date" formControlName="endDate">
+        </div>
+
+        @if (editingGoalId) {
+        <div class="form-group">
+          <label>Trạng thái</label>
+
+          <select formControlName="status">
+            <option value="active">Đang thực hiện</option>
+            <option value="completed">Hoàn thành</option>
+            <option value="cancelled">Đã hủy</option>
+          </select>
+        </div>
+        }
+      </div>
+
+      @if (dateErrorMessage) {
+      <div class="message error-message">{{ dateErrorMessage }}</div>
+      }
+
+      <div class="form-actions">
+        @if (editingGoalId) {
+        <button type="button" class="secondary-button" (click)="cancelEdit()">
+          Hủy chỉnh sửa
+        </button>
+        }
+
+        <button type="submit" class="primary-button" [disabled]="isSaving">
+          {{
+ isSaving
+          ? 'Đang lưu...'
+          : (editingGoalId ? 'Cập nhật mục tiêu' : 'Tạo mục tiêu')
+          }}
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <section class="goals-section">
+    <div class="section-heading">
+      <h2>Danh sách mục tiêu</h2>
+      <p>{{ goals.length }} mục tiêu sức khỏe của {{ selectedPatient?.fullName }}.</p>
+    </div>
+
+    @if (isLoadingGoals) {
+    <div class="empty-state">Đang tải mục tiêu...</div>
+    } @else if (goals.length === 0) {
+    <div class="empty-state">
+      <div class="empty-icon">🎯</div>
+      <h3>Chưa có mục tiêu sức khỏe</h3>
+      <p>Bạn có thể tạo mục tiêu đầu tiên cho Patient này.</p>
+    </div>
+    } @else {
+    <div class="goals-grid">
+      @for (goal of goals; track goal.id) {
+      <article class="goal-card">
+        <div class="goal-card-header">
+          <div>
+            <span class="goal-code">{{ goal.metricTypeCode }}</span>
+            <h3>{{ goal.metricTypeName }}</h3>
+            <span class="goal-source">
+              {{ getCreatorText(goal) }}
+            </span>
+          </div>
+
+          <span class="status-badge" [class]="getStatusClass(goal.status)">
+            {{ getStatusText(goal.status) }}
+          </span>
+        </div>
+
+        <div class="goal-details">
+          <div>
+            <span>Giá trị mục tiêu</span>
+            <strong>
+              {{ goal.targetValue | number:'1.0-2' }}
+              {{ goal.metricTypeUnit }}
+            </strong>
+          </div>
+
+          <div>
+            <span>Ngày bắt đầu</span>
+            <strong>{{ formatDate(goal.startDate) }}</strong>
+          </div>
+
+          <div>
+            <span>Ngày kết thúc</span>
+            <strong>{{ formatDate(goal.endDate) }}</strong>
+          </div>
+        </div>
+
+        <div class="goal-actions">
+          @if (canDoctorManage(goal)) {
+          <button type="button"
+                  class="edit-button"
+                  (click)="startEdit(goal)">
+            Chỉnh sửa
+          </button>
+
+          @if (goal.status?.toLowerCase() !== 'cancelled') {
+          <button type="button"
+                  class="cancel-goal-button"
+                  [disabled]="cancellingGoalId === goal.id"
+                  (click)="cancelGoal(goal)">
+            {{
+              cancellingGoalId === goal.id ? 'Đang hủy...' : 'Hủy mục tiêu'
+            }}
+          </button>
+          }
+          } @else {
+          <span class="readonly-goal">
+            Chỉ xem
+          </span>
+          }
+        </div>
+      </article>
+      }
+    </div>
+    }
+  </section>
+  }
+  }
+</main>

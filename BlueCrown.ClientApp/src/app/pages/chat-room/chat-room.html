@@ -1,0 +1,108 @@
+<main class="chat-page">
+  <section class="chat-container">
+    <header class="chat-header">
+      <div>
+        <button type="button" class="back-btn" (click)="goBack()">← Quay lại</button>
+
+        @if (session) {
+        <h1>{{ session.doctorName ? 'Tư vấn với ' + session.doctorName : 'Tư vấn bác sĩ' }}</h1>
+
+        <p>
+          Patient: <strong>{{ session.patientName }}</strong>
+          ·
+          {{ isClosed ? 'Đã kết thúc' : session.doctorId ? 'Đang tư vấn' : 'Đang chờ bác sĩ' }}
+        </p>
+
+        @if (session.appointmentScheduledAt) {
+        <p>Lịch tư vấn: <strong>{{ session.appointmentScheduledAt | date:'dd/MM/yyyy HH:mm' }}</strong></p>
+        }
+        }
+      </div>
+
+      <div>
+        @if (canCloseSession) {
+        <button type="button" class="close-btn" [disabled]="isClosing" (click)="closeSession()">
+          {{ isClosing ? 'Đang kết thúc...' : 'Kết thúc tư vấn' }}
+        </button>
+        }
+
+        @if (canCreateOnlinePrescription) {
+        <button type="button" class="close-btn" (click)="goToOnlinePrescription()">Kê đơn thuốc</button>
+        }
+      </div>
+    </header>
+
+    @if (errorMessage) {
+    <div class="error-message">{{ errorMessage }}</div>
+    }
+
+    <section class="messages">
+      @if (isLoading) {
+      <div class="empty-message">Đang tải tin nhắn...</div>
+      } @else if (messages.length === 0) {
+      <div class="empty-message">
+        @if (!session?.doctorId) {
+        Bác sĩ chưa tiếp nhận yêu cầu. Bạn có thể để lại tin nhắn mô tả tình trạng cần tư vấn.
+        } @else {
+        Chưa có tin nhắn. Hãy bắt đầu cuộc trò chuyện.
+        }
+      </div>
+      } @else {
+      @for (message of messages; track message.id) {
+      <div class="message-row" [class.own-row]="isOwnMessage(message)">
+        <div class="message-bubble" [class.own-message]="isOwnMessage(message)">
+          <p>{{ message.message }}</p>
+
+          <div class="message-info">
+            @if (message.sentAt) {
+            <span>{{ message.sentAt | date:'dd/MM HH:mm' }}</span>
+            }
+
+            @if (isOwnMessage(message) && message.isRead) {
+            <span>Đã đọc</span>
+            }
+          </div>
+        </div>
+      </div>
+      }
+      }
+    </section>
+
+    @if (isClosed) {
+    <div class="closed-message">
+      Cuộc tư vấn đã kết thúc. Bạn vẫn có thể xem lại lịch sử tin nhắn.
+
+      @if (canCreateOnlinePrescription) {
+      <div>
+        Bác sĩ có thể kê đơn thuốc cho Patient sau cuộc tư vấn này.
+      </div>
+      }
+    </div>
+    } @else {
+    <form class="message-form" (ngSubmit)="sendMessage()">
+      <div class="input-area">
+        <textarea name="message"
+                  rows="2"
+                  maxlength="2000"
+                  [(ngModel)]="messageText"
+                  (ngModelChange)="fieldError = ''"
+                  placeholder="Nhập nội dung cần trao đổi..."></textarea>
+
+        <div class="input-info">
+          @if (fieldError) {
+          <span class="field-error">{{ fieldError }}</span>
+          } @else {
+          <span></span>
+          }
+
+          <span>{{ messageText.length }}/2000</span>
+        </div>
+      </div>
+
+      <button type="submit" [disabled]="isSending">
+        {{ isSending ? 'Đang gửi...' : 'Gửi' }}
+      </button>
+    </form>
+    }
+  </section>
+</main>

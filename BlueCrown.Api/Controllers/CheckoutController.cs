@@ -8,7 +8,6 @@ namespace BlueCrown.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class CheckoutController : ControllerBase
     {
         private readonly ICheckoutService _checkoutService;
@@ -19,6 +18,7 @@ namespace BlueCrown.Api.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<ActionResult<CheckoutResponseDto>> Create([FromBody] CreateCheckoutDto dto)
         {
             try
@@ -46,6 +46,7 @@ namespace BlueCrown.Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<CheckoutResponseDto>> GetById(Guid id)
         {
             var result = await _checkoutService.GetByIdAsync(id);

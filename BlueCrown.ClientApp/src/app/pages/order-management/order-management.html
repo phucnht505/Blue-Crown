@@ -1,0 +1,204 @@
+<main class="page">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">ORDER MANAGEMENT</p>
+      <h1>Quản lý đơn hàng</h1>
+      <p>Theo dõi và xử lý các đơn hàng tại Blue Crown.</p>
+    </div>
+  </header>
+
+  @if (errorMessage) {
+  <div class="message error-message">{{ errorMessage }}</div>
+  }
+
+  @if (successMessage) {
+  <div class="message success-message">{{ successMessage }}</div>
+  }
+
+  <section class="summary-grid">
+    <button type="button" [class.active]="filter === 'all'" (click)="setFilter('all')">
+      <span>Tất cả</span>
+      <strong>{{ getCount('all') }}</strong>
+    </button>
+
+    <button type="button" [class.active]="filter === 'processing'" (click)="setFilter('processing')">
+      <span>Đang xử lý</span>
+      <strong>{{ getCount('processing') }}</strong>
+    </button>
+
+    <button type="button" [class.active]="filter === 'confirmed'" (click)="setFilter('confirmed')">
+      <span>Đã xác nhận</span>
+      <strong>{{ getCount('confirmed') }}</strong>
+    </button>
+
+    <button type="button" [class.active]="filter === 'shipped'" (click)="setFilter('shipped')">
+      <span>Đang giao</span>
+      <strong>{{ getCount('shipped') }}</strong>
+    </button>
+
+    <button type="button" [class.active]="filter === 'delivered'" (click)="setFilter('delivered')">
+      <span>Đã giao</span>
+      <strong>{{ getCount('delivered') }}</strong>
+    </button>
+
+    <button type="button" [class.active]="filter === 'cancelled'" (click)="setFilter('cancelled')">
+      <span>Đã hủy</span>
+      <strong>{{ getCount('cancelled') }}</strong>
+    </button>
+  </section>
+
+  <section class="toolbar">
+    <input type="text"
+           maxlength="100"
+           [(ngModel)]="searchTerm"
+           placeholder="Tìm mã đơn, người mua, SĐT, địa chỉ hoặc Product...">
+
+    <span>{{ filteredOrders.length }} / {{ orders.length }} đơn hàng</span>
+  </section>
+
+  @if (isLoading) {
+  <div class="empty-state">Đang tải đơn hàng...</div>
+  } @else if (orders.length === 0) {
+  <div class="empty-state">Chưa có đơn hàng trong hệ thống.</div>
+  } @else if (filteredOrders.length === 0) {
+  <div class="empty-state">Không tìm thấy đơn hàng phù hợp.</div>
+  } @else {
+  <section class="order-list">
+    @for (order of filteredOrders; track order.id) {
+    <article class="order-card">
+      <div class="order-header">
+        <div>
+          <span class="label">Mã đơn hàng</span>
+          <strong class="order-id">{{ order.id }}</strong>
+
+          @if (order.createdAt) {
+          <span class="date">{{ order.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+          }
+        </div>
+
+        <span class="status-badge" [class]="getOrderStatusClass(order.orderStatus)">
+          {{ getOrderStatusText(order.orderStatus) }}
+        </span>
+      </div>
+
+      <div class="order-meta">
+        <div>
+          <span>Người mua</span>
+          <strong>{{ order.userName || 'Khách' }}</strong>
+        </div>
+
+        <div>
+          <span>Số điện thoại</span>
+          <strong>{{ order.guestPhone || '-' }}</strong>
+        </div>
+
+        <div>
+          <span>Thanh toán</span>
+          <strong>{{ getPaymentMethodText(order.paymentMethod) }} - {{ getPaymentStatusText(order.paymentStatus) }}</strong>
+        </div>
+
+        <div>
+          <span>Tổng tiền</span>
+          <strong class="money">{{ order.totalAmount | currency:'VND':'symbol':'1.0-0' }}</strong>
+        </div>
+      </div>
+
+      <div class="address">
+        <span>Địa chỉ giao hàng</span>
+        <strong>{{ order.shippingAddress }}</strong>
+      </div>
+
+      @if (order.prescriptionId) {
+      <div class="prescription">
+        <span>Prescription:</span>
+        <strong>{{ order.prescriptionId }}</strong>
+      </div>
+      }
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Đơn giá</th>
+              <th>Số lượng</th>
+              <th>Thành tiền</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (item of order.items; track item.id) {
+            <tr>
+              <td>
+                <div class="product-cell">
+                  <div class="product-image">
+                    @if (item.productImageUrl) {
+                    <img [src]="item.productImageUrl" [alt]="item.productName">
+                    } @else {
+                    <span>💊</span>
+                    }
+                  </div>
+
+                  <strong>{{ item.productName }}</strong>
+                </div>
+              </td>
+
+              <td>{{ item.unitPrice | currency:'VND':'symbol':'1.0-0' }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>{{ item.unitPrice * item.quantity | currency:'VND':'symbol':'1.0-0' }}</td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="order-actions">
+        @if (canConfirm(order)) {
+        <button type="button"
+                class="primary-button"
+                [disabled]="processingOrderId === order.id"
+                (click)="updateStatus(order, 'confirmed')">
+          {{ processingOrderId === order.id ? 'Đang xử lý...' : 'Xác nhận đơn' }}
+        </button>
+        }
+
+        @if (canShip(order)) {
+        <button type="button"
+                class="primary-button"
+                [disabled]="processingOrderId === order.id"
+                (click)="updateStatus(order, 'shipped')">
+          {{ processingOrderId === order.id ? 'Đang xử lý...' : 'Bắt đầu giao hàng' }}
+        </button>
+        }
+
+        @if (canDeliver(order)) {
+        <button type="button"
+                class="primary-button"
+                [disabled]="processingOrderId === order.id"
+                (click)="updateStatus(order, 'delivered')">
+          {{ processingOrderId === order.id ? 'Đang xử lý...' : 'Xác nhận đã giao' }}
+        </button>
+        }
+
+        @if (canCancel(order)) {
+        <button type="button"
+                class="cancel-button"
+                [disabled]="processingOrderId === order.id"
+                (click)="updateStatus(order, 'cancelled')">
+          Hủy đơn
+        </button>
+        }
+
+        @if (order.orderStatus?.toLowerCase() === 'delivered') {
+        <span class="finished-note">Đơn hàng đã hoàn tất.</span>
+        }
+
+        @if (order.orderStatus?.toLowerCase() === 'cancelled') {
+        <span class="cancelled-note">Đơn hàng đã bị hủy.</span>
+        }
+      </div>
+    </article>
+    }
+  </section>
+  }
+</main>

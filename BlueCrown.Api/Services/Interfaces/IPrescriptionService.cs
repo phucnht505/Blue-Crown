@@ -4,14 +4,17 @@ namespace BlueCrown.Api.Services.Interfaces
 {
     public interface IPrescriptionService
     {
-        Task<List<PrescriptionDto>> GetAllAsync();
+        Task<List<PrescriptionDto>> GetPatientPrescriptionsAsync(Guid userId);
+        Task<PrescriptionDto?> GetPatientPrescriptionByIdAsync(Guid id, Guid userId);
 
-        Task<PrescriptionDto?> GetByIdAsync(Guid id);
+        Task<List<PrescriptionDto>> GetDoctorPrescriptionsAsync(Guid userId);
+        Task<PrescriptionDto?> GetDoctorPrescriptionByIdAsync(Guid id, Guid userId);
+        Task<PrescriptionDto?> GetDoctorPrescriptionByMedicalRecordAsync(Guid medicalRecordId, Guid userId);
+        Task<PrescriptionDto> CreateAsync(Guid userId, CreatePrescriptionDto dto);
 
-        Task<PrescriptionDto> CreateAsync(CreatePrescriptionDto dto);
-
-        Task<bool> UpdateAsync(Guid id, UpdatePrescriptionDto dto);
-
-        Task<bool> DeleteAsync(Guid id);
+        Task<List<PrescriptionDto>> GetPharmacistPrescriptionsAsync();
+        Task<PrescriptionDto?> GetPharmacistPrescriptionByIdAsync(Guid id);
+        Task<PrescriptionDto?> UpdatePharmacistStatusAsync(Guid id, UpdatePrescriptionStatusDto dto);
+        Task<PrescriptionDto?> DispenseAsync(Guid id, Guid pharmacistUserId, DispensePrescriptionDto dto);
     }
 }

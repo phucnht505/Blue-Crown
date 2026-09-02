@@ -12,5 +12,7 @@
         public DateOnly? StartDate { get; set; }
         public DateOnly? EndDate { get; set; }
         public string? Status { get; set; }
+        public Guid CreatedByUserId { get; set; }
+        public string CreatedByRole { get; set; } = string.Empty;
     }
 }

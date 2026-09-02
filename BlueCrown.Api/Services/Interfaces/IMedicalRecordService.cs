@@ -4,20 +4,12 @@ namespace BlueCrown.Api.Services.Interfaces
 {
     public interface IMedicalRecordService
     {
-        Task<List<MedicalRecordDto>> GetAllAsync();
-
-        Task<MedicalRecordDto?> GetByIdAsync(Guid id);
-
-        Task<List<MedicalRecordDto>> GetByPatientIdAsync(Guid patientId);
-
-        Task<List<MedicalRecordDto>> GetByDoctorIdAsync(Guid doctorId);
-
-        Task<MedicalRecordDto?> GetByAppointmentIdAsync(Guid appointmentId);
-
-        Task<MedicalRecordDto> CreateAsync(CreateMedicalRecordDto dto);
-
-        Task<MedicalRecordDto?> UpdateAsync(Guid id, CreateMedicalRecordDto dto);
-
-        Task<bool> DeleteAsync(Guid id);
+        Task<List<MedicalRecordDto>> GetPatientRecordsAsync(Guid userId);
+        Task<List<MedicalRecordDto>> GetDoctorRecordsAsync(Guid userId);
+        Task<MedicalRecordDto?> GetPatientRecordByIdAsync(Guid id, Guid userId);
+        Task<MedicalRecordDto?> GetDoctorRecordByIdAsync(Guid id, Guid userId);
+        Task<MedicalRecordDto?> GetDoctorRecordByAppointmentAsync(Guid appointmentId, Guid userId);
+        Task<MedicalRecordDto> CreateAsync(Guid userId, CreateMedicalRecordDto dto);
+        Task<MedicalRecordDto?> UpdateAsync(Guid id, Guid userId, UpdateMedicalRecordDto dto);
     }
 }

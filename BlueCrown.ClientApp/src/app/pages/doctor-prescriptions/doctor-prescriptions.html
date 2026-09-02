@@ -1,0 +1,292 @@
+<section class="prescriptions-page">
+  <div class="page-header">
+    <div>
+      <span class="page-label">PRESCRIPTIONS</span>
+      <h1>Đơn thuốc</h1>
+
+      @if (isOnlineMode) {
+      <p>Kê đơn thuốc sau khi hoàn thành tư vấn trực tuyến.</p>
+      } @else {
+      <p>Kê đơn thuốc dựa trên hồ sơ bệnh án đã hoàn thành.</p>
+      }
+    </div>
+
+    <a routerLink="/doctor/dashboard">← Quay lại Dashboard</a>
+  </div>
+
+  @if (isLoading) {
+  <div class="state-card">Đang tải dữ liệu đơn thuốc...</div>
+  } @else {
+  @if (errorMessage) {
+  <div class="message error-message">{{ errorMessage }}</div>
+  }
+
+  @if (successMessage) {
+  <div class="message success-message">{{ successMessage }}</div>
+  }
+
+  <div class="prescription-form-card">
+    <div class="section-heading">
+      @if (isOnlineMode) {
+      <h2>Kê đơn sau tư vấn trực tuyến</h2>
+      <p>Nhập chẩn đoán và các Medication cần sử dụng.</p>
+      } @else {
+      <h2>Kê đơn thuốc</h2>
+      <p>Chọn hồ sơ bệnh án và thêm các loại thuốc cần sử dụng.</p>
+      }
+    </div>
+
+    @if (!isOnlineMode && availableMedicalRecords.length === 0) {
+    <div class="empty-records">Không có hồ sơ bệnh án nào đang chờ kê đơn.</div>
+    }
+
+    @if (isOnlineMode && existingOnlinePrescription) {
+    <div class="empty-records">
+      Cuộc tư vấn trực tuyến này đã được kê đơn thuốc.
+    </div>
+    }
+
+    @if (medications.length === 0) {
+    <div class="message error-message">
+      Danh mục Medication hiện đang trống. Chưa thể kê đơn thuốc.
+    </div>
+    }
+
+    @if (!isOnlineMode || !existingOnlinePrescription) {
+    <form [formGroup]="prescriptionForm" (ngSubmit)="save()">
+      @if (isOnlineMode) {
+      <div class="form-group">
+        <label>Chẩn đoán <span>*</span></label>
+        <textarea rows="4"
+                  maxlength="2000"
+                  formControlName="diagnosis"
+                  placeholder="Nhập chẩn đoán sau cuộc tư vấn trực tuyến..."
+                  (input)="clearMessages()"></textarea>
+
+        @if (diagnosis.touched && diagnosis.hasError('required')) {
+        <p class="field-error">Vui lòng nhập chẩn đoán.</p>
+        }
+
+        @if (diagnosis.touched && diagnosis.hasError('maxlength')) {
+        <p class="field-error">Chẩn đoán không được vượt quá 2000 ký tự.</p>
+        }
+      </div>
+      } @else {
+      <div class="form-group">
+        <label for="medicalRecordId">Hồ sơ bệnh án <span>*</span></label>
+
+        <select id="medicalRecordId" formControlName="medicalRecordId" (change)="clearMessages()">
+          <option value="">Chọn hồ sơ bệnh án</option>
+
+          @for (record of availableMedicalRecords; track record.id) {
+          <option [value]="record.id">
+            {{ record.patientName }} - {{ record.appointmentScheduledAt | date:'dd/MM/yyyy HH:mm' }}
+          </option>
+          }
+        </select>
+
+        @if (medicalRecordId.touched && medicalRecordId.hasError('required')) {
+        <p class="field-error">Vui lòng chọn hồ sơ bệnh án.</p>
+        }
+      </div>
+
+      @if (selectedMedicalRecord; as record) {
+      <div class="record-preview">
+        <div>
+          <span>Bệnh nhân</span>
+          <strong>{{ record.patientName }}</strong>
+        </div>
+
+        <div>
+          <span>Ngày khám</span>
+          <strong>{{ record.appointmentScheduledAt | date:'dd/MM/yyyy HH:mm' }}</strong>
+        </div>
+
+        <div>
+          <span>Chẩn đoán</span>
+          <strong>{{ record.diagnosis }}</strong>
+        </div>
+      </div>
+      }
+      }
+
+      <div class="medications-header">
+        <div>
+          <h3>Thuốc trong đơn</h3>
+          <p>{{ items.length }} loại thuốc.</p>
+        </div>
+
+        <button type="button" class="add-button" (click)="addMedication()">+ Thêm thuốc</button>
+      </div>
+
+      <div formArrayName="items" class="medication-list">
+        @for (item of items.controls; track $index; let i = $index) {
+        <div class="medication-item" [formGroupName]="i">
+          <div class="item-header">
+            <h4>Thuốc {{ i + 1 }}</h4>
+
+            @if (items.length > 1) {
+            <button type="button" class="remove-button" (click)="removeMedication(i)">Xóa</button>
+            }
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group medication-select">
+              <label>Medication <span>*</span></label>
+
+              <select formControlName="medicationId" (change)="clearMessages()">
+                <option value="">Chọn thuốc</option>
+
+                @for (medication of medications; track medication.id) {
+                <option [value]="medication.id">
+                  {{ medication.name }}
+                  @if (medication.genericName) {
+                  - {{ medication.genericName }}
+                  }
+                </option>
+                }
+              </select>
+
+              @if (item.get('medicationId')?.touched && item.get('medicationId')?.hasError('required')) {
+              <p class="field-error">Vui lòng chọn thuốc.</p>
+              }
+            </div>
+
+            <div class="form-group">
+              <label>Liều dùng <span>*</span></label>
+              <input type="text" maxlength="100" formControlName="dosage" placeholder="Ví dụ: 1 viên/lần" (input)="clearMessages()">
+
+              @if (item.get('dosage')?.touched && item.get('dosage')?.hasError('required')) {
+              <p class="field-error">Vui lòng nhập liều dùng.</p>
+              }
+            </div>
+
+            <div class="form-group">
+              <label>Số lần/ngày <span>*</span></label>
+              <input type="number" min="1" max="20" formControlName="frequencyPerDay" (input)="clearMessages()">
+
+              @if (item.get('frequencyPerDay')?.touched && item.get('frequencyPerDay')?.invalid) {
+              <p class="field-error">Số lần mỗi ngày phải từ 1 đến 20.</p>
+              }
+            </div>
+
+            <div class="form-group">
+              <label>Số ngày dùng <span>*</span></label>
+              <input type="number" min="1" max="365" formControlName="durationDays" (input)="clearMessages()">
+
+              @if (item.get('durationDays')?.touched && item.get('durationDays')?.invalid) {
+              <p class="field-error">Số ngày sử dụng phải từ 1 đến 365.</p>
+              }
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Hướng dẫn sử dụng</label>
+            <textarea rows="3" maxlength="500" formControlName="instructions" placeholder="Ví dụ: Uống sau ăn..." (input)="clearMessages()"></textarea>
+          </div>
+        </div>
+        }
+      </div>
+
+      @if (duplicateMedicationMessage) {
+      <div class="message error-message">{{ duplicateMedicationMessage }}</div>
+      }
+
+      <div class="form-actions">
+        <button type="submit"
+                class="save-button"
+                [disabled]="isSaving || medications.length === 0 || (!isOnlineMode && availableMedicalRecords.length === 0)">
+          {{ isSaving ? 'Đang kê đơn...' : 'Tạo đơn thuốc' }}
+        </button>
+      </div>
+    </form>
+    }
+  </div>
+
+  <div class="prescriptions-section">
+    <div class="section-heading">
+      <h2>Đơn thuốc đã kê</h2>
+      <p>{{ prescriptions.length }} đơn thuốc.</p>
+    </div>
+
+    @if (prescriptions.length === 0) {
+    <div class="empty-state">
+      <div>💊</div>
+      <h3>Chưa có đơn thuốc</h3>
+      <p>Các đơn thuốc bạn kê sẽ xuất hiện tại đây.</p>
+    </div>
+    } @else {
+    <div class="prescription-list">
+      @for (prescription of prescriptions; track prescription.id) {
+      <article class="prescription-card">
+        <div class="prescription-header">
+          <div>
+            <span class="prescription-label">BỆNH NHÂN</span>
+            <h3>{{ prescription.patientName }}</h3>
+          </div>
+
+          <span class="status-badge" [class]="getStatusClass(prescription.status)">
+            {{ getStatusText(prescription.status) }}
+          </span>
+        </div>
+
+        <div class="prescription-info">
+          <div>
+            <span>Hình thức</span>
+            <strong>{{ getAppointmentTypeText(prescription.appointmentType) }}</strong>
+          </div>
+
+          <div>
+            <span>{{ prescription.appointmentType?.toLowerCase() === 'online_consult' ? 'Ngày tư vấn' : 'Ngày khám' }}</span>
+            <strong>{{ prescription.appointmentScheduledAt | date:'dd/MM/yyyy HH:mm' }}</strong>
+          </div>
+
+          <div>
+            <span>Chẩn đoán</span>
+            <strong>{{ prescription.diagnosis || prescription.medicalRecordDiagnosis }}</strong>
+          </div>
+
+          <div>
+            <span>Ngày kê đơn</span>
+            <strong>{{ prescription.createdAt | date:'dd/MM/yyyy HH:mm' }}</strong>
+          </div>
+        </div>
+
+        <div class="medicine-table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Thuốc</th>
+                <th>Liều dùng</th>
+                <th>Lần/ngày</th>
+                <th>Số ngày</th>
+                <th>Hướng dẫn</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              @for (item of prescription.items; track item.id) {
+              <tr>
+                <td>
+                  <strong>{{ item.medicationName }}</strong>
+
+                  @if (item.genericName) {
+                  <small>{{ item.genericName }}</small>
+                  }
+                </td>
+                <td>{{ item.dosage || '-' }}</td>
+                <td>{{ item.frequencyPerDay ?? '-' }}</td>
+                <td>{{ item.durationDays ?? '-' }}</td>
+                <td>{{ item.instructions || '-' }}</td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </article>
+      }
+    </div>
+    }
+  </div>
+  }
+</section>

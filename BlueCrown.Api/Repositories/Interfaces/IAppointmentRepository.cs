@@ -4,16 +4,14 @@ namespace BlueCrown.Api.Repositories.Interfaces
 {
     public interface IAppointmentRepository
     {
-        Task<List<Appointment>> GetAllAsync();
-
         Task<Appointment?> GetByIdAsync(Guid id);
-
         Task<List<Appointment>> GetByPatientIdAsync(Guid patientId);
-
-        Task<Appointment> AddAsync(Appointment appointment);
-
-        Task<bool> DeleteAsync(Guid id);
-
+        Task<List<Appointment>> GetByDoctorIdAsync(Guid doctorId);
+        Task<bool> HasDoctorPatientAccessAsync(Guid doctorId, Guid patientId);
+        Task<bool> HasDoctorScheduleConflictAsync(Guid doctorId, DateTime scheduledAt);
+        Task<bool> HasPatientScheduleConflictAsync(Guid patientId, DateTime scheduledAt);
+        Task AddAsync(Appointment appointment);
+        Task DeleteAsync(Appointment appointment);
         Task SaveChangesAsync();
     }
 }

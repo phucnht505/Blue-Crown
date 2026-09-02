@@ -1,0 +1,73 @@
+<main class="dashboard-page">
+  <section class="dashboard-header">
+    <p class="eyebrow">PHARMACIST</p>
+    <h1>Pharmacist Dashboard</h1>
+    <p>Quản lý đơn thuốc, tồn kho, danh mục thuốc, nhập kho, nhà cung cấp và đơn hàng.</p>
+  </section>
+
+  <section class="dashboard-grid">
+    <a class="dashboard-card" routerLink="/account/profile">
+      <div class="card-icon">👤</div>
+      <div>
+        <h2>Hồ sơ cá nhân</h2>
+        <p>Xem và cập nhật thông tin cá nhân của tài khoản dược sĩ.</p>
+      </div>
+    </a>
+
+    <a class="dashboard-card" routerLink="/pharmacist/prescriptions">
+      <div class="card-icon">💊</div>
+      <div>
+        <h2>Quản lý đơn thuốc</h2>
+        <p>Duyệt đơn, chọn sản phẩm thực tế và thực hiện cấp thuốc cho Patient.</p>
+      </div>
+    </a>
+
+    <a class="dashboard-card" routerLink="/pharmacist/stock">
+      <div class="card-icon">📊</div>
+      <div>
+        <h2>Tồn kho</h2>
+        <p>Theo dõi tồn kho hiện tại, sản phẩm sắp hết và sản phẩm đã hết hàng.</p>
+      </div>
+    </a>
+
+    <a class="dashboard-card" routerLink="/pharmacist/inventory">
+      <div class="card-icon">📦</div>
+      <div>
+        <h2>Nhập kho</h2>
+        <p>Tạo phiếu nhập Product, quản lý lô hàng và theo dõi trạng thái duyệt.</p>
+      </div>
+    </a>
+
+    <a class="dashboard-card" routerLink="/pharmacist/medications">
+      <div class="card-icon">🧪</div>
+      <div>
+        <h2>Medication</h2>
+        <p>Quản lý Medication chuẩn dùng cho kê đơn và liên kết với Product.</p>
+      </div>
+    </a>
+
+    <a class="dashboard-card" routerLink="/pharmacist/products">
+      <div class="card-icon">💉</div>
+      <div>
+        <h2>Product</h2>
+        <p>Quản lý Product bán tại nhà thuốc và liên kết với Medication.</p>
+      </div>
+    </a>
+
+    <a class="dashboard-card" routerLink="/pharmacist/suppliers">
+      <div class="card-icon">🏭</div>
+      <div>
+        <h2>Nhà cung cấp</h2>
+        <p>Quản lý Supplier và chứng nhận GDP phục vụ nghiệp vụ nhập kho.</p>
+      </div>
+    </a>
+
+    <a class="dashboard-card" routerLink="/order-management">
+      <div class="card-icon">🛒</div>
+      <div>
+        <h2>Quản lý đơn hàng</h2>
+        <p>Xác nhận, giao hàng, hoàn tất hoặc hủy các đơn mua tại Blue Crown.</p>
+      </div>
+    </a>
+  </section>
+</main>

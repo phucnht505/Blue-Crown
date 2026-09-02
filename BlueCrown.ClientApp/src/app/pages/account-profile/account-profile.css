@@ -1,0 +1,292 @@
+:host {
+  display: block;
+  min-height: calc(100vh - 72px);
+  background: #f6f9fe;
+}
+
+.profile-page {
+  width: min(1000px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 40px 0 70px;
+}
+
+.page-header {
+  margin-bottom: 22px;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+
+.page-header h1 {
+  margin: 0;
+  color: #153b8d;
+  font-size: 32px;
+}
+
+.page-header p,
+.section-title p {
+  margin: 7px 0 0;
+  color: #64748b;
+}
+
+.profile-card {
+  padding: 26px;
+  border: 1px solid #dbe4f0;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, .05);
+}
+
+.doctor-card {
+  margin-top: 24px;
+}
+
+.profile-summary {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding-bottom: 24px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.avatar {
+  width: 86px;
+  height: 86px;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-size: 32px;
+  font-weight: 800;
+}
+
+  .avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+.summary-content h2 {
+  margin: 0;
+  color: #153b8d;
+}
+
+.summary-content p {
+  margin: 5px 0 0;
+  color: #64748b;
+}
+
+.badges {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.badge {
+  padding: 5px 9px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.role-badge {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.status-badge.active {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.status-badge.suspended {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.status-badge.pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.section-title {
+  margin-bottom: 20px;
+}
+
+  .section-title h2 {
+    margin: 0;
+    color: #153b8d;
+    font-size: 21px;
+  }
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 7px;
+  color: #334155;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+  .field label span {
+    color: #dc2626;
+  }
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+  background: #fff;
+  color: #1e293b;
+  font: inherit;
+  outline: none;
+}
+
+.field textarea {
+  resize: vertical;
+}
+
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    border-color: #2563eb;
+  }
+
+.field input:disabled {
+  background: #f1f5f9;
+  color: #64748b;
+  cursor: not-allowed;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+.field-error {
+  margin: 6px 0 0;
+  color: #dc2626;
+  font-size: 12px;
+}
+
+.field-note {
+  margin: 5px 0 0;
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+.primary-button {
+  padding: 11px 18px;
+  border: 0;
+  border-radius: 9px;
+  background: #2563eb;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+  .primary-button:hover:not(:disabled) {
+    background: #1d4ed8;
+  }
+
+  .primary-button:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+  }
+
+.message {
+  margin-bottom: 20px;
+  padding: 12px 14px;
+  border-radius: 9px;
+}
+
+.error-message {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.success-message {
+  background: #f0fdf4;
+  color: #15803d;
+}
+
+.state-message {
+  padding: 50px 20px;
+  color: #64748b;
+  text-align: center;
+}
+
+.error-state {
+  color: #b91c1c;
+}
+
+.readonly-info {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+  .readonly-info > div {
+    padding: 14px;
+    border-radius: 10px;
+    background: #f8fafc;
+  }
+
+  .readonly-info span,
+  .readonly-info strong {
+    display: block;
+  }
+
+  .readonly-info span {
+    margin-bottom: 5px;
+    color: #64748b;
+    font-size: 12px;
+  }
+
+  .readonly-info strong {
+    color: #334155;
+  }
+
+    .readonly-info strong.verified {
+      color: #15803d;
+    }
+
+@media (max-width: 700px) {
+  .form-grid,
+  .readonly-info {
+    grid-template-columns: 1fr;
+  }
+
+  .full-width {
+    grid-column: auto;
+  }
+
+  .profile-summary {
+    align-items: flex-start;
+  }
+}

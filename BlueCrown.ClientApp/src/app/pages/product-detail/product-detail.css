@@ -1,0 +1,375 @@
+.product-detail-page {
+  max-width: 1200px;
+  margin: auto;
+  padding: 45px 30px 70px;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 28px;
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+  .back-link:hover {
+    text-decoration: underline;
+  }
+
+.product-detail {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  gap: 55px;
+  align-items: start;
+}
+
+.product-image {
+  min-height: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+}
+
+  .product-image span {
+    font-size: 110px;
+  }
+
+  .product-image img {
+    width: 100%;
+    max-height: 380px;
+    object-fit: contain;
+    box-sizing: border-box;
+    padding: 30px;
+  }
+
+.product-info {
+  padding-top: 10px;
+}
+
+.category {
+  display: inline-block;
+  margin-bottom: 12px;
+  color: #2563eb;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.product-info h1 {
+  margin: 0 0 15px;
+  color: #1e3a8a;
+  font-size: 36px;
+  line-height: 1.25;
+}
+
+.ingredient {
+  margin-bottom: 20px;
+  color: #64748b;
+}
+
+.price {
+  margin-bottom: 24px;
+  color: #dc2626;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.description {
+  color: #475569;
+  line-height: 1.7;
+}
+
+.product-specs {
+  margin-top: 28px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.spec-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 15px 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+  .spec-row span {
+    color: #64748b;
+  }
+
+  .spec-row strong {
+    color: #1e293b;
+    text-align: right;
+  }
+
+.out-of-stock-text {
+  color: #dc2626 !important;
+}
+
+.prescription-warning {
+  margin-top: 24px;
+  padding: 15px 18px;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 10px;
+  color: #c2410c;
+  font-weight: 600;
+}
+
+.out-of-stock-warning {
+  margin-top: 16px;
+  padding: 15px 18px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  color: #b91c1c;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.state-message {
+  padding: 60px 20px;
+  color: #64748b;
+  text-align: center;
+}
+
+.add-cart-button {
+  width: 100%;
+  margin-top: 24px;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 10px;
+  background: #2563eb;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .2s;
+}
+
+  .add-cart-button:hover:not(:disabled) {
+    background: #1d4ed8;
+  }
+
+  .add-cart-button:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+  }
+
+.cart-message {
+  margin: 12px 0 0;
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.alternatives-section {
+  margin-top: 60px;
+  padding-top: 36px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.alternatives-header {
+  margin-bottom: 24px;
+}
+
+.alternatives-eyebrow {
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+
+.alternatives-header h2 {
+  margin: 6px 0 8px;
+  color: #1e3a8a;
+  font-size: 28px;
+}
+
+.alternatives-header p {
+  margin: 0;
+  color: #64748b;
+}
+
+.alternatives-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.alternative-card {
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  background: #fff;
+}
+
+.alternative-image {
+  height: 210px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #f8fafc;
+}
+
+  .alternative-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    box-sizing: border-box;
+    padding: 18px;
+  }
+
+  .alternative-image span {
+    font-size: 70px;
+  }
+
+.alternative-content {
+  padding: 20px;
+}
+
+.alternative-category {
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.alternative-content h3 {
+  margin: 7px 0 8px;
+  color: #1e3a8a;
+  font-size: 19px;
+  line-height: 1.4;
+}
+
+.alternative-ingredient {
+  margin: 0 0 12px;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.alternative-price {
+  margin-bottom: 16px;
+  color: #dc2626;
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.alternative-meta {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+  .alternative-meta div {
+    padding: 9px;
+    border-radius: 8px;
+    background: #f8fafc;
+  }
+
+  .alternative-meta span,
+  .alternative-meta strong {
+    display: block;
+  }
+
+  .alternative-meta span {
+    margin-bottom: 4px;
+    color: #64748b;
+    font-size: 11px;
+  }
+
+  .alternative-meta strong {
+    color: #334155;
+    font-size: 12px;
+  }
+
+.alternative-reason {
+  margin-bottom: 18px;
+  padding: 12px;
+  border-radius: 9px;
+  background: #eff6ff;
+  color: #475569;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+  .alternative-reason strong,
+  .alternative-reason span {
+    display: block;
+  }
+
+  .alternative-reason strong {
+    margin-bottom: 4px;
+    color: #1e40af;
+  }
+
+.view-alternative-button {
+  display: block;
+  padding: 11px 14px;
+  border-radius: 9px;
+  background: #2563eb;
+  color: #fff;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+}
+
+  .view-alternative-button:hover {
+    background: #1d4ed8;
+  }
+
+.alternative-empty {
+  padding: 28px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  background: #f8fafc;
+  color: #64748b;
+  text-align: center;
+}
+
+@media (max-width: 1000px) {
+  .alternatives-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 850px) {
+  .product-detail {
+    grid-template-columns: 1fr;
+  }
+
+  .product-image {
+    min-height: 300px;
+  }
+}
+
+@media (max-width: 650px) {
+  .alternatives-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .alternative-meta {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .product-detail-page {
+    padding: 30px 18px 50px;
+  }
+
+  .product-info h1 {
+    font-size: 28px;
+  }
+
+  .spec-row {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+    .spec-row strong {
+      text-align: left;
+    }
+}

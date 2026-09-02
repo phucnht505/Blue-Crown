@@ -1,47 +1,41 @@
 <section class="products-page">
 
   <div class="page-header">
-
     <span>SẢN PHẨM</span>
-
-    <h1>
-      Nhà thuốc Blue Crown
-    </h1>
-
-    <p>
-      Tìm kiếm thuốc và sản phẩm chăm sóc sức khỏe.
-    </p>
-
+    <h1>Nhà thuốc Blue Crown</h1>
+    <p>Tìm kiếm thuốc và sản phẩm chăm sóc sức khỏe.</p>
   </div>
-
 
   <div class="search-box">
-
     <input type="text"
            [(ngModel)]="searchText"
+           (keyup.enter)="onSearch()"
            placeholder="Tìm tên thuốc, hoạt chất..." />
 
+    <button type="button" (click)="onSearch()">
+      Tìm kiếm
+    </button>
   </div>
 
-
-  <div class="product-grid">
-
-    @for (product of filteredProducts; track product.id) {
-
-    <app-product-card [product]="product">
-    </app-product-card>
-
-    }
-
+  <!-- Phần hiển thị trạng thái đã được gộp gọn lại -->
+  @if (isLoading) {
+  <div class="empty">
+    Đang tải danh sách sản phẩm...
   </div>
-
-
-  @if (filteredProducts.length === 0) {
-
+  } @else if (errorMessage) {
+  <div class="empty">
+    {{ errorMessage }}
+  </div>
+  } @else if (products.length === 0) {
   <div class="empty">
     Không tìm thấy sản phẩm phù hợp.
   </div>
-
+  } @else {
+  <div class="product-grid">
+    @for (product of products; track product.id) {
+    <app-product-card [product]="product"></app-product-card>
+    }
+  </div>
   }
 
 </section>

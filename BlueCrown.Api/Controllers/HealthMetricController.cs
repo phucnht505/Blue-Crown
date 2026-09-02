@@ -8,7 +8,7 @@ namespace BlueCrown.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Patient")]
+    [Authorize(Roles = "patient")]
     public class HealthMetricController : ControllerBase
     {
         private readonly IHealthMetricService _service;
@@ -18,62 +18,134 @@ namespace BlueCrown.Api.Controllers
             _service = service;
         }
 
+        [HttpGet("types")]
+        public async Task<IActionResult> GetMetricTypes()
+        {
+            return Ok(await _service.GetMetricTypesAsync());
+        }
+
         [HttpGet("my")]
         public async Task<IActionResult> GetMyMetrics()
         {
-            var patientId = GetPatientId();
+            try
+            {
+                var userId = GetUserId();
 
-            if (patientId == null)
-                return Unauthorized(new { message = "Không xác định được Patient." });
+                if (userId == null)
+                {
+                    return Unauthorized(new
+                    {
+                        message = "Không xác định được người dùng."
+                    });
+                }
 
-            return Ok(await _service.GetMyMetricsAsync(patientId.Value));
+                return Ok(
+                    await _service.GetMyMetricsAsync(userId.Value)
+                );
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpGet("latest")]
         public async Task<IActionResult> GetLatest()
         {
-            var patientId = GetPatientId();
+            try
+            {
+                var userId = GetUserId();
 
-            if (patientId == null)
-                return Unauthorized(new { message = "Không xác định được Patient." });
+                if (userId == null)
+                {
+                    return Unauthorized(new
+                    {
+                        message = "Không xác định được người dùng."
+                    });
+                }
 
-            var metric = await _service.GetLatestAsync(patientId.Value);
+                var metric = await _service.GetLatestAsync(
+                    userId.Value
+                );
 
-            if (metric == null)
-                return NotFound(new { message = "Chưa có dữ liệu sức khỏe." });
+                if (metric == null)
+                {
+                    return NotFound(new
+                    {
+                        message = "Chưa có dữ liệu sức khỏe."
+                    });
+                }
 
-            return Ok(metric);
+                return Ok(metric);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var patientId = GetPatientId();
+            try
+            {
+                var userId = GetUserId();
 
-            if (patientId == null)
-                return Unauthorized(new { message = "Không xác định được Patient." });
+                if (userId == null)
+                {
+                    return Unauthorized(new
+                    {
+                        message = "Không xác định được người dùng."
+                    });
+                }
 
-            var metric = await _service.GetByIdAsync(id, patientId.Value);
+                var metric = await _service.GetByIdAsync(
+                    id,
+                    userId.Value
+                );
 
-            if (metric == null)
-                return NotFound(new { message = "Không tìm thấy HealthMetric." });
+                if (metric == null)
+                {
+                    return NotFound(new
+                    {
+                        message = "Không tìm thấy chỉ số sức khỏe."
+                    });
+                }
 
-            return Ok(metric);
+                return Ok(metric);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CreateHealthMetricDto dto)
+        public async Task<IActionResult> Create(
+            CreateHealthMetricDto dto)
         {
             try
             {
-                var patientId = GetPatientId();
+                var userId = GetUserId();
 
-                if (patientId == null)
-                    return Unauthorized(new { message = "Không xác định được Patient." });
+                if (userId == null)
+                {
+                    return Unauthorized(new
+                    {
+                        message = "Không xác định được người dùng."
+                    });
+                }
 
-                var metric = await _service.CreateAsync(patientId.Value, dto);
+                var metric = await _service.CreateAsync(
+                    userId.Value,
+                    dto
+                );
 
-                return CreatedAtAction(nameof(GetById), new { id = metric.Id }, metric);
+                return CreatedAtAction(
+                    nameof(GetById),
+                    new { id = metric.Id },
+                    metric
+                );
             }
             catch (ArgumentException ex)
             {
@@ -85,10 +157,18 @@ namespace BlueCrown.Api.Controllers
             }
         }
 
-        private Guid? GetPatientId()
+        private Guid? GetUserId()
         {
-            var claim = User.FindFirst(ClaimTypes.NameIdentifier);
-            return Guid.TryParse(claim?.Value, out var id) ? id : null;
+            var claim = User.FindFirst(
+                ClaimTypes.NameIdentifier
+            );
+
+            return Guid.TryParse(
+                claim?.Value,
+                out var id
+            )
+                ? id
+                : null;
         }
     }
 }

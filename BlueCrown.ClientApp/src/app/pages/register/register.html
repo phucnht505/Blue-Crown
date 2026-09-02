@@ -1,1 +1,191 @@
-<p>register works!</p>
+<section class="auth-page">
+  <div class="auth-container">
+    <div class="auth-intro">
+      <span class="brand-label">BLUE CROWN</span>
+      <h1>Tạo tài khoản chăm sóc sức khỏe</h1>
+      <p>Đăng ký tài khoản Patient để quản lý sức khỏe, đặt lịch tư vấn và sử dụng các dịch vụ của Blue Crown.</p>
+
+      <div class="benefit-list">
+        <div class="benefit-item">
+          <span>✓</span>
+          <p>Theo dõi thông tin sức khỏe cá nhân</p>
+        </div>
+
+        <div class="benefit-item">
+          <span>✓</span>
+          <p>Đặt lịch với bác sĩ</p>
+        </div>
+
+        <div class="benefit-item">
+          <span>✓</span>
+          <p>Quản lý đơn thuốc và lịch sử khám</p>
+        </div>
+
+        <div class="benefit-item">
+          <span>✓</span>
+          <p>Mua sản phẩm chăm sóc sức khỏe thuận tiện</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="register-card">
+      <div class="register-header">
+        <h2>Đăng ký</h2>
+        <p>Điền thông tin để tạo tài khoản mới.</p>
+      </div>
+
+      <form [formGroup]="registerForm" (ngSubmit)="submit()" novalidate>
+        <div class="form-group">
+          <label for="fullName">Họ và tên <span>*</span></label>
+
+          <input id="fullName"
+                 type="text"
+                 formControlName="fullName"
+                 maxlength="50"
+                 autocomplete="name"
+                 (input)="clearMessage()"
+                 [class.input-invalid]="fullName.invalid && fullName.touched"
+                 placeholder="Ví dụ: Nguyễn Minh Anh">
+
+          @if (fullName.touched && fullName.hasError('required')) {
+          <p class="field-error">Vui lòng nhập họ và tên.</p>
+          } @else if (fullName.touched && fullName.hasError('minlength')) {
+          <p class="field-error">Họ tên phải có ít nhất 2 ký tự.</p>
+          } @else if (fullName.touched && fullName.hasError('maxlength')) {
+          <p class="field-error">Họ tên không được vượt quá 50 ký tự.</p>
+          } @else if (fullName.touched && fullName.hasError('pattern')) {
+          <p class="field-error">Họ tên chỉ được chứa chữ cái và khoảng trắng.</p>
+          }
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="email">Email <span>*</span></label>
+
+            <input id="email"
+                   type="email"
+                   formControlName="email"
+                   autocomplete="email"
+                   (input)="clearMessage()"
+                   [class.input-invalid]="email.invalid && email.touched"
+                   placeholder="example@gmail.com">
+
+            @if (email.touched && email.hasError('required')) {
+            <p class="field-error">Vui lòng nhập email.</p>
+            } @else if (email.touched && email.hasError('email')) {
+            <p class="field-error">Email không hợp lệ.</p>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Số điện thoại <span>*</span></label>
+
+            <input id="phone"
+                   type="tel"
+                   inputmode="numeric"
+                   formControlName="phone"
+                   maxlength="10"
+                   autocomplete="tel"
+                   (input)="clearMessage()"
+                   [class.input-invalid]="phone.invalid && phone.touched"
+                   placeholder="0901234567">
+
+            @if (phone.touched && phone.hasError('required')) {
+            <p class="field-error">Vui lòng nhập số điện thoại.</p>
+            } @else if (phone.touched && phone.hasError('pattern')) {
+            <p class="field-error">Số điện thoại Việt Nam không hợp lệ.</p>
+            }
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="dateOfBirth">Ngày sinh</label>
+
+            <input id="dateOfBirth"
+                   type="date"
+                   formControlName="dateOfBirth"
+                   (change)="clearMessage()"
+                   [class.input-invalid]="dateOfBirth.touched && dateOfBirthError">
+
+            @if (dateOfBirth.touched && dateOfBirthError) {
+            <p class="field-error">{{ dateOfBirthError }}</p>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="gender">Giới tính</label>
+
+            <select id="gender" formControlName="gender" (change)="clearMessage()">
+              <option value="">Không chọn</option>
+              <option value="male">Nam</option>
+              <option value="female">Nữ</option>
+              <option value="other">Khác</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Mật khẩu <span>*</span></label>
+
+          <input id="password"
+                 type="password"
+                 formControlName="password"
+                 autocomplete="new-password"
+                 (input)="clearMessage()"
+                 [class.input-invalid]="password.invalid && password.touched"
+                 placeholder="Tối thiểu 8 ký tự">
+
+          @if (password.touched && password.hasError('required')) {
+          <p class="field-error">Vui lòng nhập mật khẩu.</p>
+          } @else if (password.touched && password.hasError('minlength')) {
+          <p class="field-error">Mật khẩu phải có ít nhất 8 ký tự.</p>
+          } @else if (password.touched && password.hasError('pattern')) {
+          <p class="field-error">Mật khẩu phải có chữ hoa, chữ thường và chữ số.</p>
+          }
+
+          <p class="password-hint">Mật khẩu phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường và chữ số.</p>
+        </div>
+
+        <div class="form-group">
+          <label for="confirmPassword">Xác nhận mật khẩu <span>*</span></label>
+
+          <input id="confirmPassword"
+                 type="password"
+                 formControlName="confirmPassword"
+                 autocomplete="new-password"
+                 (input)="clearMessage()"
+                 [class.input-invalid]="(confirmPassword.invalid && confirmPassword.touched) || (confirmPassword.touched && passwordsDoNotMatch)"
+                 placeholder="Nhập lại mật khẩu">
+
+          @if (confirmPassword.touched && confirmPassword.hasError('required')) {
+          <p class="field-error">Vui lòng xác nhận mật khẩu.</p>
+          } @else if (confirmPassword.touched && passwordsDoNotMatch) {
+          <p class="field-error">Mật khẩu xác nhận không khớp.</p>
+          }
+        </div>
+
+        @if (errorMessage) {
+        <div class="form-message error-message">
+          {{ errorMessage }}
+        </div>
+        }
+
+        @if (successMessage) {
+        <div class="form-message success-message">
+          {{ successMessage }} Đang chuyển đến trang đăng nhập...
+        </div>
+        }
+
+        <button type="submit" class="register-button" [disabled]="isSubmitting">
+          {{ isSubmitting ? 'Đang đăng ký...' : 'Đăng ký tài khoản' }}
+        </button>
+      </form>
+
+      <div class="login-link">
+        Đã có tài khoản?
+        <a routerLink="/login">Đăng nhập</a>
+      </div>
+    </div>
+  </div>
+</section>

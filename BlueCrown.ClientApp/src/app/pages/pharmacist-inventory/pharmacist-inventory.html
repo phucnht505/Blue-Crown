@@ -1,0 +1,175 @@
+<main class="page">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">PHARMACIST</p>
+      <h1>Nhập kho</h1>
+      <p>Tạo phiếu nhập Product và theo dõi trạng thái duyệt.</p>
+    </div>
+    <a routerLink="/pharmacist/dashboard" class="back-link">← Quay lại Dashboard</a>
+  </header>
+
+  @if (errorMessage) {
+  <div class="message error-message">{{ errorMessage }}</div>
+  }
+
+  @if (successMessage) {
+  <div class="message success-message">{{ successMessage }}</div>
+  }
+
+  <section class="form-card">
+    <h2>Tạo phiếu nhập kho</h2>
+
+    <form [formGroup]="receiptForm">
+      <label class="supplier-field">
+        Nhà cung cấp đạt GDP *
+        <select formControlName="supplierId" [class.invalid-control]="isInvalid('supplierId')">
+          <option value="">Chọn nhà cung cấp</option>
+          @for (supplier of gdpSuppliers; track supplier.id) {
+          <option [value]="supplier.id">{{ supplier.supplierName }}</option>
+          }
+        </select>
+
+        @if (isInvalid('supplierId')) {
+        <span class="field-error">Vui lòng chọn nhà cung cấp.</span>
+        }
+      </label>
+
+      @if (gdpSuppliers.length === 0) {
+      <p class="warning-text">Chưa có nhà cung cấp đạt GDP. Hãy tạo hoặc cập nhật Supplier trước.</p>
+      }
+
+      <div formArrayName="details">
+        @for (detail of details.controls; track $index; let i = $index) {
+        <section class="detail-card" [formGroupName]="i">
+          <div class="detail-header">
+            <h3>Sản phẩm {{ i + 1 }}</h3>
+
+            @if (details.length > 1) {
+            <button type="button" class="remove-button" (click)="removeDetail(i)">Xóa</button>
+            }
+          </div>
+
+          <div class="detail-grid">
+            <label>
+              Product *
+              <select formControlName="productId" [class.invalid-control]="isInvalid('productId', i)">
+                <option value="">Chọn Product</option>
+                @for (product of products; track product.id) {
+                <option [value]="product.id">{{ product.name }} - Tồn: {{ product.stockQuantity ?? 0 }}</option>
+                }
+              </select>
+
+              @if (isInvalid('productId', i)) {
+              <span class="field-error">Vui lòng chọn Product.</span>
+              }
+            </label>
+
+            <label>
+              Số lô *
+              <input type="text" formControlName="batchNumber" maxlength="100" [class.invalid-control]="isInvalid('batchNumber', i)">
+
+              @if (isInvalid('batchNumber', i)) {
+              <span class="field-error">Vui lòng nhập số lô.</span>
+              }
+            </label>
+
+            <label>
+              Hạn sử dụng *
+              <input type="date" formControlName="expirationDate" [min]="minExpirationDate" [class.invalid-control]="isInvalid('expirationDate', i)">
+
+              @if (isInvalid('expirationDate', i)) {
+              <span class="field-error">Vui lòng chọn hạn sử dụng.</span>
+              }
+            </label>
+
+            <label>
+              Số lượng nhập *
+              <input type="number" min="1" step="1" formControlName="quantityImported" [class.invalid-control]="isInvalid('quantityImported', i)">
+
+              @if (isInvalid('quantityImported', i)) {
+              <span class="field-error">Số lượng phải lớn hơn 0.</span>
+              }
+            </label>
+
+            <label>
+              Giá nhập *
+              <input type="number" min="0.01" step="1000" formControlName="importPrice" [class.invalid-control]="isInvalid('importPrice', i)">
+
+              @if (isInvalid('importPrice', i)) {
+              <span class="field-error">Giá nhập phải lớn hơn 0.</span>
+              }
+            </label>
+          </div>
+        </section>
+        }
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="secondary-button" (click)="addDetail()">+ Thêm Product</button>
+        <button type="button" class="primary-button" [disabled]="isSaving || gdpSuppliers.length === 0" (click)="save()">{{ isSaving ? 'Đang tạo...' : 'Tạo phiếu nhập' }}</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="history-card">
+    <div class="section-title">
+      <h2>Lịch sử phiếu nhập</h2>
+      <span>{{ receipts.length }} phiếu</span>
+    </div>
+
+    @if (isLoading) {
+    <div class="empty-state">Đang tải dữ liệu...</div>
+    } @else if (receipts.length === 0) {
+    <div class="empty-state">Chưa có phiếu nhập kho.</div>
+    } @else {
+    <div class="receipt-list">
+      @for (receipt of receipts; track receipt.id) {
+      <article class="receipt-card">
+        <div class="receipt-header">
+          <div>
+            <strong>{{ receipt.supplierName || 'Không xác định' }}</strong>
+            <span>{{ receipt.receiptDate ? (receipt.receiptDate | date:'dd/MM/yyyy HH:mm') : '-' }}</span>
+          </div>
+          <span class="status" [class]="getStatusClass(receipt.status)">{{ getStatusText(receipt.status) }}</span>
+        </div>
+
+        <div class="receipt-meta">
+          <span>Người tạo: <strong>{{ receipt.createdByName || '-' }}</strong></span>
+          <span>Tổng tiền: <strong>{{ (receipt.totalCost ?? 0) | currency:'VND':'symbol':'1.0-0' }}</strong></span>
+
+          @if (receipt.approvedByName) {
+          <span>Người xử lý: <strong>{{ receipt.approvedByName }}</strong></span>
+          }
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Số lô</th>
+                <th>Hạn dùng</th>
+                <th>Số lượng</th>
+                <th>Giá nhập</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              @for (detail of receipt.details; track detail.id) {
+              <tr>
+                <td>{{ detail.productName || '-' }}</td>
+                <td>{{ detail.batchNumber }}</td>
+                <td>{{ detail.expirationDate | date:'dd/MM/yyyy' }}</td>
+                <td>{{ detail.quantityImported }}</td>
+                <td>{{ detail.importPrice | currency:'VND':'symbol':'1.0-0' }}</td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </article>
+      }
+    </div>
+    }
+  </section>
+</main>

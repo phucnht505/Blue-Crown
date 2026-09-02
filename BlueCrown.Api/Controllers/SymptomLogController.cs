@@ -8,7 +8,6 @@ namespace BlueCrown.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
     public class SymptomLogController : ControllerBase
     {
         private readonly ISymptomLogService _service;
@@ -18,65 +17,34 @@ namespace BlueCrown.Api.Controllers
             _service = service;
         }
 
+        [Authorize(Roles = "patient")]
         [HttpGet("my")]
-        [Authorize(Roles = "Patient")]
         public async Task<ActionResult<List<SymptomLogDto>>> GetMyLogs()
         {
-            try
-            {
-                var userId = GetCurrentUserId();
-                var patientId = await _service.GetPatientIdByUserIdAsync(userId);
-
-                if (patientId == null)
-                    return NotFound(new { message = "Không tìm thấy Patient Profile." });
-
-                var logs = await _service.GetMyLogsAsync(patientId.Value);
-                return Ok(logs);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Unauthorized(new { message = ex.Message });
-            }
+            var patientId = await GetCurrentPatientIdAsync();
+            return Ok(await _service.GetMyLogsAsync(patientId));
         }
 
+        [Authorize(Roles = "patient")]
         [HttpGet("my/latest")]
-        [Authorize(Roles = "Patient")]
         public async Task<ActionResult<SymptomLogDto>> GetLatest()
         {
-            try
-            {
-                var userId = GetCurrentUserId();
-                var patientId = await _service.GetPatientIdByUserIdAsync(userId);
+            var patientId = await GetCurrentPatientIdAsync();
+            var log = await _service.GetLatestAsync(patientId);
 
-                if (patientId == null)
-                    return NotFound(new { message = "Không tìm thấy Patient Profile." });
+            if (log == null)
+                return NotFound(new { message = "Chưa có Symptom Log." });
 
-                var log = await _service.GetLatestAsync(patientId.Value);
-
-                if (log == null)
-                    return NotFound(new { message = "Chưa có Symptom Log." });
-
-                return Ok(log);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Unauthorized(new { message = ex.Message });
-            }
+            return Ok(log);
         }
 
+        [Authorize(Roles = "patient")]
         [HttpGet("{id:guid}")]
-        [Authorize(Roles = "Patient")]
         public async Task<ActionResult<SymptomLogDto>> GetById(Guid id)
         {
             try
             {
-                var userId = GetCurrentUserId();
-                var patientId = await _service.GetPatientIdByUserIdAsync(userId);
-
-                if (patientId == null)
-                    return NotFound(new { message = "Không tìm thấy Patient Profile." });
-
-                var log = await _service.GetByIdAsync(id, patientId.Value);
+                var log = await _service.GetByIdAsync(id, await GetCurrentPatientIdAsync());
 
                 if (log == null)
                     return NotFound(new { message = "Không tìm thấy Symptom Log." });
@@ -89,25 +57,42 @@ namespace BlueCrown.Api.Controllers
             }
         }
 
+        [Authorize(Roles = "patient")]
         [HttpPost]
-        [Authorize(Roles = "Patient")]
         public async Task<ActionResult<SymptomLogDto>> Create([FromBody] CreateSymptomLogDto dto)
         {
             try
             {
-                var userId = GetCurrentUserId();
-                var patientId = await _service.GetPatientIdByUserIdAsync(userId);
-
-                if (patientId == null)
-                    return NotFound(new { message = "Không tìm thấy Patient Profile." });
-
-                var log = await _service.CreateAsync(patientId.Value, dto);
-
+                var log = await _service.CreateAsync(await GetCurrentPatientIdAsync(), dto);
                 return CreatedAtAction(nameof(GetById), new { id = log.Id }, log);
             }
-            catch (UnauthorizedAccessException ex)
+            catch (Exception ex)
             {
-                return Unauthorized(new { message = ex.Message });
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost("analyze")]
+        public async Task<ActionResult<SymptomAnalysisDto>> Analyze([FromBody] CreateSymptomLogDto dto)
+        {
+            try
+            {
+                Guid? patientId = null;
+
+                if (User.Identity?.IsAuthenticated == true && User.IsInRole("patient"))
+                    patientId = await GetCurrentPatientIdAsync();
+
+                var result = await _service.AnalyzeAsync(patientId, dto);
+                return Ok(result);
+            }
+            catch (HttpRequestException)
+            {
+                return StatusCode(StatusCodes.Status503ServiceUnavailable, new { message = "Không thể kết nối đến dịch vụ AI." });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return StatusCode(StatusCodes.Status503ServiceUnavailable, new { message = ex.Message });
             }
             catch (Exception ex)
             {
@@ -117,12 +102,22 @@ namespace BlueCrown.Api.Controllers
 
         private Guid GetCurrentUserId()
         {
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var value = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (!Guid.TryParse(userIdClaim, out var userId))
+            if (!Guid.TryParse(value, out var userId))
                 throw new UnauthorizedAccessException("Không xác định được UserId từ JWT.");
 
             return userId;
+        }
+
+        private async Task<Guid> GetCurrentPatientIdAsync()
+        {
+            var patientId = await _service.GetPatientIdByUserIdAsync(GetCurrentUserId());
+
+            if (!patientId.HasValue)
+                throw new UnauthorizedAccessException("Không tìm thấy Patient Profile.");
+
+            return patientId.Value;
         }
     }
 }

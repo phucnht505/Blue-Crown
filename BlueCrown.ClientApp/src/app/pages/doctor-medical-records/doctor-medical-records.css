@@ -1,0 +1,371 @@
+.medical-record-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 45px 30px 70px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.page-label {
+  color: #2563eb;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+}
+
+.page-header h1 {
+  margin: 7px 0;
+  color: #1e3a8a;
+  font-size: 32px;
+}
+
+.page-header p {
+  margin: 0;
+  color: #64748b;
+}
+
+.page-header a {
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.record-form-card,
+.records-section {
+  margin-bottom: 25px;
+  padding: 26px;
+  background: #fff;
+  border: 1px solid #dbe4f0;
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+}
+
+.section-heading {
+  margin-bottom: 22px;
+}
+
+  .section-heading h2 {
+    margin: 0 0 6px;
+    color: #1e3a8a;
+    font-size: 20px;
+  }
+
+  .section-heading p {
+    margin: 0;
+    color: #64748b;
+    font-size: 14px;
+  }
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+  .form-group label {
+    display: block;
+    margin-bottom: 7px;
+    color: #334155;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+    .form-group label span {
+      color: #dc2626;
+    }
+
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    padding: 12px 13px;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+    background: #fff;
+    color: #1e293b;
+    font: inherit;
+    box-sizing: border-box;
+  }
+
+  .form-group select {
+    height: 46px;
+  }
+
+  .form-group textarea {
+    resize: vertical;
+  }
+
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+    }
+
+  .form-group select:disabled {
+    background: #f8fafc;
+    color: #64748b;
+  }
+
+.field-error {
+  margin: 6px 0 0;
+  color: #dc2626;
+  font-size: 12px;
+}
+
+.appointment-preview {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #eff6ff;
+  border-radius: 10px;
+}
+
+  .appointment-preview div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .appointment-preview span {
+    color: #64748b;
+    font-size: 11px;
+  }
+
+  .appointment-preview strong {
+    color: #1e3a8a;
+    font-size: 14px;
+  }
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.save-button,
+.cancel-button,
+.edit-button {
+  padding: 10px 17px;
+  border-radius: 8px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.save-button {
+  border: none;
+  background: #2563eb;
+  color: #fff;
+}
+
+.cancel-button {
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #475569;
+}
+
+.edit-button {
+  border: 1px solid #2563eb;
+  background: #fff;
+  color: #2563eb;
+}
+
+.save-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.records-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.record-card {
+  padding: 21px;
+  border: 1px solid #dbe4f0;
+  border-radius: 14px;
+}
+
+.record-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.record-label {
+  color: #2563eb;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.record-header h3 {
+  margin: 4px 0 0;
+  color: #1e3a8a;
+  font-size: 19px;
+}
+
+.record-date {
+  height: fit-content;
+  padding: 5px 9px;
+  background: #eff6ff;
+  border-radius: 999px;
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.record-info {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 17px;
+}
+
+  .record-info div {
+    padding: 11px;
+    background: #f8fafc;
+    border-radius: 8px;
+  }
+
+  .record-info span,
+  .record-info strong {
+    display: block;
+  }
+
+  .record-info span {
+    margin-bottom: 4px;
+    color: #94a3b8;
+    font-size: 11px;
+  }
+
+  .record-info strong {
+    color: #334155;
+    font-size: 13px;
+  }
+
+.diagnosis-box,
+.notes-box {
+  margin-top: 14px;
+}
+
+  .diagnosis-box span,
+  .notes-box span {
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .diagnosis-box p,
+  .notes-box p {
+    margin: 6px 0 0;
+    color: #334155;
+    line-height: 1.6;
+    white-space: pre-wrap;
+  }
+
+.record-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.message {
+  margin-bottom: 20px;
+  padding: 13px 15px;
+  border-radius: 9px;
+}
+
+.error-message {
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.success-message {
+  border: 1px solid #bbf7d0;
+  background: #f0fdf4;
+  color: #15803d;
+}
+
+.empty-appointments,
+.empty-state,
+.state-card {
+  color: #64748b;
+  text-align: center;
+}
+
+.empty-appointments {
+  margin-bottom: 20px;
+  padding: 18px;
+  background: #f8fafc;
+  border-radius: 9px;
+}
+
+.empty-state {
+  padding: 45px 20px;
+}
+
+  .empty-state > div {
+    font-size: 38px;
+  }
+
+  .empty-state h3 {
+    margin: 10px 0 5px;
+    color: #334155;
+  }
+
+  .empty-state p {
+    margin: 0;
+  }
+
+.state-card {
+  padding: 55px;
+  background: #fff;
+  border: 1px solid #dbe4f0;
+  border-radius: 15px;
+}
+
+@media (max-width: 800px) {
+  .records-grid,
+  .record-info,
+  .appointment-preview {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .medical-record-page {
+    padding: 30px 16px 50px;
+  }
+
+  .page-header {
+    flex-direction: column;
+  }
+
+  .record-form-card,
+  .records-section {
+    padding: 18px;
+  }
+}
+.prescription-button {
+  padding: 10px 17px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+  .prescription-button:hover {
+    background: #1d4ed8;
+  }

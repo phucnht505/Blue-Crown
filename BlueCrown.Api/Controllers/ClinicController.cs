@@ -17,7 +17,6 @@ namespace BlueCrown.Api.Controllers
             _service = service;
         }
 
-        // GET: api/Clinic
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -25,22 +24,19 @@ namespace BlueCrown.Api.Controllers
             return Ok(clinics);
         }
 
-        // GET: api/Clinic/{id}
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById(Guid id)
         {
             var clinic = await _service.GetByIdAsync(id);
 
             if (clinic == null)
-                return NotFound(new { message = "Không tìm thấy Clinic." });
+                return NotFound(new { message = "Không tìm thấy phòng khám." });
 
             return Ok(clinic);
         }
 
-        // POST: api/Clinic
-        // Admin quản lý danh mục Clinic
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Create([FromBody] CreateClinicDto dto)
         {
             try
@@ -58,9 +54,8 @@ namespace BlueCrown.Api.Controllers
             }
         }
 
-        // PUT: api/Clinic/{id}
         [HttpPut("{id:guid}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateClinicDto dto)
         {
             try
@@ -68,9 +63,9 @@ namespace BlueCrown.Api.Controllers
                 var result = await _service.UpdateAsync(id, dto);
 
                 if (!result)
-                    return NotFound(new { message = "Không tìm thấy Clinic." });
+                    return NotFound(new { message = "Không tìm thấy phòng khám." });
 
-                return NoContent();
+                return Ok(new { message = "Cập nhật phòng khám thành công." });
             }
             catch (ArgumentException ex)
             {
@@ -82,9 +77,8 @@ namespace BlueCrown.Api.Controllers
             }
         }
 
-        // DELETE: api/Clinic/{id}
         [HttpDelete("{id:guid}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(Guid id)
         {
             try
@@ -92,9 +86,9 @@ namespace BlueCrown.Api.Controllers
                 var result = await _service.DeleteAsync(id);
 
                 if (!result)
-                    return NotFound(new { message = "Không tìm thấy Clinic." });
+                    return NotFound(new { message = "Không tìm thấy phòng khám." });
 
-                return NoContent();
+                return Ok(new { message = "Xóa phòng khám thành công." });
             }
             catch (InvalidOperationException ex)
             {

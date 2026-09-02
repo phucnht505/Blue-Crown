@@ -1,34 +1,22 @@
-<div class="product-card">
-
+<article class="product-card">
   <div class="product-image">
+    @if (product.imageUrl) {
+    <img [src]="product.imageUrl" [alt]="product.name">
+    } @else {
     <span>💊</span>
+    }
   </div>
 
-  <div class="product-body">
+  <div class="product-content">
+    <p class="product-category">{{ product.therapeuticGroup || 'Sản phẩm y tế' }}</p>
 
-    <span class="product-category">
-      {{ product.category }}
-    </span>
+    <h3 class="product-name">{{ product.name }}</h3>
 
-    <h3>{{ product.name }}</h3>
-
-    <p class="generic-name">
-      {{ product.genericName }}
-    </p>
+    <p class="product-ingredient">{{ product.activeIngredient || 'Không áp dụng' }}</p>
 
     <div class="product-bottom">
-
-      <strong>
-        {{ product.price | number }}đ
-      </strong>
-
-      <a [routerLink]="['/products', product.id]"
-         class="detail-btn">
-        Xem
-      </a>
-
+      <p class="product-price">{{ product.price | number }}đ</p>
+      <a class="view-button" [routerLink]="['/products', product.id]">Xem</a>
     </div>
-
   </div>
-
-</div>
+</article>

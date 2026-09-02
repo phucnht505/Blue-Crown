@@ -1,0 +1,172 @@
+<main class="page">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">PHARMACIST</p>
+      <h1>Quản lý Product</h1>
+      <p>Quản lý Product bán tại nhà thuốc và liên kết với Medication.</p>
+    </div>
+    <a routerLink="/pharmacist/dashboard" class="back-link">← Quay lại Dashboard</a>
+  </header>
+
+  @if (errorMessage) {
+  <div class="message error-message">{{ errorMessage }}</div>
+  }
+
+  @if (successMessage) {
+  <div class="message success-message">{{ successMessage }}</div>
+  }
+
+  <section class="form-card">
+    <h2>{{ editingId ? 'Cập nhật Product' : 'Thêm Product' }}</h2>
+
+    @if (editingId) {
+    <div class="stock-note">
+      Tồn kho hiện tại: <strong>{{ editingStock }}</strong>. Tồn kho không được sửa tại đây, chỉ thay đổi qua nhập kho hoặc cấp thuốc.
+    </div>
+    }
+
+    <div class="form-grid">
+      <label>
+        Tên Product *
+        <input type="text" maxlength="100" [(ngModel)]="name" [class.invalid-control]="fieldErrors['name']" placeholder="Ví dụ: Panadol Extra 500mg">
+        @if (fieldErrors['name']) {
+        <span class="field-error">{{ fieldErrors['name'] }}</span>
+        }
+      </label>
+
+      <label>
+        Medication liên kết
+        <select [(ngModel)]="medicationId">
+          <option value="">Không liên kết Medication</option>
+          @for (medication of medications; track medication.id) {
+          <option [value]="medication.id">{{ medication.name }}{{ medication.genericName ? ' - ' + medication.genericName : '' }}</option>
+          }
+        </select>
+      </label>
+
+      <label>
+        Giá bán *
+        <input type="number" min="0.01" step="1000" [(ngModel)]="price" [class.invalid-control]="fieldErrors['price']">
+        @if (fieldErrors['price']) {
+        <span class="field-error">{{ fieldErrors['price'] }}</span>
+        }
+      </label>
+
+      <label>
+        Hoạt chất
+        <input type="text" maxlength="100" [(ngModel)]="activeIngredient" [class.invalid-control]="fieldErrors['activeIngredient']">
+        @if (fieldErrors['activeIngredient']) {
+        <span class="field-error">{{ fieldErrors['activeIngredient'] }}</span>
+        }
+      </label>
+
+      <label>
+        Nhóm điều trị
+        <input type="text" maxlength="100" [(ngModel)]="therapeuticGroup" [class.invalid-control]="fieldErrors['therapeuticGroup']">
+        @if (fieldErrors['therapeuticGroup']) {
+        <span class="field-error">{{ fieldErrors['therapeuticGroup'] }}</span>
+        }
+      </label>
+
+      <label>
+        Dạng bào chế
+        <input type="text" maxlength="50" [(ngModel)]="dosageForm" [class.invalid-control]="fieldErrors['dosageForm']">
+        @if (fieldErrors['dosageForm']) {
+        <span class="field-error">{{ fieldErrors['dosageForm'] }}</span>
+        }
+      </label>
+
+      <label>
+        Hàm lượng
+        <input type="text" maxlength="50" [(ngModel)]="strength" [class.invalid-control]="fieldErrors['strength']" placeholder="Ví dụ: 500mg">
+        @if (fieldErrors['strength']) {
+        <span class="field-error">{{ fieldErrors['strength'] }}</span>
+        }
+      </label>
+
+      <label>
+        Image URL
+        <input type="text" maxlength="500" [(ngModel)]="imageUrl" [class.invalid-control]="fieldErrors['imageUrl']" placeholder="/images/products/...">
+        @if (fieldErrors['imageUrl']) {
+        <span class="field-error">{{ fieldErrors['imageUrl'] }}</span>
+        }
+      </label>
+
+      <label class="checkbox-label">
+        <input type="checkbox" [(ngModel)]="isPrescriptionRequired">
+        Cần đơn thuốc
+      </label>
+    </div>
+
+    <label class="description-field">
+      Mô tả
+      <textarea maxlength="500" rows="3" [(ngModel)]="description" [class.invalid-control]="fieldErrors['description']"></textarea>
+      @if (fieldErrors['description']) {
+      <span class="field-error">{{ fieldErrors['description'] }}</span>
+      }
+    </label>
+
+    <div class="form-actions">
+      @if (editingId) {
+      <button type="button" class="secondary-button" (click)="cancelEdit()">Hủy chỉnh sửa</button>
+      }
+
+      <button type="button" class="primary-button" [disabled]="isSaving" (click)="save()">
+        {{ isSaving ? 'Đang lưu...' : editingId ? 'Cập nhật' : 'Thêm Product' }}
+      </button>
+    </div>
+  </section>
+
+  <section class="list-card">
+    <div class="toolbar">
+      <div>
+        <h2>Danh sách Product</h2>
+        <span>{{ filteredProducts.length }} / {{ products.length }} Product</span>
+      </div>
+
+      <input type="text" maxlength="100" [(ngModel)]="searchTerm" placeholder="Tìm Product, Medication hoặc hoạt chất...">
+    </div>
+
+    @if (isLoading) {
+    <div class="empty-state">Đang tải Product...</div>
+    } @else if (filteredProducts.length === 0) {
+    <div class="empty-state">Không tìm thấy Product.</div>
+    } @else {
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Medication</th>
+            <th>Giá bán</th>
+            <th>Tồn kho</th>
+            <th>Kê đơn</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (product of filteredProducts; track product.id) {
+          <tr>
+            <td>
+              <strong>{{ product.name }}</strong>
+              <small>{{ product.strength || product.dosageForm || '' }}</small>
+            </td>
+            <td>{{ product.medicationName || 'Chưa liên kết' }}</td>
+            <td>{{ product.price | currency:'VND':'symbol':'1.0-0' }}</td>
+            <td><strong>{{ product.stockQuantity ?? 0 }}</strong></td>
+            <td>{{ product.isPrescriptionRequired ? 'Có' : 'Không' }}</td>
+            <td>
+              <div class="row-actions">
+                <button type="button" class="edit-button" (click)="edit(product)">Sửa</button>
+                <button type="button" class="delete-button" (click)="deleteProduct(product)">Xóa</button>
+              </div>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    }
+  </section>
+</main>

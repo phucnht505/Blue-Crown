@@ -1,0 +1,93 @@
+<main class="page">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">PHARMACIST</p>
+      <h1>Nhà cung cấp</h1>
+      <p>Quản lý nhà cung cấp phục vụ nghiệp vụ nhập kho.</p>
+    </div>
+    <a routerLink="/pharmacist/dashboard" class="back-link">← Quay lại Dashboard</a>
+  </header>
+
+  @if (errorMessage) {
+  <div class="message error-message">{{ errorMessage }}</div>
+  }
+
+  @if (successMessage) {
+  <div class="message success-message">{{ successMessage }}</div>
+  }
+
+  <section class="form-card">
+    <h2>{{ editingId ? 'Cập nhật nhà cung cấp' : 'Thêm nhà cung cấp' }}</h2>
+
+    <div class="form-grid">
+      <label>
+        Tên nhà cung cấp *
+        <input type="text" maxlength="255" [(ngModel)]="supplierName" placeholder="Ví dụ: Công ty Dược ABC">
+      </label>
+
+      <label>
+        Số điện thoại *
+        <input type="tel" maxlength="12" [(ngModel)]="contactPhone" placeholder="0901234567">
+      </label>
+
+      <label class="checkbox-label">
+        <input type="checkbox" [(ngModel)]="gdpCertified">
+        Đạt chứng nhận GDP
+      </label>
+    </div>
+
+    <div class="form-actions">
+      @if (editingId) {
+      <button type="button" class="secondary-button" (click)="cancelEdit()">Hủy chỉnh sửa</button>
+      }
+
+      <button type="button" class="primary-button" [disabled]="isSaving" (click)="save()">
+        {{ isSaving ? 'Đang lưu...' : editingId ? 'Cập nhật' : 'Thêm nhà cung cấp' }}
+      </button>
+    </div>
+  </section>
+
+  <section class="list-card">
+    <div class="section-title">
+      <h2>Danh sách nhà cung cấp</h2>
+      <span>{{ suppliers.length }} nhà cung cấp</span>
+    </div>
+
+    @if (isLoading) {
+    <div class="empty-state">Đang tải dữ liệu...</div>
+    } @else if (suppliers.length === 0) {
+    <div class="empty-state">Chưa có nhà cung cấp.</div>
+    } @else {
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Nhà cung cấp</th>
+            <th>Điện thoại</th>
+            <th>GDP</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (supplier of suppliers; track supplier.id) {
+          <tr>
+            <td><strong>{{ supplier.supplierName }}</strong></td>
+            <td>{{ supplier.contactPhone || '-' }}</td>
+            <td>
+              <span class="gdp-badge" [class.gdp-ok]="supplier.gdpCertified">{{ supplier.gdpCertified ? 'Đạt GDP' : 'Chưa đạt' }}</span>
+            </td>
+            <td>
+              <div class="row-actions">
+                <button type="button" class="edit-button" (click)="edit(supplier)">Sửa</button>
+                <button type="button" class="delete-button" (click)="deleteSupplier(supplier)">Xóa</button>
+              </div>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    }
+  </section>
+</main>

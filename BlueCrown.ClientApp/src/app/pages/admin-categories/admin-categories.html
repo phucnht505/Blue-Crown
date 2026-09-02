@@ -1,0 +1,249 @@
+<main class="page">
+  <section class="page-header">
+    <div>
+      <p class="eyebrow">ADMIN</p>
+      <h1>Quản lý danh mục hệ thống</h1>
+      <p>Quản lý phòng khám và các loại chỉ số sức khỏe đang được sử dụng trong Blue Crown.</p>
+    </div>
+  </section>
+
+  @if (errorMessage) {
+  <div class="message error-message">{{ errorMessage }}</div>
+  }
+
+  @if (successMessage) {
+  <div class="message success-message">{{ successMessage }}</div>
+  }
+
+  <div class="tabs">
+    <button type="button" [class.active]="activeTab === 'clinics'" (click)="setTab('clinics')">
+      Phòng khám
+    </button>
+
+    <button type="button" [class.active]="activeTab === 'metrics'" (click)="setTab('metrics')">
+      Loại chỉ số sức khỏe
+    </button>
+  </div>
+
+  @if (activeTab === 'clinics') {
+  <section class="card">
+    <div class="section-header">
+      <div>
+        <h2>Danh mục phòng khám</h2>
+        <p>Phòng khám được sử dụng trong hồ sơ chuyên môn của bác sĩ.</p>
+      </div>
+
+      <button class="primary-button" type="button" (click)="openCreateClinic()">+ Thêm phòng khám</button>
+    </div>
+
+    <div class="search-row">
+      <input type="text"
+             [value]="clinicSearch"
+             (input)="clinicSearch = $any($event.target).value"
+             placeholder="Tìm theo tên, địa chỉ hoặc số điện thoại">
+
+      <button class="secondary-button" type="button" (click)="clearClinicSearch()">Đặt lại</button>
+    </div>
+
+    @if (isLoadingClinics) {
+    <div class="state">Đang tải danh sách phòng khám...</div>
+    } @else if (filteredClinics.length === 0) {
+    <div class="state">Không tìm thấy phòng khám phù hợp.</div>
+    } @else {
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Tên phòng khám</th>
+            <th>Địa chỉ</th>
+            <th>Số điện thoại</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (clinic of filteredClinics; track clinic.id) {
+          <tr>
+            <td><strong>{{ clinic.name }}</strong></td>
+            <td>{{ clinic.address || '-' }}</td>
+            <td>{{ clinic.phone || '-' }}</td>
+            <td>
+              <div class="actions">
+                <button class="action-button edit" type="button" (click)="openEditClinic(clinic)">Sửa</button>
+                <button class="action-button danger" type="button" (click)="deleteClinic(clinic)">Xóa</button>
+              </div>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    }
+  </section>
+  }
+
+  @if (activeTab === 'metrics') {
+  <section class="card">
+    <div class="section-header">
+      <div>
+        <h2>Danh mục loại chỉ số sức khỏe</h2>
+        <p>Cấu hình tên chỉ số, đơn vị và khoảng giá trị bình thường.</p>
+      </div>
+
+      <button class="primary-button" type="button" (click)="openCreateMetric()">+ Thêm loại chỉ số</button>
+    </div>
+
+    <div class="search-row">
+      <input type="text"
+             [value]="metricSearch"
+             (input)="metricSearch = $any($event.target).value"
+             placeholder="Tìm theo mã, tên hoặc đơn vị">
+
+      <button class="secondary-button" type="button" (click)="clearMetricSearch()">Đặt lại</button>
+    </div>
+
+    @if (isLoadingMetrics) {
+    <div class="state">Đang tải danh mục chỉ số...</div>
+    } @else if (filteredMetricTypes.length === 0) {
+    <div class="state">Không tìm thấy loại chỉ số phù hợp.</div>
+    } @else {
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Mã</th>
+            <th>Tên chỉ số</th>
+            <th>Đơn vị</th>
+            <th>Bình thường từ</th>
+            <th>Đến</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (metric of filteredMetricTypes; track metric.id) {
+          <tr>
+            <td><strong>{{ metric.code }}</strong></td>
+            <td>{{ metric.name }}</td>
+            <td>{{ metric.unit }}</td>
+            <td>{{ metric.normalMin ?? '-' }}</td>
+            <td>{{ metric.normalMax ?? '-' }}</td>
+            <td>
+              <div class="actions">
+                <button class="action-button edit" type="button" (click)="openEditMetric(metric)">Sửa</button>
+                <button class="action-button danger" type="button" (click)="deleteMetric(metric)">Xóa</button>
+              </div>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    }
+  </section>
+  }
+
+  @if (isClinicFormOpen) {
+  <div class="overlay">
+    <section class="modal">
+      <div class="modal-header">
+        <div>
+          <h2>{{ editingClinicId ? 'Cập nhật phòng khám' : 'Thêm phòng khám' }}</h2>
+          <p>Nhập thông tin phòng khám.</p>
+        </div>
+
+        <button class="close-button" type="button" (click)="closeClinicForm()">×</button>
+      </div>
+
+      <form [formGroup]="clinicForm" (ngSubmit)="saveClinic()" novalidate>
+        <div class="form-grid">
+          <div class="field full-width">
+            <label>Tên phòng khám <span>*</span></label>
+            <input type="text" formControlName="name">
+
+            @if (clinicForm.controls.name.touched && clinicForm.controls.name.invalid) {
+            <p class="field-error">Tên phòng khám phải từ 2 đến 255 ký tự.</p>
+            }
+          </div>
+
+          <div class="field full-width">
+            <label>Địa chỉ</label>
+            <input type="text" formControlName="address">
+          </div>
+
+          <div class="field full-width">
+            <label>Số điện thoại</label>
+            <input type="text" formControlName="phone">
+
+            @if (clinicForm.controls.phone.touched && clinicForm.controls.phone.invalid) {
+            <p class="field-error">Số điện thoại không hợp lệ.</p>
+            }
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="secondary-button" type="button" (click)="closeClinicForm()">Hủy</button>
+          <button class="primary-button" type="submit" [disabled]="isSaving">
+            {{ isSaving ? 'Đang lưu...' : 'Lưu phòng khám' }}
+          </button>
+        </div>
+      </form>
+    </section>
+  </div>
+  }
+
+  @if (isMetricFormOpen) {
+  <div class="overlay">
+    <section class="modal">
+      <div class="modal-header">
+        <div>
+          <h2>{{ editingMetricId !== null ? 'Cập nhật loại chỉ số' : 'Thêm loại chỉ số' }}</h2>
+          <p>Cấu hình thông tin loại chỉ số sức khỏe.</p>
+        </div>
+
+        <button class="close-button" type="button" (click)="closeMetricForm()">×</button>
+      </div>
+
+      <form [formGroup]="metricForm" (ngSubmit)="saveMetric()" novalidate>
+        <div class="form-grid">
+          <div class="field">
+            <label>Mã chỉ số <span>*</span></label>
+            <input type="text" formControlName="code" placeholder="VD: BP_SYS">
+          </div>
+
+          <div class="field">
+            <label>Tên chỉ số <span>*</span></label>
+            <input type="text" formControlName="name">
+          </div>
+
+          <div class="field">
+            <label>Đơn vị <span>*</span></label>
+            <input type="text" formControlName="unit" placeholder="VD: mmHg">
+          </div>
+
+          <div class="field">
+            <label>Giá trị bình thường tối thiểu</label>
+            <input type="number" formControlName="normalMin">
+          </div>
+
+          <div class="field">
+            <label>Giá trị bình thường tối đa</label>
+            <input type="number" formControlName="normalMax">
+          </div>
+        </div>
+
+        @if (metricForm.touched && metricForm.invalid) {
+        <p class="field-error form-error">Mã, tên và đơn vị không được để trống.</p>
+        }
+
+        <div class="modal-actions">
+          <button class="secondary-button" type="button" (click)="closeMetricForm()">Hủy</button>
+          <button class="primary-button" type="submit" [disabled]="isSaving">
+            {{ isSaving ? 'Đang lưu...' : 'Lưu loại chỉ số' }}
+          </button>
+        </div>
+      </form>
+    </section>
+  </div>
+  }
+</main>

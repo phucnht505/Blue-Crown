@@ -7,7 +7,7 @@ namespace BlueCrown.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Pharmacist")]
+    [Authorize(Roles = "admin,pharmacist")]
     public class SupplierController : ControllerBase
     {
         private readonly ISupplierService _service;
@@ -35,16 +35,13 @@ namespace BlueCrown.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CreateSupplierDto dto)
+        [Authorize(Roles = "pharmacist")]
+        public async Task<IActionResult> Create([FromBody] CreateSupplierDto dto)
         {
             try
             {
                 var supplier = await _service.CreateAsync(dto);
-
-                return CreatedAtAction(
-                    nameof(GetById),
-                    new { id = supplier.Id },
-                    supplier);
+                return CreatedAtAction(nameof(GetById), new { id = supplier.Id }, supplier);
             }
             catch (ArgumentException ex)
             {
@@ -57,7 +54,8 @@ namespace BlueCrown.Api.Controllers
         }
 
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> Update(Guid id, UpdateSupplierDto dto)
+        [Authorize(Roles = "pharmacist")]
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateSupplierDto dto)
         {
             try
             {
@@ -79,6 +77,7 @@ namespace BlueCrown.Api.Controllers
         }
 
         [HttpDelete("{id:guid}")]
+        [Authorize(Roles = "pharmacist")]
         public async Task<IActionResult> Delete(Guid id)
         {
             try
