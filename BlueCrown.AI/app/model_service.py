@@ -1,11 +1,40 @@
 from pathlib import Path
+import os
 import time
 import numpy as np
 import onnxruntime as ort
+from huggingface_hub import snapshot_download
 from transformers import AutoTokenizer
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-MODEL_DIR = BASE_DIR / "models" / "ViNMeDicalQA-onnx"
+LOCAL_MODEL_DIR = BASE_DIR / "models" / "ViNMeDicalQA-onnx"
+
+HF_MODEL_REPO = os.getenv(
+    "HF_MODEL_REPO",
+    "phucnht505/bluecrown-medical-ai"
+)
+
+
+def get_model_dir() -> Path:
+    local_model_path = LOCAL_MODEL_DIR / "model.onnx"
+
+    if local_model_path.exists():
+        print("[AI] Using local ONNX model.")
+        return LOCAL_MODEL_DIR
+
+    print(f"[AI] Local model not found. Downloading from {HF_MODEL_REPO}...")
+
+    downloaded_path = snapshot_download(
+        repo_id=HF_MODEL_REPO,
+        repo_type="model",
+        token=os.getenv("HF_TOKEN")
+    )
+
+    print("[AI] Hugging Face model downloaded.")
+    return Path(downloaded_path)
+
+
+MODEL_DIR = get_model_dir()
 MODEL_PATH = MODEL_DIR / "model.onnx"
 
 class DiseaseModelService:
