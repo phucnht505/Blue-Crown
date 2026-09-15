@@ -30,8 +30,7 @@ namespace BlueCrown.Api.Repositories.Implementations
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<SymptomLog?> GetLatestByPatientIdAsync(
-            Guid patientId)
+        public async Task<SymptomLog?> GetLatestByPatientIdAsync(Guid patientId)
         {
             return await _context.SymptomLogs
                 .AsNoTracking()

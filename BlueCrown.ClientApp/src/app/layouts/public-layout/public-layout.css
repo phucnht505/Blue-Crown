@@ -1,4 +1,6 @@
 .public-content {
-  min-height: calc(100vh - 140px);
+  min-height: calc(100vh - 72px);
+  padding-bottom: 105px;
+  box-sizing: border-box;
   background: #f8fafc;
 }
