@@ -135,7 +135,7 @@ CREATE TABLE appointments (
 
 CREATE TABLE medical_records (
     id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
-    appointment_id UNIQUEIDENTIFIER REFERENCES appointments(id),
+	appointment_id UNIQUEIDENTIFIER NOT NULL REFERENCES appointments(id),
     patient_id UNIQUEIDENTIFIER NOT NULL REFERENCES patient_profiles(id),
     doctor_id UNIQUEIDENTIFIER NOT NULL REFERENCES doctor_profiles(id),
     diagnosis NVARCHAR(MAX) NOT NULL, 
@@ -143,6 +143,8 @@ CREATE TABLE medical_records (
     created_at DATETIME DEFAULT GETDATE()
 );
 
+CREATE UNIQUE INDEX UX_medical_records_appointment_id
+ON medical_records(appointment_id);
 -- =========================================
 -- NHÓM 6: ĐƠN THUỐC & NHẮC UỐNG THUỐC
 -- =========================================

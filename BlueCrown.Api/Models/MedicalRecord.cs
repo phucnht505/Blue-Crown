@@ -7,8 +7,7 @@ public partial class MedicalRecord
 {
     public Guid Id { get; set; }
 
-    public Guid? AppointmentId { get; set; }
-
+    public Guid AppointmentId { get; set; }
     public Guid PatientId { get; set; }
 
     public Guid DoctorId { get; set; }
@@ -19,8 +18,7 @@ public partial class MedicalRecord
 
     public DateTime? CreatedAt { get; set; }
 
-    public virtual Appointment? Appointment { get; set; }
-
+    public virtual Appointment Appointment { get; set; } = null!;
     public virtual DoctorProfile Doctor { get; set; } = null!;
 
     public virtual PatientProfile Patient { get; set; } = null!;

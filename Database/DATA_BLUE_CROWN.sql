@@ -622,10 +622,10 @@ BEGIN TRY
      83000, N'cod', N'paid', N'delivered', NULL, '2026-08-01T10:00:00'),
 
     ('00000000-0000-0000-0000-000000101002',
-     '00000000-0000-0000-0000-000000001004', NULL,
-     N'78 Cách Mạng Tháng 8, Quận 3, TP.HCM',
-     100000, N'cod', N'pending', N'processing',
-     '00000000-0000-0000-0000-000000081002', '2026-08-14T12:00:00'),
+	'00000000-0000-0000-0000-000000001004', NULL,
+	N'78 Cách Mạng Tháng 8, Quận 3, TP.HCM',
+	48000, N'cod', N'pending', N'processing',
+	'00000000-0000-0000-0000-000000081002', '2026-08-14T12:00:00'),
 
     ('00000000-0000-0000-0000-000000101003',
      NULL, N'0909998877',
@@ -652,11 +652,9 @@ BEGIN TRY
     (NEWID(), '00000000-0000-0000-0000-000000101001',
      '00000000-0000-0000-0000-000000091009', 1, 18000),
 
-    -- Order 101002 = 48,000 + 52,000 = 100,000
-    (NEWID(), '00000000-0000-0000-0000-000000101002',
-     '00000000-0000-0000-0000-000000091006', 1, 48000),
-    (NEWID(), '00000000-0000-0000-0000-000000101002',
-     '00000000-0000-0000-0000-000000091004', 1, 52000),
+   -- Order 101002 = 48,000
+	(NEWID(), '00000000-0000-0000-0000-000000101002',
+	'00000000-0000-0000-0000-000000091006', 1, 48000),
 
     -- Guest order = 45,000 + 18,000 = 63,000
     (NEWID(), '00000000-0000-0000-0000-000000101003',
@@ -694,23 +692,23 @@ BEGIN TRY
         total_cost, receipt_date, status
     )
     VALUES
-    ('00000000-0000-0000-0000-000000121001',
-     '00000000-0000-0000-0000-000000111001',
-     '00000000-0000-0000-0000-000000004001',
-     '00000000-0000-0000-0000-000000003001',
-     12500000, '2026-05-20T09:00:00', N'approved'),
+   ('00000000-0000-0000-0000-000000121001',
+   '00000000-0000-0000-0000-000000111001',
+   '00000000-0000-0000-0000-000000004001',
+   '00000000-0000-0000-0000-000000003001',
+   51500000, '2026-05-20T09:00:00', N'approved'),
 
     ('00000000-0000-0000-0000-000000121002',
-     '00000000-0000-0000-0000-000000111002',
-     '00000000-0000-0000-0000-000000004002',
-     '00000000-0000-0000-0000-000000003001',
-     8200000, '2026-06-10T09:00:00', N'approved'),
+	'00000000-0000-0000-0000-000000111002',
+	'00000000-0000-0000-0000-000000004002',
+	'00000000-0000-0000-0000-000000003001',
+	 54500000, '2026-06-10T09:00:00', N'approved'),
 
     ('00000000-0000-0000-0000-000000121003',
-     '00000000-0000-0000-0000-000000111003',
-     '00000000-0000-0000-0000-000000004001',
-     NULL,
-     3400000, '2026-08-20T09:00:00', N'pending_approval');
+	'00000000-0000-0000-0000-000000111003',
+	'00000000-0000-0000-0000-000000004001',
+	NULL,
+	156000000, '2026-08-20T09:00:00', N'pending_approval');
 
     -- =====================================================
     -- 25. RECEIPT DETAILS
@@ -1006,8 +1004,7 @@ BEGIN TRY
     IF NOT EXISTS (SELECT 1 FROM ecommerce_orders WHERE id='00000000-0000-0000-0000-000000101008') INSERT INTO ecommerce_orders(id,user_id,guest_phone,shipping_address,total_amount,payment_method,payment_status,order_status,prescription_id,created_at) VALUES('00000000-0000-0000-0000-000000101008','00000000-0000-0000-0000-000000001009',NULL,N'Địa chỉ giao hàng demo 8, TP.HCM',171000,N'cod',N'pending',N'processing',NULL,'2026-08-18T10:00:00');
     IF NOT EXISTS (SELECT 1 FROM order_items WHERE id='00000000-0000-0000-0000-000000221007') INSERT INTO order_items(id,order_id,product_id,quantity,unit_price) VALUES('00000000-0000-0000-0000-000000221007','00000000-0000-0000-0000-000000101008','00000000-0000-0000-0000-000000091018',1,145000);
     IF NOT EXISTS (SELECT 1 FROM order_items WHERE id='00000000-0000-0000-0000-000000221008') INSERT INTO order_items(id,order_id,product_id,quantity,unit_price) VALUES('00000000-0000-0000-0000-000000221008','00000000-0000-0000-0000-000000101008','00000000-0000-0000-0000-000000091031',1,26000);
-    IF NOT EXISTS (SELECT 1 FROM ecommerce_orders WHERE id='00000000-0000-0000-0000-000000101009') INSERT INTO ecommerce_orders(id,user_id,guest_phone,shipping_address,total_amount,payment_method,payment_status,order_status,prescription_id,created_at) VALUES('00000000-0000-0000-0000-000000101009','00000000-0000-0000-0000-000000001010',NULL,N'Địa chỉ giao hàng demo 9, TP.HCM',91000,N'cod',N'pending',N'processing',NULL,'2026-08-19T10:00:00');
-    IF NOT EXISTS (SELECT 1 FROM order_items WHERE id='00000000-0000-0000-0000-000000221009') INSERT INTO order_items(id,order_id,product_id,quantity,unit_price) VALUES('00000000-0000-0000-0000-000000221009','00000000-0000-0000-0000-000000101009','00000000-0000-0000-0000-000000091013',1,39000);
+    IF NOT EXISTS (SELECT 1 FROM ecommerce_orders WHERE id='00000000-0000-0000-0000-000000101009') INSERT INTO ecommerce_orders(id,user_id,guest_phone,shipping_address,total_amount,payment_method,payment_status,order_status,prescription_id,created_at) VALUES('00000000-0000-0000-0000-000000101009','00000000-0000-0000-0000-000000001010',NULL,N'Địa chỉ giao hàng demo 9, TP.HCM',52000,N'cod',N'pending',N'processing',NULL,'2026-08-19T10:00:00');
     IF NOT EXISTS (SELECT 1 FROM order_items WHERE id='00000000-0000-0000-0000-000000221010') INSERT INTO order_items(id,order_id,product_id,quantity,unit_price) VALUES('00000000-0000-0000-0000-000000221010','00000000-0000-0000-0000-000000101009','00000000-0000-0000-0000-000000091014',1,52000);
     IF NOT EXISTS (SELECT 1 FROM ecommerce_orders WHERE id='00000000-0000-0000-0000-000000101010') INSERT INTO ecommerce_orders(id,user_id,guest_phone,shipping_address,total_amount,payment_method,payment_status,order_status,prescription_id,created_at) VALUES('00000000-0000-0000-0000-000000101010','00000000-0000-0000-0000-000000001011',NULL,N'Địa chỉ giao hàng demo 10, TP.HCM',214000,N'cod',N'pending',N'processing',NULL,'2026-08-20T10:00:00');
     IF NOT EXISTS (SELECT 1 FROM order_items WHERE id='00000000-0000-0000-0000-000000221011') INSERT INTO order_items(id,order_id,product_id,quantity,unit_price) VALUES('00000000-0000-0000-0000-000000221011','00000000-0000-0000-0000-000000101010','00000000-0000-0000-0000-000000091018',1,145000);
@@ -1029,9 +1026,9 @@ BEGIN TRY
     IF NOT EXISTS (SELECT 1 FROM suppliers WHERE id='00000000-0000-0000-0000-000000111004') INSERT INTO suppliers(id,supplier_name,contact_phone,gdp_certified,created_at) VALUES('00000000-0000-0000-0000-000000111004',N'Công ty CP Traphaco',N'02436830001',1,'2025-08-04');
     IF NOT EXISTS (SELECT 1 FROM suppliers WHERE id='00000000-0000-0000-0000-000000111005') INSERT INTO suppliers(id,supplier_name,contact_phone,gdp_certified,created_at) VALUES('00000000-0000-0000-0000-000000111005',N'Công ty CP Dược phẩm Imexpharm',N'02773851941',1,'2025-08-04');
     IF NOT EXISTS (SELECT 1 FROM suppliers WHERE id='00000000-0000-0000-0000-000000111006') INSERT INTO suppliers(id,supplier_name,contact_phone,gdp_certified,created_at) VALUES('00000000-0000-0000-0000-000000111006',N'Công ty CP Pymepharco',N'02573829090',1,'2025-08-04');
-    IF NOT EXISTS (SELECT 1 FROM inventory_receipts WHERE id='00000000-0000-0000-0000-000000121004') INSERT INTO inventory_receipts(id,supplier_id,created_by,approved_by,total_cost,receipt_date,status) VALUES('00000000-0000-0000-0000-000000121004','00000000-0000-0000-0000-000000111004','00000000-0000-0000-0000-000000004003','00000000-0000-0000-0000-000000003001',6200000,'2026-08-21T09:00:00',N'approved');
-    IF NOT EXISTS (SELECT 1 FROM inventory_receipts WHERE id='00000000-0000-0000-0000-000000121005') INSERT INTO inventory_receipts(id,supplier_id,created_by,approved_by,total_cost,receipt_date,status) VALUES('00000000-0000-0000-0000-000000121005','00000000-0000-0000-0000-000000111005','00000000-0000-0000-0000-000000004001','00000000-0000-0000-0000-000000003001',7800000,'2026-08-21T09:00:00',N'approved');
-    IF NOT EXISTS (SELECT 1 FROM inventory_receipts WHERE id='00000000-0000-0000-0000-000000121006') INSERT INTO inventory_receipts(id,supplier_id,created_by,approved_by,total_cost,receipt_date,status) VALUES('00000000-0000-0000-0000-000000121006','00000000-0000-0000-0000-000000111006','00000000-0000-0000-0000-000000004002',NULL,5100000,'2026-08-21T09:00:00',N'pending_approval');
+    IF NOT EXISTS (SELECT 1 FROM inventory_receipts WHERE id='00000000-0000-0000-0000-000000121004') INSERT INTO inventory_receipts(id,supplier_id,created_by,approved_by,total_cost,receipt_date,status) VALUES('00000000-0000-0000-0000-000000121004','00000000-0000-0000-0000-000000111004','00000000-0000-0000-0000-000000004003','00000000-0000-0000-0000-000000003001',78600000,'2026-08-21T09:00:00',N'approved');
+    IF NOT EXISTS (SELECT 1 FROM inventory_receipts WHERE id='00000000-0000-0000-0000-000000121005') INSERT INTO inventory_receipts(id,supplier_id,created_by,approved_by,total_cost,receipt_date,status) VALUES('00000000-0000-0000-0000-000000121005','00000000-0000-0000-0000-000000111005','00000000-0000-0000-0000-000000004001','00000000-0000-0000-0000-000000003001',138000000,'2026-08-21T09:00:00',N'approved');
+    IF NOT EXISTS (SELECT 1 FROM inventory_receipts WHERE id='00000000-0000-0000-0000-000000121006') INSERT INTO inventory_receipts(id,supplier_id,created_by,approved_by,total_cost,receipt_date,status) VALUES('00000000-0000-0000-0000-000000121006','00000000-0000-0000-0000-000000111006','00000000-0000-0000-0000-000000004002',NULL,197000000,'2026-08-21T09:00:00',N'pending_approval');
     IF NOT EXISTS (SELECT 1 FROM receipt_details WHERE id='00000000-0000-0000-0000-000000231001') INSERT INTO receipt_details(id,receipt_id,product_id,batch_number,expiration_date,quantity_imported,import_price) VALUES('00000000-0000-0000-0000-000000231001','00000000-0000-0000-0000-000000121004','00000000-0000-0000-0000-000000091015',N'LOR2026D01','2028-02-01',1800,12000);
     IF NOT EXISTS (SELECT 1 FROM receipt_details WHERE id='00000000-0000-0000-0000-000000231002') INSERT INTO receipt_details(id,receipt_id,product_id,batch_number,expiration_date,quantity_imported,import_price) VALUES('00000000-0000-0000-0000-000000231002','00000000-0000-0000-0000-000000121004','00000000-0000-0000-0000-000000091019',N'PVI2026D02','2028-04-15',1500,18000);
     IF NOT EXISTS (SELECT 1 FROM receipt_details WHERE id='00000000-0000-0000-0000-000000231003') INSERT INTO receipt_details(id,receipt_id,product_id,batch_number,expiration_date,quantity_imported,import_price) VALUES('00000000-0000-0000-0000-000000231003','00000000-0000-0000-0000-000000121004','00000000-0000-0000-0000-000000091020',N'ALC2026D03','2029-01-01',3000,10000);
@@ -1157,245 +1154,3 @@ WHERE id = '00000000-0000-0000-0000-000000091031';
 UPDATE products SET image_url = N'/images/products/n95mask.jpg'
 WHERE id = '00000000-0000-0000-0000-000000091032';
 
-
-USE BLUE_CROWN;
-GO
-
-SET NOCOUNT ON;
-
-PRINT N'===== 1. KIỂM TRA CỘT/INDEX QUAN TRỌNG =====';
-
-SELECT
-    COL_LENGTH('prescriptions', 'appointment_id') AS prescription_appointment_id,
-    COL_LENGTH('prescriptions', 'medical_record_id') AS prescription_medical_record_id,
-    COL_LENGTH('prescriptions', 'diagnosis') AS prescription_diagnosis,
-    COL_LENGTH('health_goals', 'created_by_user_id') AS health_goal_created_by_user_id,
-    COL_LENGTH('health_goals', 'created_by_role') AS health_goal_created_by_role,
-    COL_LENGTH('products', 'medication_id') AS product_medication_id;
-
-SELECT name, is_unique
-FROM sys.indexes
-WHERE object_id = OBJECT_ID('prescriptions')
-  AND name = 'UX_prescriptions_appointment_id';
-
-PRINT N'===== 2. KIỂM TRA PRESCRIPTION =====';
-
-SELECT
-    id,
-    appointment_id,
-    medical_record_id,
-    patient_id,
-    doctor_id,
-    diagnosis,
-    status,
-    created_at
-FROM prescriptions
-ORDER BY created_at;
-
-SELECT appointment_id, COUNT(*) AS prescription_count
-FROM prescriptions
-GROUP BY appointment_id
-HAVING COUNT(*) > 1;
-
-SELECT COUNT(*) AS invalid_prescription_rows
-FROM prescriptions
-WHERE appointment_id IS NULL
-   OR status NOT IN ('pending', 'approved', 'dispensed', 'cancelled');
-
-PRINT N'===== 3. KIỂM TRA HEALTH GOAL =====';
-
-SELECT COUNT(*) AS health_goal_missing_creator
-FROM health_goals
-WHERE created_by_user_id IS NULL
-   OR created_by_role NOT IN ('patient', 'doctor');
-
-PRINT N'===== 4. KIỂM TRA ECOMMERCE COD =====';
-
-SELECT
-    id,
-    payment_method,
-    payment_status,
-    order_status,
-    prescription_id
-FROM ecommerce_orders
-ORDER BY created_at;
-
-SELECT COUNT(*) AS non_cod_ecommerce_orders
-FROM ecommerce_orders
-WHERE LOWER(payment_method) <> 'cod';
-
-PRINT N'===== 5. KIỂM TRA PRODUCT -> MEDICATION =====';
-
-SELECT
-    p.id,
-    p.name AS product_name,
-    p.medication_id,
-    m.name AS medication_name,
-    p.stock_quantity,
-    p.is_prescription_required,
-    p.prescription_required
-FROM products p
-LEFT JOIN medications m ON m.id = p.medication_id
-ORDER BY p.name;
-
-SELECT COUNT(*) AS prescription_flag_mismatch
-FROM products
-WHERE ISNULL(is_prescription_required, 0) <> prescription_required;
-
-PRINT N'===== 6. KIỂM TRA DỮ LIỆU TỔNG =====';
-
-SELECT N'users' AS table_name, COUNT(*) AS row_count FROM users
-UNION ALL SELECT N'patient_profiles', COUNT(*) FROM patient_profiles
-UNION ALL SELECT N'doctor_profiles', COUNT(*) FROM doctor_profiles
-UNION ALL SELECT N'appointments', COUNT(*) FROM appointments
-UNION ALL SELECT N'medical_records', COUNT(*) FROM medical_records
-UNION ALL SELECT N'prescriptions', COUNT(*) FROM prescriptions
-UNION ALL SELECT N'prescription_items', COUNT(*) FROM prescription_items
-UNION ALL SELECT N'products', COUNT(*) FROM products
-UNION ALL SELECT N'ecommerce_orders', COUNT(*) FROM ecommerce_orders
-UNION ALL SELECT N'inventory_receipts', COUNT(*) FROM inventory_receipts
-UNION ALL SELECT N'health_goals', COUNT(*) FROM health_goals;
-
-PRINT N'===== HOÀN TẤT KIỂM TRA =====';
-
-
-USE BLUE_CROWN;
-GO
-
-PRINT '===== 1. KIEM TRA PRESCRIPTIONS =====';
-
-SELECT
-    c.name AS column_name,
-    t.name AS data_type,
-    c.max_length,
-    c.is_nullable
-FROM sys.columns c
-JOIN sys.types t ON c.user_type_id = t.user_type_id
-WHERE c.object_id = OBJECT_ID('dbo.prescriptions')
-ORDER BY c.column_id;
-
-PRINT '===== 2. PRESCRIPTION KHONG CO APPOINTMENT =====';
-
-SELECT COUNT(*) AS invalid_prescription_rows
-FROM prescriptions
-WHERE appointment_id IS NULL;
-
-PRINT '===== 3. APPOINTMENT BI TRUNG PRESCRIPTION =====';
-
-SELECT appointment_id, COUNT(*) AS total
-FROM prescriptions
-GROUP BY appointment_id
-HAVING COUNT(*) > 1;
-
-PRINT '===== 4. KIEM TRA HEALTH GOALS =====';
-
-SELECT COUNT(*) AS health_goal_missing_creator
-FROM health_goals
-WHERE created_by_user_id IS NULL
-   OR created_by_role IS NULL;
-
-PRINT '===== 5. ROLE NGUOI TAO HEALTH GOAL KHONG HOP LE =====';
-
-SELECT *
-FROM health_goals
-WHERE created_by_role NOT IN ('patient', 'doctor');
-
-PRINT '===== 6. KIEM TRA DON HANG KHONG PHAI COD =====';
-
-SELECT COUNT(*) AS non_cod_ecommerce_orders
-FROM ecommerce_orders
-WHERE LOWER(LTRIM(RTRIM(payment_method))) <> 'cod';
-
-PRINT '===== 7. DANH SACH PAYMENT METHOD CUA ECOMMERCE =====';
-
-SELECT payment_method, COUNT(*) AS total
-FROM ecommerce_orders
-GROUP BY payment_method;
-
-PRINT '===== 8. KIEM TRA 2 COT PRESCRIPTION FLAG =====';
-
-SELECT COUNT(*) AS prescription_flag_mismatch
-FROM products
-WHERE ISNULL(is_prescription_required, 0)
-   <> ISNULL(prescription_required, 0);
-
-PRINT '===== 9. PRODUCT CHUA GAN MEDICATION =====';
-
-SELECT
-    id,
-    name,
-    medication_id,
-    is_prescription_required
-FROM products
-WHERE medication_id IS NULL
-ORDER BY name;
-
-PRINT '===== 10. PRESCRIPTION HIEN TAI =====';
-
-SELECT
-    p.id,
-    p.appointment_id,
-    a.type AS appointment_type,
-    a.status AS appointment_status,
-    p.medical_record_id,
-    p.patient_id,
-    p.doctor_id,
-    p.status,
-    p.diagnosis
-FROM prescriptions p
-LEFT JOIN appointments a ON a.id = p.appointment_id
-ORDER BY p.created_at;
-
-PRINT '===== 11. TONG SO BAN GHI =====';
-
-SELECT 'users' AS table_name, COUNT(*) AS total FROM users
-UNION ALL
-SELECT 'patient_profiles', COUNT(*) FROM patient_profiles
-UNION ALL
-SELECT 'doctor_profiles', COUNT(*) FROM doctor_profiles
-UNION ALL
-SELECT 'appointments', COUNT(*) FROM appointments
-UNION ALL
-SELECT 'medical_records', COUNT(*) FROM medical_records
-UNION ALL
-SELECT 'prescriptions', COUNT(*) FROM prescriptions
-UNION ALL
-SELECT 'products', COUNT(*) FROM products
-UNION ALL
-SELECT 'ecommerce_orders', COUNT(*) FROM ecommerce_orders
-UNION ALL
-SELECT 'inventory_receipts', COUNT(*) FROM inventory_receipts;
-
-USE BLUE_CROWN;
-GO
-
--- 1. Thuốc yêu cầu kê đơn nhưng chưa liên kết Medication
-SELECT
-    id,
-    name,
-    medication_id,
-    is_prescription_required,
-    prescription_required
-FROM products
-WHERE (
-        ISNULL(is_prescription_required, 0) = 1
-        OR ISNULL(prescription_required, 0) = 1
-      )
-  AND medication_id IS NULL;
-
-  -- 2. Medication đang có trong Prescription nhưng không có Product tương ứng
-SELECT
-    pi.medication_id,
-    m.name AS medication_name
-FROM prescription_items pi
-LEFT JOIN medications m
-    ON m.id = pi.medication_id
-LEFT JOIN products p
-    ON p.medication_id = pi.medication_id
-WHERE p.id IS NULL
-GROUP BY
-    pi.medication_id,
-    m.name;
-
-	USE BLUE_CROWN;
-GO
