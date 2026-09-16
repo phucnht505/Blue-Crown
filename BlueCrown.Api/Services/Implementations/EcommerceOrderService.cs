@@ -288,9 +288,24 @@ namespace BlueCrown.Api.Services.Implementations
             if (prescription.Patient?.UserId != userId.Value)
                 throw new InvalidOperationException("Prescription không thuộc tài khoản đang đặt hàng.");
 
-            // BR-ORD-RX-003: Prescription phải được Pharmacist duyệt.
-            if (!string.Equals(prescription.Status, "approved", StringComparison.OrdinalIgnoreCase))
-                throw new InvalidOperationException("Prescription phải ở trạng thái đã duyệt trước khi dùng để đặt hàng.");
+            // BR-ORD-RX-003: Trạng thái Prescription phải phù hợp với loại Appointment.
+            var appointmentType = prescription.Appointment?.Type?.Trim().ToLowerInvariant();
+            var prescriptionStatus = prescription.Status?.Trim().ToLowerInvariant();
+
+            if (appointmentType == "online_consult")
+            {
+                if (prescriptionStatus != "issued")
+                    throw new InvalidOperationException("Đơn thuốc tư vấn trực tuyến chưa ở trạng thái hợp lệ để đặt hàng.");
+            }
+            else if (appointmentType == "clinic_visit")
+            {
+                if (prescriptionStatus != "approved")
+                    throw new InvalidOperationException("Đơn thuốc khám trực tiếp phải được Pharmacist duyệt trước khi dùng để đặt hàng.");
+            }
+            else
+            {
+                throw new InvalidOperationException("Loại lịch khám của Prescription không hợp lệ.");
+            }
 
             // BR-ORD-RX-004: Không dùng lại Prescription cho Order khác đang hoạt động.
             if (await _orderRepository.HasActiveOrderByPrescriptionIdAsync(prescription.Id))

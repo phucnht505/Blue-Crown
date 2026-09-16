@@ -24,6 +24,7 @@ BEGIN TRY
     DELETE FROM payments;
     DELETE FROM health_goals;
 
+    DELETE FROM prescription_dispense_items;
     DELETE FROM prescription_items;
     DELETE FROM prescriptions;
 
@@ -196,13 +197,17 @@ BEGIN TRY
     -- 7. HEALTH GOALS
     -- =====================================================
     INSERT INTO health_goals
-    (id, patient_id, metric_type_id, target_value, start_date, end_date, status)
+    (
+        id, patient_id, metric_type_id, target_value,
+        start_date, end_date, status,
+        created_by_user_id, created_by_role
+    )
     VALUES
-    (NEWID(), '00000000-0000-0000-0000-000000011001', 1, 65.00, '2026-08-01', '2026-11-01', N'in_progress'),
-    (NEWID(), '00000000-0000-0000-0000-000000011002', 3, 120.00, '2026-08-01', '2026-10-01', N'in_progress'),
-    (NEWID(), '00000000-0000-0000-0000-000000011003', 2, 75.00, '2026-08-01', '2026-09-30', N'in_progress'),
-    (NEWID(), '00000000-0000-0000-0000-000000011004', 5, 95.00, '2026-08-01', '2026-12-31', N'in_progress'),
-    (NEWID(), '00000000-0000-0000-0000-000000011005', 1, 55.00, '2026-08-01', '2026-11-30', N'in_progress');
+    (NEWID(), '00000000-0000-0000-0000-000000011001', 1, 65.00, '2026-08-01', '2026-11-01', N'in_progress', '00000000-0000-0000-0000-000000001001', N'patient'),
+    (NEWID(), '00000000-0000-0000-0000-000000011002', 3, 120.00, '2026-08-01', '2026-10-01', N'in_progress', '00000000-0000-0000-0000-000000001002', N'patient'),
+    (NEWID(), '00000000-0000-0000-0000-000000011003', 2, 75.00, '2026-08-01', '2026-09-30', N'in_progress', '00000000-0000-0000-0000-000000001003', N'patient'),
+    (NEWID(), '00000000-0000-0000-0000-000000011004', 5, 95.00, '2026-08-01', '2026-12-31', N'in_progress', '00000000-0000-0000-0000-000000001004', N'patient'),
+    (NEWID(), '00000000-0000-0000-0000-000000011005', 1, 55.00, '2026-08-01', '2026-11-30', N'in_progress', '00000000-0000-0000-0000-000000001005', N'patient');
 
     -- =====================================================
     -- 8. PRODUCTS
@@ -291,6 +296,33 @@ BEGIN TRY
     ('00000000-0000-0000-0000-000000071008', N'Salbutamol 100mcg', N'Salbutamol', N'Hô hấp'),
     ('00000000-0000-0000-0000-000000071009', N'Ibuprofen 400mg', N'Ibuprofen', N'Giảm đau - Kháng viêm'),
     ('00000000-0000-0000-0000-000000071010', N'Oresol ORS', N'Oral Rehydration Salts', N'Bù nước - Điện giải');
+
+    -- Đồng bộ Product -> Medication để nghiệp vụ cấp phát thuốc kiểm tra đúng MedicationId.
+    UPDATE products
+    SET medication_id = CASE id
+        WHEN '00000000-0000-0000-0000-000000091001' THEN '00000000-0000-0000-0000-000000071001'
+        WHEN '00000000-0000-0000-0000-000000091002' THEN '00000000-0000-0000-0000-000000071002'
+        WHEN '00000000-0000-0000-0000-000000091003' THEN '00000000-0000-0000-0000-000000071003'
+        WHEN '00000000-0000-0000-0000-000000091004' THEN '00000000-0000-0000-0000-000000071004'
+        WHEN '00000000-0000-0000-0000-000000091005' THEN '00000000-0000-0000-0000-000000071005'
+        WHEN '00000000-0000-0000-0000-000000091006' THEN '00000000-0000-0000-0000-000000071006'
+        WHEN '00000000-0000-0000-0000-000000091007' THEN '00000000-0000-0000-0000-000000071007'
+        WHEN '00000000-0000-0000-0000-000000091008' THEN '00000000-0000-0000-0000-000000071008'
+        WHEN '00000000-0000-0000-0000-000000091011' THEN '00000000-0000-0000-0000-000000071009'
+        WHEN '00000000-0000-0000-0000-000000091012' THEN '00000000-0000-0000-0000-000000071010'
+    END
+    WHERE id IN (
+        '00000000-0000-0000-0000-000000091001',
+        '00000000-0000-0000-0000-000000091002',
+        '00000000-0000-0000-0000-000000091003',
+        '00000000-0000-0000-0000-000000091004',
+        '00000000-0000-0000-0000-000000091005',
+        '00000000-0000-0000-0000-000000091006',
+        '00000000-0000-0000-0000-000000091007',
+        '00000000-0000-0000-0000-000000091008',
+        '00000000-0000-0000-0000-000000091011',
+        '00000000-0000-0000-0000-000000091012'
+    );
 
     -- =====================================================
     -- 10. SYMPTOM LOGS
@@ -469,19 +501,26 @@ BEGIN TRY
     -- 16. PRESCRIPTIONS
     -- =====================================================
     INSERT INTO prescriptions
-    (id, medical_record_id, patient_id, doctor_id, status, created_at)
+    (
+        id, appointment_id, medical_record_id, patient_id,
+        doctor_id, diagnosis, status, created_at
+    )
     VALUES
     ('00000000-0000-0000-0000-000000081001',
+     '00000000-0000-0000-0000-000000051002',
      '00000000-0000-0000-0000-000000061001',
      '00000000-0000-0000-0000-000000011002',
      '00000000-0000-0000-0000-000000031003',
-     N'active', '2026-08-06T15:15:00'),
+     N'Tăng huyết áp cần tiếp tục theo dõi',
+     N'pending', '2026-08-06T15:15:00'),
 
     ('00000000-0000-0000-0000-000000081002',
+     '00000000-0000-0000-0000-000000051004',
      '00000000-0000-0000-0000-000000061002',
      '00000000-0000-0000-0000-000000011004',
      '00000000-0000-0000-0000-000000031003',
-     N'active', '2026-08-14T11:15:00');
+     N'Rối loạn tiêu hóa, theo dõi triệu chứng dạ dày',
+     N'approved', '2026-08-14T11:15:00');
 
     -- =====================================================
     -- 17. PRESCRIPTION ITEMS
@@ -580,12 +619,12 @@ BEGIN TRY
     ('00000000-0000-0000-0000-000000101001',
      '00000000-0000-0000-0000-000000001001', NULL,
      N'12 Lê Lợi, Quận 1, TP.HCM',
-     83000, N'momo', N'paid', N'delivered', NULL, '2026-08-01T10:00:00'),
+     83000, N'cod', N'paid', N'delivered', NULL, '2026-08-01T10:00:00'),
 
     ('00000000-0000-0000-0000-000000101002',
      '00000000-0000-0000-0000-000000001004', NULL,
      N'78 Cách Mạng Tháng 8, Quận 3, TP.HCM',
-     100000, N'vnpay', N'paid', N'processing',
+     100000, N'cod', N'pending', N'processing',
      '00000000-0000-0000-0000-000000081002', '2026-08-14T12:00:00'),
 
     ('00000000-0000-0000-0000-000000101003',
@@ -826,47 +865,70 @@ BEGIN TRY
     IF NOT EXISTS (SELECT 1 FROM medications WHERE id='00000000-0000-0000-0000-000000071017') INSERT INTO medications(id,name,generic_name,category) VALUES('00000000-0000-0000-0000-000000071017',N'Probiotic',N'Lactobacillus + Bifidobacterium',N'Tiêu hóa');
     IF NOT EXISTS (SELECT 1 FROM medications WHERE id='00000000-0000-0000-0000-000000071018') INSERT INTO medications(id,name,generic_name,category) VALUES('00000000-0000-0000-0000-000000071018',N'Calcium + Vitamin D3',N'Calcium carbonate + Cholecalciferol',N'Vitamin - Khoáng chất');
 
+    -- Liên kết các Product bổ sung với Medication tương ứng.
+    UPDATE products
+    SET medication_id = CASE id
+        WHEN '00000000-0000-0000-0000-000000091013' THEN '00000000-0000-0000-0000-000000071011'
+        WHEN '00000000-0000-0000-0000-000000091015' THEN '00000000-0000-0000-0000-000000071012'
+        WHEN '00000000-0000-0000-0000-000000091016' THEN '00000000-0000-0000-0000-000000071013'
+        WHEN '00000000-0000-0000-0000-000000091018' THEN '00000000-0000-0000-0000-000000071018'
+        WHEN '00000000-0000-0000-0000-000000091023' THEN '00000000-0000-0000-0000-000000071014'
+        WHEN '00000000-0000-0000-0000-000000091024' THEN '00000000-0000-0000-0000-000000071015'
+        WHEN '00000000-0000-0000-0000-000000091027' THEN '00000000-0000-0000-0000-000000071016'
+        WHEN '00000000-0000-0000-0000-000000091028' THEN '00000000-0000-0000-0000-000000071017'
+    END
+    WHERE id IN (
+        '00000000-0000-0000-0000-000000091013',
+        '00000000-0000-0000-0000-000000091015',
+        '00000000-0000-0000-0000-000000091016',
+        '00000000-0000-0000-0000-000000091018',
+        '00000000-0000-0000-0000-000000091023',
+        '00000000-0000-0000-0000-000000091024',
+        '00000000-0000-0000-0000-000000091027',
+        '00000000-0000-0000-0000-000000091028'
+    );
+
     -- 6. HEALTH METRICS + GOALS
     IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151001') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151001','00000000-0000-0000-0000-000000011006',1,66,'2026-08-16T07:30:00');
     IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151002') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151002','00000000-0000-0000-0000-000000011006',2,74,'2026-08-16T07:30:00');
     IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151003') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151003','00000000-0000-0000-0000-000000011006',6,98,'2026-08-16T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161006') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status) VALUES('00000000-0000-0000-0000-000000161006','00000000-0000-0000-0000-000000011006',1,63,'2026-08-10','2026-12-31',N'in_progress');
+    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161006') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status,created_by_user_id,created_by_role) VALUES('00000000-0000-0000-0000-000000161006','00000000-0000-0000-0000-000000011006',1,63,'2026-08-10','2026-12-31',N'in_progress','00000000-0000-0000-0000-000000001006',N'patient');
     IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151004') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151004','00000000-0000-0000-0000-000000011007',1,50,'2026-08-17T07:30:00');
     IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151005') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151005','00000000-0000-0000-0000-000000011007',2,75,'2026-08-17T07:30:00');
     IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151006') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151006','00000000-0000-0000-0000-000000011007',6,99,'2026-08-17T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161007') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status) VALUES('00000000-0000-0000-0000-000000161007','00000000-0000-0000-0000-000000011007',1,47,'2026-08-10','2026-12-31',N'in_progress');
+    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161007') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status,created_by_user_id,created_by_role) VALUES('00000000-0000-0000-0000-000000161007','00000000-0000-0000-0000-000000011007',1,47,'2026-08-10','2026-12-31',N'in_progress','00000000-0000-0000-0000-000000001007',N'patient');
     IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151007') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151007','00000000-0000-0000-0000-000000011008',1,80,'2026-08-18T07:30:00');
     IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151008') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151008','00000000-0000-0000-0000-000000011008',2,76,'2026-08-18T07:30:00');
     IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151009') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151009','00000000-0000-0000-0000-000000011008',6,96,'2026-08-18T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161008') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status) VALUES('00000000-0000-0000-0000-000000161008','00000000-0000-0000-0000-000000011008',1,77,'2026-08-10','2026-12-31',N'in_progress');
+    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161008') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status,created_by_user_id,created_by_role) VALUES('00000000-0000-0000-0000-000000161008','00000000-0000-0000-0000-000000011008',1,77,'2026-08-10','2026-12-31',N'in_progress','00000000-0000-0000-0000-000000001008',N'patient');
     IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151010') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151010','00000000-0000-0000-0000-000000011009',1,55,'2026-08-19T07:30:00');
     IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151011') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151011','00000000-0000-0000-0000-000000011009',2,77,'2026-08-19T07:30:00');
     IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151012') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151012','00000000-0000-0000-0000-000000011009',6,97,'2026-08-19T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161009') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status) VALUES('00000000-0000-0000-0000-000000161009','00000000-0000-0000-0000-000000011009',1,52,'2026-08-10','2026-12-31',N'in_progress');
+    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161009') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status,created_by_user_id,created_by_role) VALUES('00000000-0000-0000-0000-000000161009','00000000-0000-0000-0000-000000011009',1,52,'2026-08-10','2026-12-31',N'in_progress','00000000-0000-0000-0000-000000001009',N'patient');
     IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151013') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151013','00000000-0000-0000-0000-000000011010',1,76,'2026-08-20T07:30:00');
     IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151014') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151014','00000000-0000-0000-0000-000000011010',2,78,'2026-08-20T07:30:00');
     IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151015') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151015','00000000-0000-0000-0000-000000011010',6,98,'2026-08-20T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161010') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status) VALUES('00000000-0000-0000-0000-000000161010','00000000-0000-0000-0000-000000011010',1,73,'2026-08-10','2026-12-31',N'in_progress');
+    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161010') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status,created_by_user_id,created_by_role) VALUES('00000000-0000-0000-0000-000000161010','00000000-0000-0000-0000-000000011010',1,73,'2026-08-10','2026-12-31',N'in_progress','00000000-0000-0000-0000-000000001010',N'patient');
     IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151016') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151016','00000000-0000-0000-0000-000000011011',1,52,'2026-08-21T07:30:00');
     IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151017') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151017','00000000-0000-0000-0000-000000011011',2,79,'2026-08-21T07:30:00');
     IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151018') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151018','00000000-0000-0000-0000-000000011011',6,99,'2026-08-21T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161011') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status) VALUES('00000000-0000-0000-0000-000000161011','00000000-0000-0000-0000-000000011011',1,49,'2026-08-10','2026-12-31',N'in_progress');
+    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161011') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status,created_by_user_id,created_by_role) VALUES('00000000-0000-0000-0000-000000161011','00000000-0000-0000-0000-000000011011',1,49,'2026-08-10','2026-12-31',N'in_progress','00000000-0000-0000-0000-000000001011',N'patient');
     IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151019') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151019','00000000-0000-0000-0000-000000011012',1,73,'2026-08-22T07:30:00');
     IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151020') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151020','00000000-0000-0000-0000-000000011012',2,68,'2026-08-22T07:30:00');
     IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151021') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151021','00000000-0000-0000-0000-000000011012',6,96,'2026-08-22T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161012') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status) VALUES('00000000-0000-0000-0000-000000161012','00000000-0000-0000-0000-000000011012',1,70,'2026-08-10','2026-12-31',N'in_progress');
+    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161012') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status,created_by_user_id,created_by_role) VALUES('00000000-0000-0000-0000-000000161012','00000000-0000-0000-0000-000000011012',1,70,'2026-08-10','2026-12-31',N'in_progress','00000000-0000-0000-0000-000000001012',N'patient');
     IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151022') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151022','00000000-0000-0000-0000-000000011013',1,61,'2026-08-23T07:30:00');
     IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151023') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151023','00000000-0000-0000-0000-000000011013',2,69,'2026-08-23T07:30:00');
     IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151024') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151024','00000000-0000-0000-0000-000000011013',6,97,'2026-08-23T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161013') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status) VALUES('00000000-0000-0000-0000-000000161013','00000000-0000-0000-0000-000000011013',1,58,'2026-08-10','2026-12-31',N'in_progress');
+    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161013') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status,created_by_user_id,created_by_role) VALUES('00000000-0000-0000-0000-000000161013','00000000-0000-0000-0000-000000011013',1,58,'2026-08-10','2026-12-31',N'in_progress','00000000-0000-0000-0000-000000001013',N'patient');
     IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151025') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151025','00000000-0000-0000-0000-000000011014',1,70,'2026-08-24T07:30:00');
     IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151026') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151026','00000000-0000-0000-0000-000000011014',2,70,'2026-08-24T07:30:00');
     IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151027') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151027','00000000-0000-0000-0000-000000011014',6,98,'2026-08-24T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161014') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status) VALUES('00000000-0000-0000-0000-000000161014','00000000-0000-0000-0000-000000011014',1,67,'2026-08-10','2026-12-31',N'in_progress');
+    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161014') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status,created_by_user_id,created_by_role) VALUES('00000000-0000-0000-0000-000000161014','00000000-0000-0000-0000-000000011014',1,67,'2026-08-10','2026-12-31',N'in_progress','00000000-0000-0000-0000-000000001014',N'patient');
     IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151028') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151028','00000000-0000-0000-0000-000000011015',1,54,'2026-08-25T07:30:00');
     IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151029') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151029','00000000-0000-0000-0000-000000011015',2,71,'2026-08-25T07:30:00');
     IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151030') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151030','00000000-0000-0000-0000-000000011015',6,99,'2026-08-25T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161015') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status) VALUES('00000000-0000-0000-0000-000000161015','00000000-0000-0000-0000-000000011015',1,51,'2026-08-10','2026-12-31',N'in_progress');
+    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161015') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status,created_by_user_id,created_by_role) VALUES('00000000-0000-0000-0000-000000161015','00000000-0000-0000-0000-000000011015',1,51,'2026-08-10','2026-12-31',N'in_progress','00000000-0000-0000-0000-000000001015',N'patient');
 
     -- 7. SYMPTOM LOGS
     IF NOT EXISTS (SELECT 1 FROM symptom_logs WHERE id='00000000-0000-0000-0000-000000131005') INSERT INTO symptom_logs(id,patient_id,symptoms_description,predicted_disease,severity_level,ai_advice,created_at) VALUES('00000000-0000-0000-0000-000000131005','00000000-0000-0000-0000-000000011006',N'Hắt hơi, nghẹt mũi vào buổi sáng, không sốt.',N'Viêm mũi dị ứng',N'LOW',N'Theo dõi triệu chứng và hạn chế tiếp xúc dị nguyên.','2026-08-15T20:00:00');
@@ -1095,62 +1157,245 @@ WHERE id = '00000000-0000-0000-0000-000000091031';
 UPDATE products SET image_url = N'/images/products/n95mask.jpg'
 WHERE id = '00000000-0000-0000-0000-000000091032';
 
-ALTER TABLE prescriptions
-ADD appointment_id UNIQUEIDENTIFIER NULL;
+
+USE BLUE_CROWN;
 GO
 
-ALTER TABLE prescriptions
-ADD diagnosis NVARCHAR(MAX) NULL;
+SET NOCOUNT ON;
+
+PRINT N'===== 1. KIỂM TRA CỘT/INDEX QUAN TRỌNG =====';
+
+SELECT
+    COL_LENGTH('prescriptions', 'appointment_id') AS prescription_appointment_id,
+    COL_LENGTH('prescriptions', 'medical_record_id') AS prescription_medical_record_id,
+    COL_LENGTH('prescriptions', 'diagnosis') AS prescription_diagnosis,
+    COL_LENGTH('health_goals', 'created_by_user_id') AS health_goal_created_by_user_id,
+    COL_LENGTH('health_goals', 'created_by_role') AS health_goal_created_by_role,
+    COL_LENGTH('products', 'medication_id') AS product_medication_id;
+
+SELECT name, is_unique
+FROM sys.indexes
+WHERE object_id = OBJECT_ID('prescriptions')
+  AND name = 'UX_prescriptions_appointment_id';
+
+PRINT N'===== 2. KIỂM TRA PRESCRIPTION =====';
+
+SELECT
+    id,
+    appointment_id,
+    medical_record_id,
+    patient_id,
+    doctor_id,
+    diagnosis,
+    status,
+    created_at
+FROM prescriptions
+ORDER BY created_at;
+
+SELECT appointment_id, COUNT(*) AS prescription_count
+FROM prescriptions
+GROUP BY appointment_id
+HAVING COUNT(*) > 1;
+
+SELECT COUNT(*) AS invalid_prescription_rows
+FROM prescriptions
+WHERE appointment_id IS NULL
+   OR status NOT IN ('pending', 'approved', 'dispensed', 'cancelled');
+
+PRINT N'===== 3. KIỂM TRA HEALTH GOAL =====';
+
+SELECT COUNT(*) AS health_goal_missing_creator
+FROM health_goals
+WHERE created_by_user_id IS NULL
+   OR created_by_role NOT IN ('patient', 'doctor');
+
+PRINT N'===== 4. KIỂM TRA ECOMMERCE COD =====';
+
+SELECT
+    id,
+    payment_method,
+    payment_status,
+    order_status,
+    prescription_id
+FROM ecommerce_orders
+ORDER BY created_at;
+
+SELECT COUNT(*) AS non_cod_ecommerce_orders
+FROM ecommerce_orders
+WHERE LOWER(payment_method) <> 'cod';
+
+PRINT N'===== 5. KIỂM TRA PRODUCT -> MEDICATION =====';
+
+SELECT
+    p.id,
+    p.name AS product_name,
+    p.medication_id,
+    m.name AS medication_name,
+    p.stock_quantity,
+    p.is_prescription_required,
+    p.prescription_required
+FROM products p
+LEFT JOIN medications m ON m.id = p.medication_id
+ORDER BY p.name;
+
+SELECT COUNT(*) AS prescription_flag_mismatch
+FROM products
+WHERE ISNULL(is_prescription_required, 0) <> prescription_required;
+
+PRINT N'===== 6. KIỂM TRA DỮ LIỆU TỔNG =====';
+
+SELECT N'users' AS table_name, COUNT(*) AS row_count FROM users
+UNION ALL SELECT N'patient_profiles', COUNT(*) FROM patient_profiles
+UNION ALL SELECT N'doctor_profiles', COUNT(*) FROM doctor_profiles
+UNION ALL SELECT N'appointments', COUNT(*) FROM appointments
+UNION ALL SELECT N'medical_records', COUNT(*) FROM medical_records
+UNION ALL SELECT N'prescriptions', COUNT(*) FROM prescriptions
+UNION ALL SELECT N'prescription_items', COUNT(*) FROM prescription_items
+UNION ALL SELECT N'products', COUNT(*) FROM products
+UNION ALL SELECT N'ecommerce_orders', COUNT(*) FROM ecommerce_orders
+UNION ALL SELECT N'inventory_receipts', COUNT(*) FROM inventory_receipts
+UNION ALL SELECT N'health_goals', COUNT(*) FROM health_goals;
+
+PRINT N'===== HOÀN TẤT KIỂM TRA =====';
+
+
+USE BLUE_CROWN;
 GO
 
-UPDATE p
-SET p.appointment_id = mr.appointment_id,
-    p.diagnosis = mr.diagnosis
+PRINT '===== 1. KIEM TRA PRESCRIPTIONS =====';
+
+SELECT
+    c.name AS column_name,
+    t.name AS data_type,
+    c.max_length,
+    c.is_nullable
+FROM sys.columns c
+JOIN sys.types t ON c.user_type_id = t.user_type_id
+WHERE c.object_id = OBJECT_ID('dbo.prescriptions')
+ORDER BY c.column_id;
+
+PRINT '===== 2. PRESCRIPTION KHONG CO APPOINTMENT =====';
+
+SELECT COUNT(*) AS invalid_prescription_rows
+FROM prescriptions
+WHERE appointment_id IS NULL;
+
+PRINT '===== 3. APPOINTMENT BI TRUNG PRESCRIPTION =====';
+
+SELECT appointment_id, COUNT(*) AS total
+FROM prescriptions
+GROUP BY appointment_id
+HAVING COUNT(*) > 1;
+
+PRINT '===== 4. KIEM TRA HEALTH GOALS =====';
+
+SELECT COUNT(*) AS health_goal_missing_creator
+FROM health_goals
+WHERE created_by_user_id IS NULL
+   OR created_by_role IS NULL;
+
+PRINT '===== 5. ROLE NGUOI TAO HEALTH GOAL KHONG HOP LE =====';
+
+SELECT *
+FROM health_goals
+WHERE created_by_role NOT IN ('patient', 'doctor');
+
+PRINT '===== 6. KIEM TRA DON HANG KHONG PHAI COD =====';
+
+SELECT COUNT(*) AS non_cod_ecommerce_orders
+FROM ecommerce_orders
+WHERE LOWER(LTRIM(RTRIM(payment_method))) <> 'cod';
+
+PRINT '===== 7. DANH SACH PAYMENT METHOD CUA ECOMMERCE =====';
+
+SELECT payment_method, COUNT(*) AS total
+FROM ecommerce_orders
+GROUP BY payment_method;
+
+PRINT '===== 8. KIEM TRA 2 COT PRESCRIPTION FLAG =====';
+
+SELECT COUNT(*) AS prescription_flag_mismatch
+FROM products
+WHERE ISNULL(is_prescription_required, 0)
+   <> ISNULL(prescription_required, 0);
+
+PRINT '===== 9. PRODUCT CHUA GAN MEDICATION =====';
+
+SELECT
+    id,
+    name,
+    medication_id,
+    is_prescription_required
+FROM products
+WHERE medication_id IS NULL
+ORDER BY name;
+
+PRINT '===== 10. PRESCRIPTION HIEN TAI =====';
+
+SELECT
+    p.id,
+    p.appointment_id,
+    a.type AS appointment_type,
+    a.status AS appointment_status,
+    p.medical_record_id,
+    p.patient_id,
+    p.doctor_id,
+    p.status,
+    p.diagnosis
 FROM prescriptions p
-INNER JOIN medical_records mr
-    ON p.medical_record_id = mr.id;
+LEFT JOIN appointments a ON a.id = p.appointment_id
+ORDER BY p.created_at;
+
+PRINT '===== 11. TONG SO BAN GHI =====';
+
+SELECT 'users' AS table_name, COUNT(*) AS total FROM users
+UNION ALL
+SELECT 'patient_profiles', COUNT(*) FROM patient_profiles
+UNION ALL
+SELECT 'doctor_profiles', COUNT(*) FROM doctor_profiles
+UNION ALL
+SELECT 'appointments', COUNT(*) FROM appointments
+UNION ALL
+SELECT 'medical_records', COUNT(*) FROM medical_records
+UNION ALL
+SELECT 'prescriptions', COUNT(*) FROM prescriptions
+UNION ALL
+SELECT 'products', COUNT(*) FROM products
+UNION ALL
+SELECT 'ecommerce_orders', COUNT(*) FROM ecommerce_orders
+UNION ALL
+SELECT 'inventory_receipts', COUNT(*) FROM inventory_receipts;
+
+USE BLUE_CROWN;
 GO
 
-IF EXISTS (
-    SELECT 1
-    FROM prescriptions
-    WHERE appointment_id IS NULL
-)
-BEGIN
-    THROW 50001, 'Có Prescription cũ không xác định được AppointmentId.', 1;
-END;
+-- 1. Thuốc yêu cầu kê đơn nhưng chưa liên kết Medication
+SELECT
+    id,
+    name,
+    medication_id,
+    is_prescription_required,
+    prescription_required
+FROM products
+WHERE (
+        ISNULL(is_prescription_required, 0) = 1
+        OR ISNULL(prescription_required, 0) = 1
+      )
+  AND medication_id IS NULL;
+
+  -- 2. Medication đang có trong Prescription nhưng không có Product tương ứng
+SELECT
+    pi.medication_id,
+    m.name AS medication_name
+FROM prescription_items pi
+LEFT JOIN medications m
+    ON m.id = pi.medication_id
+LEFT JOIN products p
+    ON p.medication_id = pi.medication_id
+WHERE p.id IS NULL
+GROUP BY
+    pi.medication_id,
+    m.name;
+
+	USE BLUE_CROWN;
 GO
-
-ALTER TABLE prescriptions
-ALTER COLUMN appointment_id UNIQUEIDENTIFIER NOT NULL;
-GO
-
-ALTER TABLE prescriptions
-ALTER COLUMN medical_record_id UNIQUEIDENTIFIER NULL;
-GO
-
-ALTER TABLE prescriptions
-ADD CONSTRAINT FK_prescriptions_appointments
-FOREIGN KEY (appointment_id)
-REFERENCES appointments(id);
-GO
-
-CREATE UNIQUE INDEX UX_prescriptions_appointment_id
-ON prescriptions(appointment_id);
-GO
-
---USE BLUE_CROWN;
---GO
-
---UPDATE products
---SET stock_quantity = 0
---WHERE name = N'Ibuprofen 400mg (Hộp 2 vỉ x 10 viên)';
---GO
-
---SELECT id, name, stock_quantity
---FROM products
---WHERE name = N'Ibuprofen 400mg (Hộp 2 vỉ x 10 viên)';
-
-UPDATE products
-SET stock_quantity = 220
-WHERE name = N'Ibuprofen 400mg (Hộp 2 vỉ x 10 viên)';

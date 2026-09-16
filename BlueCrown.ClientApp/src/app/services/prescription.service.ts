@@ -1,7 +1,12 @@
-﻿import { HttpClient } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CreatePrescriptionRequest, DispensePrescriptionRequest, Prescription } from '../models/prescription.model';
+import {
+  CreatePrescriptionRequest,
+  DispensePrescriptionRequest,
+  Prescription,
+  PrescriptionCheckoutOption
+} from '../models/prescription.model';
 
 @Injectable({
   providedIn: 'root',
@@ -18,6 +23,12 @@ export class PrescriptionService {
     return this.http.get<Prescription[]>(`${this.apiUrl}/patient/my`);
   }
 
+  getPatientCheckoutOptions(): Observable<PrescriptionCheckoutOption[]> {
+    return this.http.get<PrescriptionCheckoutOption[]>(
+      `${this.apiUrl}/patient/checkout-options`
+    );
+  }
+
   create(request: CreatePrescriptionRequest): Observable<Prescription> {
     return this.http.post<Prescription>(this.apiUrl, request);
   }
@@ -27,15 +38,28 @@ export class PrescriptionService {
   }
 
   getPharmacistPrescriptionById(id: string): Observable<Prescription> {
-    return this.http.get<Prescription>(`${this.apiUrl}/pharmacist/${id}`);
+    return this.http.get<Prescription>(
+      `${this.apiUrl}/pharmacist/${id}`
+    );
   }
 
-  updatePharmacistStatus(id: string, status: 'approved' | 'cancelled'): Observable<Prescription> {
-    return this.http.put<Prescription>(`${this.apiUrl}/pharmacist/${id}/status`, { status });
+  updatePharmacistStatus(
+    id: string,
+    status: 'approved' | 'cancelled'
+  ): Observable<Prescription> {
+    return this.http.put<Prescription>(
+      `${this.apiUrl}/pharmacist/${id}/status`,
+      { status }
+    );
   }
 
-  dispense(id: string, request: DispensePrescriptionRequest): Observable<Prescription> {
-    return this.http.post<Prescription>(`${this.apiUrl}/pharmacist/${id}/dispense`, request);
+  dispense(
+    id: string,
+    request: DispensePrescriptionRequest
+  ): Observable<Prescription> {
+    return this.http.post<Prescription>(
+      `${this.apiUrl}/pharmacist/${id}/dispense`,
+      request
+    );
   }
 }
-
