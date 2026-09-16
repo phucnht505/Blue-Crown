@@ -704,7 +704,7 @@ public partial class BlueCrownContext : DbContext
 
             entity.Property(e => e.Status)
                 .HasMaxLength(20)
-                .HasDefaultValue("issued")
+                .HasDefaultValue("pending")
                 .HasColumnName("status");
 
             entity.HasOne(d => d.Appointment).WithMany(p => p.Prescriptions)

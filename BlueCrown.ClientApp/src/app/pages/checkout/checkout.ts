@@ -5,7 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { CartItem } from '../../models/cart-item.model';
 import { CheckoutResponse, CreateCheckoutRequest } from '../../models/checkout.model';
-import { Prescription } from '../../models/prescription.model';
+import { PrescriptionCheckoutOption } from '../../models/prescription.model';
 import { AuthService } from '../../services/auth.service';
 import { CartService } from '../../services/cart.service';
 import { CheckoutService } from '../../services/checkout.service';
@@ -29,7 +29,7 @@ export class Checkout implements OnInit {
   private readonly router = inject(Router);
 
   items: CartItem[] = [];
-  prescriptions: Prescription[] = [];
+  prescriptions: PrescriptionCheckoutOption[] = [];
   usedPrescriptionIds = new Set<string>();
   guestPhone = '';
   shippingAddress = '';
@@ -67,7 +67,7 @@ export class Checkout implements OnInit {
     return this.prescriptionRequiredItems.length > 0;
   }
 
-  get eligiblePrescriptions(): Prescription[] {
+  get eligiblePrescriptions(): PrescriptionCheckoutOption[] {
     const requiredMedicationIds = this.prescriptionRequiredItems
       .map(item => item.product.medicationId)
       .filter((id): id is string => !!id);
@@ -76,15 +76,26 @@ export class Checkout implements OnInit {
       return [];
 
     return this.prescriptions.filter(prescription => {
-      if (prescription.status?.toLowerCase() !== 'approved')
+      const appointmentType = prescription.appointmentType?.toLowerCase();
+      const status = prescription.status?.toLowerCase();
+
+      const hasValidStatus =
+        (appointmentType === 'online_consult' && status === 'issued') ||
+        (appointmentType === 'clinic_visit' && status === 'approved');
+
+      if (!hasValidStatus)
         return false;
 
       if (this.usedPrescriptionIds.has(prescription.id))
         return false;
 
-      const prescriptionMedicationIds = new Set(prescription.items.map(item => item.medicationId));
+      const prescriptionMedicationIds = new Set(
+        prescription.items.map(item => item.medicationId)
+      );
 
-      return requiredMedicationIds.every(id => prescriptionMedicationIds.has(id));
+      return requiredMedicationIds.every(id =>
+        prescriptionMedicationIds.has(id)
+      );
     });
   }
 
@@ -306,7 +317,7 @@ export class Checkout implements OnInit {
     this.isLoadingPrescriptions = true;
 
     forkJoin({
-      prescriptions: this.prescriptionService.getPatientPrescriptions(),
+      prescriptions: this.prescriptionService.getPatientCheckoutOptions(),
       orders: this.orderService.getMyOrders(),
     }).subscribe({
       next: result => {
@@ -320,7 +331,7 @@ export class Checkout implements OnInit {
         this.isLoadingPrescriptions = false;
 
         if (this.eligiblePrescriptions.length === 0)
-          this.prescriptionMessage = 'Không có Prescription đã duyệt, chưa sử dụng và phù hợp với các Product cần kê đơn trong giỏ hàng.';
+          this.prescriptionMessage = 'Không có Prescription hợp lệ, chưa sử dụng và phù hợp với các Product cần kê đơn trong giỏ hàng.';
         else
           this.prescriptionMessage = '';
 

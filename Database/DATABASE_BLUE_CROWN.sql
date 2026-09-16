@@ -4,6 +4,14 @@ GO
 USE BLUE_CROWN;
 GO
 
+-- =========================================================
+-- BLUE CROWN - DATABASE FINAL
+-- Đồng bộ với mô hình EF Core và nghiệp vụ hiện tại.
+-- File này chỉ tạo schema. Dữ liệu mẫu nằm trong file DATA FINAL.
+-- Không tự động DROP database để tránh mất dữ liệu ngoài ý muốn.
+-- =========================================================
+
+
 -- =========================================
 -- NHÓM 1: NGƯỜI DÙNG & XÁC THỰC
 -- =========================================
@@ -41,15 +49,13 @@ CREATE TABLE patient_profiles (
     id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
     user_id UNIQUEIDENTIFIER UNIQUE NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     blood_type NVARCHAR(5), 
-    height_cm DECIMAL(5,2), 
+    height_cm DECIMAL(5,2),
+    WeightKg DECIMAL(5,2) NULL,
     allergies NVARCHAR(MAX), 
     chronic_conditions NVARCHAR(MAX),
     emergency_contact_name NVARCHAR(255), 
     emergency_contact_phone NVARCHAR(20)
 );
-
-ALTER TABLE patient_profiles
-ADD WeightKg DECIMAL(5,2) NULL;
 
 CREATE TABLE clinics (
     id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
@@ -149,27 +155,21 @@ CREATE TABLE medications (
 
 CREATE TABLE prescriptions (
     id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
-    medical_record_id UNIQUEIDENTIFIER NOT NULL REFERENCES medical_records(id),
+    appointment_id UNIQUEIDENTIFIER NOT NULL,
+    medical_record_id UNIQUEIDENTIFIER NULL REFERENCES medical_records(id),
     patient_id UNIQUEIDENTIFIER NOT NULL REFERENCES patient_profiles(id),
     doctor_id UNIQUEIDENTIFIER NOT NULL REFERENCES doctor_profiles(id),
-    status NVARCHAR(20) DEFAULT 'active', 
-    created_at DATETIME DEFAULT GETDATE()
+    diagnosis NVARCHAR(MAX) NULL,
+    status NVARCHAR(20) NOT NULL DEFAULT 'pending',
+    created_at DATETIME DEFAULT GETDATE(),
+
+    CONSTRAINT FK_prescriptions_appointments
+        FOREIGN KEY (appointment_id) REFERENCES appointments(id)
 );
 
-DECLARE @constraintName NVARCHAR(128);
-
-SELECT @constraintName = dc.name
-FROM sys.default_constraints dc
-JOIN sys.columns c ON c.default_object_id = dc.object_id
-JOIN sys.tables t ON t.object_id = c.object_id
-WHERE t.name = 'prescriptions' AND c.name = 'status';
-
-IF @constraintName IS NOT NULL
-    EXEC('ALTER TABLE prescriptions DROP CONSTRAINT [' + @constraintName + ']');
-
-ALTER TABLE prescriptions
-ADD CONSTRAINT DF_prescriptions_status DEFAULT 'pending' FOR status;
-đoạn này là gì
+CREATE UNIQUE INDEX UX_prescriptions_appointment_id
+ON prescriptions(appointment_id);
+GO
 
 CREATE TABLE prescription_items (
     id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
@@ -191,44 +191,15 @@ CREATE TABLE health_goals (
     target_value DECIMAL(10,2), 
     start_date DATE, 
     end_date DATE, 
-    status NVARCHAR(20) DEFAULT 'in_progress'
+    status NVARCHAR(20) DEFAULT 'in_progress',
+    created_by_user_id UNIQUEIDENTIFIER NOT NULL,
+    created_by_role NVARCHAR(20) NOT NULL,
+
+    CONSTRAINT FK_health_goals_created_by_user
+        FOREIGN KEY (created_by_user_id) REFERENCES users(id),
+    CONSTRAINT CK_health_goals_created_by_role
+        CHECK (created_by_role IN ('patient', 'doctor'))
 );
-
-USE BLUE_CROWN;
-GO
-
-ALTER TABLE health_goals
-ADD created_by_user_id UNIQUEIDENTIFIER NULL,
-    created_by_role NVARCHAR(20) NULL;
-GO
-
-UPDATE hg
-SET
-    hg.created_by_user_id = pp.user_id,
-    hg.created_by_role = 'patient'
-FROM health_goals hg
-INNER JOIN patient_profiles pp
-    ON pp.id = hg.patient_id
-WHERE hg.created_by_user_id IS NULL;
-GO
-
-ALTER TABLE health_goals
-ALTER COLUMN created_by_user_id UNIQUEIDENTIFIER NOT NULL;
-GO
-
-ALTER TABLE health_goals
-ALTER COLUMN created_by_role NVARCHAR(20) NOT NULL;
-GO
-
-ALTER TABLE health_goals
-ADD CONSTRAINT FK_health_goals_created_by_user
-FOREIGN KEY (created_by_user_id)
-REFERENCES users(id);
-GO
-
-ALTER TABLE health_goals
-ADD CONSTRAINT CK_health_goals_created_by_role
-CHECK (created_by_role IN ('patient', 'doctor'));
 GO
 
 CREATE TABLE payments (

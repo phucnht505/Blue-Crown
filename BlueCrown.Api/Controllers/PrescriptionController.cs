@@ -23,6 +23,26 @@ namespace BlueCrown.Api.Controllers
         // =========================================================
 
         [HttpGet("patient/my")]
+        [HttpGet("patient/checkout-options")]
+        [Authorize(Roles = "patient")]
+        public async Task<ActionResult<List<PrescriptionCheckoutOptionDto>>> GetPatientCheckoutOptions()
+        {
+            try
+            {
+                var userId = GetUserId();
+
+                if (userId == null)
+                    return Unauthorized(new { message = "Không xác định được người dùng." });
+
+                var prescriptions = await _service.GetPatientCheckoutOptionsAsync(userId.Value);
+
+                return Ok(prescriptions);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
         [Authorize(Roles = "patient")]
         public async Task<ActionResult<List<PrescriptionDto>>> GetPatientPrescriptions()
         {
