@@ -43,6 +43,20 @@ namespace BlueCrown.Api.Repositories.Implementations
                 .ToListAsync();
         }
 
+        public async Task<List<Prescription>> GetCheckoutOptionsByPatientIdAsync(Guid patientId)
+        {
+            return await _context.Prescriptions
+                .Where(p => p.PatientId == patientId)
+                .Include(p => p.Doctor)
+                    .ThenInclude(d => d.User)
+                .Include(p => p.Appointment)
+                .Include(p => p.MedicalRecord)
+                .Include(p => p.PrescriptionItems)
+                .OrderByDescending(p => p.CreatedAt)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
         public async Task<List<Prescription>> GetByDoctorIdAsync(Guid doctorId)
         {
             return await BuildQuery()

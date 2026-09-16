@@ -65,3 +65,17 @@ export interface DispensePrescriptionItemRequest {
 export interface DispensePrescriptionRequest {
   items: DispensePrescriptionItemRequest[];
 }
+
+export interface PrescriptionCheckoutItem {
+  medicationId: string;
+}
+
+export interface PrescriptionCheckoutOption {
+  id: string;
+  appointmentType: string | null;
+  doctorName: string;
+  medicalRecordDiagnosis: string;
+  status: string | null;
+  createdAt: string | null;
+  items: PrescriptionCheckoutItem[];
+}

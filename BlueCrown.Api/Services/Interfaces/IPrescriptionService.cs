@@ -5,6 +5,7 @@ namespace BlueCrown.Api.Services.Interfaces
     public interface IPrescriptionService
     {
         Task<List<PrescriptionDto>> GetPatientPrescriptionsAsync(Guid userId);
+        Task<List<PrescriptionCheckoutOptionDto>> GetPatientCheckoutOptionsAsync(Guid userId);
         Task<PrescriptionDto?> GetPatientPrescriptionByIdAsync(Guid id, Guid userId);
 
         Task<List<PrescriptionDto>> GetDoctorPrescriptionsAsync(Guid userId);
