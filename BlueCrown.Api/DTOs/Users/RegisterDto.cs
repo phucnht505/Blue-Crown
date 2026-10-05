@@ -21,9 +21,7 @@ namespace BlueCrown.Api.DTOs.Users
         [MinLength(8, ErrorMessage = "Mật khẩu phải có ít nhất 8 ký tự.")]
         [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$", ErrorMessage = "Mật khẩu phải có chữ hoa, chữ thường và chữ số.")]
         public string Password { get; set; } = string.Empty;
-
         public DateOnly? DateOfBirth { get; set; }
-
         public string? Gender { get; set; }
     }
 }

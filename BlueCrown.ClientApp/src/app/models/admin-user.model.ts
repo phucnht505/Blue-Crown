@@ -20,7 +20,6 @@ export interface CreateAdminUserRequest {
   password: string;
   dateOfBirth: string | null;
   gender: string | null;
-  role: string;
   status: string;
 }
 
@@ -31,7 +30,6 @@ export interface UpdateAdminUserRequest {
   dateOfBirth: string | null;
   gender: string | null;
   avatarUrl: string | null;
-  role: string;
   status: string;
 }
 

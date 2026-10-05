@@ -1,7 +1,11 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AdminUser, AdminUserDetail, CreateAdminUserRequest, UpdateAdminUserRequest } from '../../models/admin-user.model';
-import { AdminUserService } from '../../services/admin-user.service';
+import { AdminUser, AdminUserDetail } from '../../models/admin-user.model';
+import {
+  AdminPharmacistCreateRequest,
+  AdminPharmacistUpdateRequest,
+} from '../../models/admin-pharmacist.model';
+import { AdminPharmacistService } from '../../services/admin-pharmacist.service';
 
 @Component({
   selector: 'app-admin-pharmacists',
@@ -12,7 +16,7 @@ import { AdminUserService } from '../../services/admin-user.service';
 })
 export class AdminPharmacists implements OnInit {
   private readonly formBuilder = inject(FormBuilder);
-  private readonly userService = inject(AdminUserService);
+  private readonly pharmacistService = inject(AdminPharmacistService);
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
   pharmacists: AdminUser[] = [];
@@ -50,7 +54,7 @@ export class AdminPharmacists implements OnInit {
     this.isLoading = true;
     this.errorMessage = '';
 
-    this.userService.getAll(filter.search, 'pharmacist', filter.status).subscribe({
+    this.pharmacistService.getAll(filter.search, filter.status).subscribe({
       next: users => {
         this.pharmacists = users;
         this.isLoading = false;
@@ -101,7 +105,7 @@ export class AdminPharmacists implements OnInit {
   openEdit(id: string): void {
     this.clearMessages();
 
-    this.userService.getById(id).subscribe({
+    this.pharmacistService.getById(id).subscribe({
       next: user => {
         if (user.role !== 'pharmacist') {
           this.errorMessage = 'Tài khoản này không phải dược sĩ.';
@@ -139,7 +143,7 @@ export class AdminPharmacists implements OnInit {
   viewDetail(id: string): void {
     this.clearMessages();
 
-    this.userService.getById(id).subscribe({
+    this.pharmacistService.getById(id).subscribe({
       next: user => {
         if (user.role !== 'pharmacist') {
           this.errorMessage = 'Tài khoản này không phải dược sĩ.';
@@ -177,18 +181,17 @@ export class AdminPharmacists implements OnInit {
     this.isSaving = true;
 
     if (!this.editingUserId) {
-      const request: CreateAdminUserRequest = {
+      const request: AdminPharmacistCreateRequest = {
         fullName: value.fullName.trim(),
         email: value.email.trim().toLowerCase(),
         phone: value.phone.trim(),
         password: value.password,
         dateOfBirth: value.dateOfBirth || null,
         gender: value.gender || null,
-        role: 'pharmacist',
         status: value.status,
       };
 
-      this.userService.create(request).subscribe({
+      this.pharmacistService.create(request).subscribe({
         next: () => this.handleSaveSuccess('Thêm dược sĩ thành công.'),
         error: error => this.handleSaveError(error),
       });
@@ -196,18 +199,17 @@ export class AdminPharmacists implements OnInit {
       return;
     }
 
-    const request: UpdateAdminUserRequest = {
+    const request: AdminPharmacistUpdateRequest = {
       fullName: value.fullName.trim(),
       email: value.email.trim().toLowerCase(),
       phone: value.phone.trim(),
       dateOfBirth: value.dateOfBirth || null,
       gender: value.gender || null,
       avatarUrl: value.avatarUrl.trim() || null,
-      role: 'pharmacist',
       status: value.status,
     };
 
-    this.userService.update(this.editingUserId, request).subscribe({
+    this.pharmacistService.update(this.editingUserId, request).subscribe({
       next: () => this.handleSaveSuccess('Cập nhật dược sĩ thành công.'),
       error: error => this.handleSaveError(error),
     });
@@ -223,7 +225,7 @@ export class AdminPharmacists implements OnInit {
     if (!window.confirm(message))
       return;
 
-    this.userService.updateStatus(pharmacist.id, { status: newStatus }).subscribe({
+    this.pharmacistService.updateStatus(pharmacist.id, { status: newStatus }).subscribe({
       next: () => {
         this.successMessage = newStatus === 'active'
           ? 'Mở khóa tài khoản dược sĩ thành công.'
@@ -240,13 +242,13 @@ export class AdminPharmacists implements OnInit {
 
   deletePharmacist(pharmacist: AdminUser): void {
     const confirmed = window.confirm(
-      `Vô hiệu hóa dược sĩ "${pharmacist.fullName}"? Các phiếu nhập và dữ liệu nghiệp vụ đã phát sinh vẫn được giữ lại.`
+      `Bạn có chắc muốn xóa dược sĩ "${pharmacist.fullName}"? Tài khoản sẽ bị xóa vĩnh viễn nếu chưa có dữ liệu nghiệp vụ.`
     );
 
     if (!confirmed)
       return;
 
-    this.userService.delete(pharmacist.id).subscribe({
+    this.pharmacistService.delete(pharmacist.id).subscribe({
       next: response => {
         this.successMessage = response.message;
         this.loadPharmacists();

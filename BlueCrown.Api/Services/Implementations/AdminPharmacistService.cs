@@ -1,4 +1,4 @@
-﻿using BlueCrown.Api.DTOs.Users;
+using BlueCrown.Api.DTOs.Users;
 using BlueCrown.Api.Models;
 using BlueCrown.Api.Repositories.Interfaces;
 using BlueCrown.Api.Services.Interfaces;
@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BlueCrown.Api.Services.Implementations
 {
-    public class UserService : IUserService
+    public class AdminPharmacistService : IAdminPharmacistService
     {
         private static readonly string[] AllowedStatuses =
             ["active", "suspended", "pending"];
@@ -14,7 +14,7 @@ namespace BlueCrown.Api.Services.Implementations
         private readonly IUserRepository _userRepository;
         private readonly BlueCrownContext _context;
 
-        public UserService(
+        public AdminPharmacistService(
             IUserRepository userRepository,
             BlueCrownContext context)
         {
@@ -22,7 +22,7 @@ namespace BlueCrown.Api.Services.Implementations
             _context = context;
         }
 
-        public async Task<IEnumerable<UserDto>> GetAllUsersAsync(
+        public async Task<IEnumerable<UserDto>> GetAllAsync(
             string? search = null,
             string? status = null)
         {
@@ -31,7 +31,7 @@ namespace BlueCrown.Api.Services.Implementations
             users = users.Where(u =>
                 string.Equals(
                     u.Role,
-                    "patient",
+                    "pharmacist",
                     StringComparison.OrdinalIgnoreCase));
 
             if (!string.IsNullOrWhiteSpace(search))
@@ -62,20 +62,20 @@ namespace BlueCrown.Api.Services.Implementations
                 .Select(MapUser);
         }
 
-        public async Task<UserDetailDto?> GetUserByIdAsync(Guid id)
+        public async Task<UserDetailDto?> GetByIdAsync(Guid id)
         {
             var user = await _userRepository.GetByIdAsync(id);
 
             if (user == null)
                 return null;
 
-            EnsurePatient(user);
+            EnsurePharmacist(user);
 
             return MapDetail(user);
         }
 
-        public async Task<UserDetailDto> CreateUserByAdminAsync(
-            AdminCreateUserDto dto)
+        public async Task<UserDetailDto> CreateAsync(
+            AdminPharmacistCreateDto dto)
         {
             var fullName = dto.FullName.Trim();
             var email = dto.Email.Trim().ToLowerInvariant();
@@ -86,14 +86,13 @@ namespace BlueCrown.Api.Services.Implementations
             var status = dto.Status.Trim().ToLowerInvariant();
 
             ValidateStatus(status);
+            ValidateDateOfBirth(dto.DateOfBirth);
 
             if (await _userRepository.GetByEmailAsync(email) != null)
                 throw new InvalidOperationException("Email đã tồn tại.");
 
             if (await _userRepository.GetByPhoneAsync(phone) != null)
                 throw new InvalidOperationException("Số điện thoại đã tồn tại.");
-
-            ValidateDateOfBirth(dto.DateOfBirth);
 
             var user = new User
             {
@@ -104,7 +103,7 @@ namespace BlueCrown.Api.Services.Implementations
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
                 DateOfBirth = dto.DateOfBirth,
                 Gender = gender,
-                Role = "patient",
+                Role = "pharmacist",
                 Status = status,
                 AvatarUrl = null,
                 EmailVerifiedAt = null,
@@ -112,43 +111,23 @@ namespace BlueCrown.Api.Services.Implementations
                 UpdatedAt = DateTime.Now
             };
 
-            var patientProfile = new PatientProfile
-            {
-                Id = Guid.NewGuid(),
-                UserId = user.Id
-            };
+            await _userRepository.AddAsync(user);
+            await _userRepository.SaveChangesAsync();
 
-            await using var transaction =
-                await _context.Database.BeginTransactionAsync();
-
-            try
-            {
-                await _userRepository.AddAsync(user);
-                _context.PatientProfiles.Add(patientProfile);
-
-                await _context.SaveChangesAsync();
-                await transaction.CommitAsync();
-
-                return MapDetail(user);
-            }
-            catch
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
+            return MapDetail(user);
         }
 
-        public async Task<UserDetailDto> UpdateUserByAdminAsync(
+        public async Task<UserDetailDto> UpdateAsync(
             Guid id,
-            AdminUpdateUserDto dto,
+            AdminPharmacistUpdateDto dto,
             Guid currentAdminId)
         {
             var user = await _userRepository.GetByIdAsync(id);
 
             if (user == null)
-                throw new KeyNotFoundException("Không tìm thấy bệnh nhân.");
+                throw new KeyNotFoundException("Không tìm thấy dược sĩ.");
 
-            EnsurePatient(user);
+            EnsurePharmacist(user);
 
             if (!string.IsNullOrWhiteSpace(dto.FullName))
                 user.FullName = dto.FullName.Trim();
@@ -217,7 +196,7 @@ namespace BlueCrown.Api.Services.Implementations
             return MapDetail(user);
         }
 
-        public async Task<UserDetailDto> UpdateUserStatusAsync(
+        public async Task<UserDetailDto> UpdateStatusAsync(
             Guid id,
             UpdateUserStatusDto dto,
             Guid currentAdminId)
@@ -225,9 +204,9 @@ namespace BlueCrown.Api.Services.Implementations
             var user = await _userRepository.GetByIdAsync(id);
 
             if (user == null)
-                throw new KeyNotFoundException("Không tìm thấy bệnh nhân.");
+                throw new KeyNotFoundException("Không tìm thấy dược sĩ.");
 
-            EnsurePatient(user);
+            EnsurePharmacist(user);
 
             var status = dto.Status.Trim().ToLowerInvariant();
             ValidateStatus(status);
@@ -245,7 +224,7 @@ namespace BlueCrown.Api.Services.Implementations
             return MapDetail(user);
         }
 
-        public async Task<string> DeleteUserByAdminAsync(
+        public async Task<string> DeleteAsync(
             Guid id,
             Guid currentAdminId)
         {
@@ -256,87 +235,33 @@ namespace BlueCrown.Api.Services.Implementations
             var user = await _userRepository.GetByIdAsync(id);
 
             if (user == null)
-                throw new KeyNotFoundException("Không tìm thấy người dùng.");
+                throw new KeyNotFoundException("Không tìm thấy dược sĩ.");
 
-            var doctorProfile = await _context.DoctorProfiles
-                .FirstOrDefaultAsync(x => x.UserId == id);
+            EnsurePharmacist(user);
 
-            var patientProfile = await _context.PatientProfiles
-                .FirstOrDefaultAsync(x => x.UserId == id);
-
-            var hasDirectUserData =
+            var hasBusinessData =
                 await _context.ChatMessages.AnyAsync(x => x.SenderId == id) ||
-                await _context.EcommerceOrders.AnyAsync(x => x.UserId == id) ||
-                await _context.HealthGoals.AnyAsync(x => x.CreatedByUserId == id) ||
                 await _context.InventoryReceipts.AnyAsync(
                     x => x.ApprovedBy == id || x.CreatedBy == id) ||
-                await _context.Notifications.AnyAsync(x => x.UserId == id) ||
                 await _context.PrescriptionDispenseItems.AnyAsync(
-                    x => x.DispensedBy == id);
+                    x => x.DispensedBy == id) ||
+                await _context.Notifications.AnyAsync(x => x.UserId == id);
 
-            if (hasDirectUserData)
+            if (hasBusinessData)
                 throw new InvalidOperationException(
-                    "Tài khoản đang có dữ liệu liên quan nên không thể xóa. Vui lòng khóa tài khoản thay vì xóa.");
-
-            if (doctorProfile != null)
-            {
-                var hasDoctorBusinessData =
-                    await _context.Appointments.AnyAsync(
-                        x => x.DoctorId == doctorProfile.Id) ||
-                    await _context.ChatSessions.AnyAsync(
-                        x => x.DoctorId == doctorProfile.Id) ||
-                    await _context.MedicalRecords.AnyAsync(
-                        x => x.DoctorId == doctorProfile.Id) ||
-                    await _context.Prescriptions.AnyAsync(
-                        x => x.DoctorId == doctorProfile.Id);
-
-                if (hasDoctorBusinessData)
-                    throw new InvalidOperationException(
-                        "Bác sĩ đã có dữ liệu nghiệp vụ nên không thể xóa. Vui lòng khóa tài khoản thay vì xóa.");
-            }
-
-            if (patientProfile != null)
-            {
-                var hasPatientBusinessData =
-                    await _context.Appointments.AnyAsync(
-                        x => x.PatientId == patientProfile.Id) ||
-                    await _context.ChatSessions.AnyAsync(
-                        x => x.PatientId == patientProfile.Id) ||
-                    await _context.MedicalRecords.AnyAsync(
-                        x => x.PatientId == patientProfile.Id) ||
-                    await _context.Prescriptions.AnyAsync(
-                        x => x.PatientId == patientProfile.Id) ||
-                    await _context.HealthMetrics.AnyAsync(
-                        x => x.PatientId == patientProfile.Id) ||
-                    await _context.HealthGoals.AnyAsync(
-                        x => x.PatientId == patientProfile.Id) ||
-                    await _context.SymptomLogs.AnyAsync(
-                        x => x.PatientId == patientProfile.Id) ||
-                    await _context.Payments.AnyAsync(
-                        x => x.PatientId == patientProfile.Id);
-
-                if (hasPatientBusinessData)
-                    throw new InvalidOperationException(
-                        "Bệnh nhân đã có dữ liệu nghiệp vụ nên không thể xóa. Vui lòng khóa tài khoản thay vì xóa.");
-            }
+                    "Dược sĩ đã có dữ liệu nghiệp vụ nên không thể xóa. Vui lòng khóa tài khoản thay vì xóa.");
 
             await using var transaction =
                 await _context.Database.BeginTransactionAsync();
 
             try
             {
-                if (doctorProfile != null)
-                    _context.DoctorProfiles.Remove(doctorProfile);
-
-                if (patientProfile != null)
-                    _context.PatientProfiles.Remove(patientProfile);
-
                 _context.Users.Remove(user);
 
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
 
-                return "Xóa tài khoản thành công.";
+                return "Xóa tài khoản dược sĩ thành công.";
             }
             catch
             {
@@ -345,131 +270,15 @@ namespace BlueCrown.Api.Services.Implementations
             }
         }
 
-        public async Task<bool> RegisterAsync(RegisterDto dto)
-        {
-            var email = dto.Email.Trim().ToLowerInvariant();
-            var phone = dto.Phone.Trim();
-
-            if (await _userRepository.GetByEmailAsync(email) != null ||
-                await _userRepository.GetByPhoneAsync(phone) != null)
-                return false;
-
-            var user = new User
-            {
-                Id = Guid.NewGuid(),
-                FullName = dto.FullName.Trim(),
-                Email = email,
-                Phone = phone,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
-                DateOfBirth = dto.DateOfBirth,
-                Gender = string.IsNullOrWhiteSpace(dto.Gender)
-                    ? null
-                    : dto.Gender.Trim().ToLowerInvariant(),
-                Role = "patient",
-                Status = "active",
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now
-            };
-
-            var patientProfile = new PatientProfile
-            {
-                Id = Guid.NewGuid(),
-                UserId = user.Id
-            };
-
-            await using var transaction =
-                await _context.Database.BeginTransactionAsync();
-
-            try
-            {
-                await _userRepository.AddAsync(user);
-                _context.PatientProfiles.Add(patientProfile);
-
-                await _context.SaveChangesAsync();
-                await transaction.CommitAsync();
-
-                return true;
-            }
-            catch
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
-        }
-
-        public async Task<bool> UpdateUserAsync(
-            Guid id,
-            UpdateUserDto dto)
-        {
-            var user = await _userRepository.GetByIdAsync(id);
-
-            if (user == null)
-                return false;
-
-            if (!string.IsNullOrWhiteSpace(dto.FullName))
-                user.FullName = dto.FullName.Trim();
-
-            if (!string.IsNullOrWhiteSpace(dto.Phone))
-            {
-                var existing =
-                    await _userRepository.GetByPhoneAsync(dto.Phone.Trim());
-
-                if (existing != null && existing.Id != id)
-                    return false;
-
-                user.Phone = dto.Phone.Trim();
-            }
-
-            if (dto.DateOfBirth.HasValue)
-                user.DateOfBirth = dto.DateOfBirth;
-
-            if (dto.Gender != null)
-            {
-                user.Gender = string.IsNullOrWhiteSpace(dto.Gender)
-                    ? null
-                    : dto.Gender.Trim().ToLowerInvariant();
-            }
-
-            if (dto.AvatarUrl != null)
-            {
-                user.AvatarUrl = string.IsNullOrWhiteSpace(dto.AvatarUrl)
-                    ? null
-                    : dto.AvatarUrl.Trim();
-            }
-
-            user.UpdatedAt = DateTime.Now;
-
-            await _userRepository.UpdateAsync(user);
-            await _userRepository.SaveChangesAsync();
-
-            return true;
-        }
-
-        public async Task<bool> DeleteUserAsync(Guid id)
-        {
-            var user = await _userRepository.GetByIdAsync(id);
-
-            if (user == null)
-                return false;
-
-            user.Status = "suspended";
-            user.UpdatedAt = DateTime.Now;
-
-            await _userRepository.UpdateAsync(user);
-            await _userRepository.SaveChangesAsync();
-
-            return true;
-        }
-
-        private static void EnsurePatient(User user)
+        private static void EnsurePharmacist(User user)
         {
             if (!string.Equals(
                     user.Role,
-                    "patient",
+                    "pharmacist",
                     StringComparison.OrdinalIgnoreCase))
             {
                 throw new InvalidOperationException(
-                    "Chức năng này chỉ dành cho tài khoản bệnh nhân.");
+                    "Chức năng này chỉ dành cho tài khoản dược sĩ.");
             }
         }
 

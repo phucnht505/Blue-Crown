@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BlueCrown.Api.DTOs.Users
 {
-    public class AdminUpdateUserDto
+    public class AdminPharmacistUpdateDto
     {
         [StringLength(50, MinimumLength = 2, ErrorMessage = "Họ tên phải từ 2 đến 50 ký tự.")]
         [RegularExpression(@"^[\p{L}\s]+$", ErrorMessage = "Họ tên chỉ được chứa chữ cái và khoảng trắng.")]

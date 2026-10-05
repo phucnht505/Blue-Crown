@@ -22,7 +22,6 @@ namespace BlueCrown.Api.Controllers
         // PATIENT
         // =========================================================
 
-        [HttpGet("patient/my")]
         [HttpGet("patient/checkout-options")]
         [Authorize(Roles = "patient")]
         public async Task<ActionResult<List<PrescriptionCheckoutOptionDto>>> GetPatientCheckoutOptions()
@@ -43,6 +42,8 @@ namespace BlueCrown.Api.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [HttpGet("patient/my")]
         [Authorize(Roles = "patient")]
         public async Task<ActionResult<List<PrescriptionDto>>> GetPatientPrescriptions()
         {

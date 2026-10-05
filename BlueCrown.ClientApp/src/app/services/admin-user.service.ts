@@ -1,4 +1,4 @@
-﻿import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import {
@@ -17,12 +17,14 @@ export class AdminUserService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = '/api/Users';
 
-  getAll(search = '', role = '', status = ''): Observable<AdminUser[]> {
+  getAll(search = '', status = ''): Observable<AdminUser[]> {
     let params = new HttpParams();
 
-    if (search.trim()) params = params.set('search', search.trim());
-    if (role) params = params.set('role', role);
-    if (status) params = params.set('status', status);
+    if (search.trim())
+      params = params.set('search', search.trim());
+
+    if (status)
+      params = params.set('status', status);
 
     return this.http.get<AdminUser[]>(this.apiUrl, { params });
   }
@@ -44,7 +46,6 @@ export class AdminUserService {
   }
 
   delete(id: string): Observable<AdminUserMessageResponse> {
-    return this.http.delete<AdminUserMessageResponse>(`${this.apiUrl}/${id}`);
+    return this.http.delete<AdminUserMessageResponse>(`${this.apiUrl}/${id}/hard`);
   }
 }
-

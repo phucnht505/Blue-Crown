@@ -1,4 +1,10 @@
-﻿USE BLUE_CROWN;
+﻿-- BLUE CROWN - DATA RESET + SEED MỚI NHẤT
+-- Cập nhật ngày nghiệp vụ theo thời điểm 16/09/2026.
+-- Giữ nguyên ngày sinh và hạn sử dụng sản phẩm/lô hàng.
+-- Đồng bộ trạng thái Appointment/ChatSession để tránh xung đột BR-CHAT-007.
+-- File này XÓA TOÀN BỘ DỮ LIỆU hiện có trong BLUE_CROWN rồi seed lại.
+
+USE BLUE_CROWN;
 GO
 
 SET NOCOUNT ON;
@@ -173,25 +179,25 @@ BEGIN TRY
     -- =====================================================
     INSERT INTO health_metrics (id, patient_id, metric_type_id, value, recorded_at)
     VALUES
-    (NEWID(), '00000000-0000-0000-0000-000000011001', 1, 68.00, '2026-08-01T07:30:00'),
-    (NEWID(), '00000000-0000-0000-0000-000000011001', 2, 76.00, '2026-08-01T07:35:00'),
-    (NEWID(), '00000000-0000-0000-0000-000000011001', 6, 98.00, '2026-08-01T07:36:00'),
+    (NEWID(), '00000000-0000-0000-0000-000000011001', 1, 68.00, '2026-09-05T07:30:00'),
+    (NEWID(), '00000000-0000-0000-0000-000000011001', 2, 76.00, '2026-09-05T07:35:00'),
+    (NEWID(), '00000000-0000-0000-0000-000000011001', 6, 98.00, '2026-09-05T07:36:00'),
 
-    (NEWID(), '00000000-0000-0000-0000-000000011002', 1, 54.50, '2026-08-02T07:30:00'),
-    (NEWID(), '00000000-0000-0000-0000-000000011002', 3, 135.00, '2026-08-02T07:35:00'),
-    (NEWID(), '00000000-0000-0000-0000-000000011002', 4, 86.00, '2026-08-02T07:36:00'),
+    (NEWID(), '00000000-0000-0000-0000-000000011002', 1, 54.50, '2026-09-06T07:30:00'),
+    (NEWID(), '00000000-0000-0000-0000-000000011002', 3, 135.00, '2026-09-06T07:35:00'),
+    (NEWID(), '00000000-0000-0000-0000-000000011002', 4, 86.00, '2026-09-06T07:36:00'),
 
-    (NEWID(), '00000000-0000-0000-0000-000000011003', 1, 72.00, '2026-08-03T07:30:00'),
-    (NEWID(), '00000000-0000-0000-0000-000000011003', 2, 82.00, '2026-08-03T07:35:00'),
-    (NEWID(), '00000000-0000-0000-0000-000000011003', 6, 97.00, '2026-08-03T07:36:00'),
+    (NEWID(), '00000000-0000-0000-0000-000000011003', 1, 72.00, '2026-09-07T07:30:00'),
+    (NEWID(), '00000000-0000-0000-0000-000000011003', 2, 82.00, '2026-09-07T07:35:00'),
+    (NEWID(), '00000000-0000-0000-0000-000000011003', 6, 97.00, '2026-09-07T07:36:00'),
 
-    (NEWID(), '00000000-0000-0000-0000-000000011004', 1, 60.00, '2026-08-04T07:30:00'),
-    (NEWID(), '00000000-0000-0000-0000-000000011004', 5, 128.00, '2026-08-04T07:35:00'),
-    (NEWID(), '00000000-0000-0000-0000-000000011004', 2, 79.00, '2026-08-04T07:36:00'),
+    (NEWID(), '00000000-0000-0000-0000-000000011004', 1, 60.00, '2026-09-08T07:30:00'),
+    (NEWID(), '00000000-0000-0000-0000-000000011004', 5, 128.00, '2026-09-08T07:35:00'),
+    (NEWID(), '00000000-0000-0000-0000-000000011004', 2, 79.00, '2026-09-08T07:36:00'),
 
-    (NEWID(), '00000000-0000-0000-0000-000000011005', 1, 57.00, '2026-08-05T07:30:00'),
-    (NEWID(), '00000000-0000-0000-0000-000000011005', 2, 73.00, '2026-08-05T07:35:00'),
-    (NEWID(), '00000000-0000-0000-0000-000000011005', 6, 99.00, '2026-08-05T07:36:00');
+    (NEWID(), '00000000-0000-0000-0000-000000011005', 1, 57.00, '2026-09-09T07:30:00'),
+    (NEWID(), '00000000-0000-0000-0000-000000011005', 2, 73.00, '2026-09-09T07:35:00'),
+    (NEWID(), '00000000-0000-0000-0000-000000011005', 6, 99.00, '2026-09-09T07:36:00');
 
     -- =====================================================
     -- 7. HEALTH GOALS
@@ -203,11 +209,11 @@ BEGIN TRY
         created_by_user_id, created_by_role
     )
     VALUES
-    (NEWID(), '00000000-0000-0000-0000-000000011001', 1, 65.00, '2026-08-01', '2026-11-01', N'in_progress', '00000000-0000-0000-0000-000000001001', N'patient'),
-    (NEWID(), '00000000-0000-0000-0000-000000011002', 3, 120.00, '2026-08-01', '2026-10-01', N'in_progress', '00000000-0000-0000-0000-000000001002', N'patient'),
-    (NEWID(), '00000000-0000-0000-0000-000000011003', 2, 75.00, '2026-08-01', '2026-09-30', N'in_progress', '00000000-0000-0000-0000-000000001003', N'patient'),
-    (NEWID(), '00000000-0000-0000-0000-000000011004', 5, 95.00, '2026-08-01', '2026-12-31', N'in_progress', '00000000-0000-0000-0000-000000001004', N'patient'),
-    (NEWID(), '00000000-0000-0000-0000-000000011005', 1, 55.00, '2026-08-01', '2026-11-30', N'in_progress', '00000000-0000-0000-0000-000000001005', N'patient');
+    (NEWID(), '00000000-0000-0000-0000-000000011001', 1, 65.00, '2026-09-01', '2026-11-01', N'active', '00000000-0000-0000-0000-000000001001', N'patient'),
+    (NEWID(), '00000000-0000-0000-0000-000000011002', 3, 120.00, '2026-09-01', '2026-10-01', N'active', '00000000-0000-0000-0000-000000001002', N'patient'),
+    (NEWID(), '00000000-0000-0000-0000-000000011003', 2, 75.00, '2026-09-01', '2026-09-30', N'active', '00000000-0000-0000-0000-000000001003', N'patient'),
+    (NEWID(), '00000000-0000-0000-0000-000000011004', 5, 95.00, '2026-09-01', '2026-12-31', N'active', '00000000-0000-0000-0000-000000001004', N'patient'),
+    (NEWID(), '00000000-0000-0000-0000-000000011005', 1, 55.00, '2026-09-01', '2026-11-30', N'active', '00000000-0000-0000-0000-000000001005', N'patient');
 
     -- =====================================================
     -- 8. PRODUCTS
@@ -336,28 +342,28 @@ BEGIN TRY
      N'Ho khan, sổ mũi, đau họng nhẹ trong 2 ngày.',
      N'Cảm cúm thông thường', N'LOW',
      N'Nghỉ ngơi, uống đủ nước và theo dõi triệu chứng. Nếu diễn tiến nặng cần đi khám.',
-     '2026-07-08T20:00:00'),
+     '2026-09-11T20:00:00'),
 
     ('00000000-0000-0000-0000-000000131002',
      '00000000-0000-0000-0000-000000011005',
      N'Đau bụng dữ dội vùng hạ sườn phải, kèm buồn nôn.',
      N'Nghi tình trạng cần đánh giá cấp cứu', N'HIGH',
      N'Nên đến cơ sở y tế ngay để được bác sĩ thăm khám trực tiếp.',
-     '2026-07-11T22:15:00'),
+     '2026-09-14T22:15:00'),
 
     ('00000000-0000-0000-0000-000000131003',
      '00000000-0000-0000-0000-000000011001',
      N'Ngứa da, nổi mẩn đỏ sau khi ăn hải sản.',
      N'Dị ứng thực phẩm', N'LOW',
      N'Tránh tiếp xúc tác nhân nghi ngờ và theo dõi triệu chứng; đi khám nếu khó thở hoặc sưng phù.',
-     '2026-07-12T18:30:00'),
+     '2026-09-15T18:30:00'),
 
     ('00000000-0000-0000-0000-000000131004',
      '00000000-0000-0000-0000-000000011004',
      N'Ợ nóng, đau vùng thượng vị sau ăn, tái diễn nhiều ngày.',
      N'Viêm loét dạ dày nhẹ', N'LOW',
      N'Nên điều chỉnh chế độ ăn và đặt lịch bác sĩ nếu triệu chứng kéo dài.',
-     '2026-08-02T21:00:00');
+     '2026-09-06T21:00:00');
 
     -- =====================================================
     -- 11. AUTO PRESCRIPTIONS
@@ -381,7 +387,6 @@ BEGIN TRY
     ('00000000-0000-0000-0000-000000141004', N'Đau đầu nhẹ',
      '00000000-0000-0000-0000-000000091011',
      N'Dữ liệu demo: chỉ dùng để thử chức năng AutoPrescription.');
-
     -- =====================================================
     -- 12. CHAT SESSIONS
     -- =====================================================
@@ -392,24 +397,26 @@ BEGIN TRY
      '00000000-0000-0000-0000-000000011001',
      '00000000-0000-0000-0000-000000031001',
      '00000000-0000-0000-0000-000000131003',
-     N'active', '2026-08-10T08:30:00'),
+     N'active', '2026-09-15T01:30:00'),
 
     ('00000000-0000-0000-0000-000000041002',
      '00000000-0000-0000-0000-000000011002',
      '00000000-0000-0000-0000-000000031003',
-     NULL, N'closed', '2026-08-05T14:00:00'),
+     NULL, N'closed', '2026-09-09T07:00:00'),
 
     ('00000000-0000-0000-0000-000000041003',
      '00000000-0000-0000-0000-000000011003',
      '00000000-0000-0000-0000-000000031002',
      '00000000-0000-0000-0000-000000131001',
-     N'active', '2026-08-12T19:00:00'),
+     N'closed', '2026-09-14T02:00:00'),
 
     ('00000000-0000-0000-0000-000000041004',
      '00000000-0000-0000-0000-000000011004',
      '00000000-0000-0000-0000-000000031003',
      '00000000-0000-0000-0000-000000131004',
-     N'active', '2026-08-13T10:15:00');
+     N'closed', '2026-09-11T03:15:00');
+
+
 
     -- =====================================================
     -- 13. CHAT MESSAGES
@@ -418,27 +425,26 @@ BEGIN TRY
     (id, session_id, sender_id, message, is_read, sent_at)
     VALUES
     (NEWID(), '00000000-0000-0000-0000-000000041001', '00000000-0000-0000-0000-000000001001',
-     N'Chào bác sĩ, gần đây tôi đôi lúc thấy tim đập nhanh khi vận động.', 1, '2026-08-10T08:31:00'),
+     N'Chào bác sĩ, gần đây tôi đôi lúc thấy tim đập nhanh khi vận động.', 1, '2026-09-15T01:31:00'),
     (NEWID(), '00000000-0000-0000-0000-000000041001', '00000000-0000-0000-0000-000000002001',
-     N'Bạn có kèm đau ngực, khó thở hoặc chóng mặt không?', 1, '2026-08-10T08:33:00'),
+     N'Bạn có kèm đau ngực, khó thở hoặc chóng mặt không?', 1, '2026-09-15T01:33:00'),
     (NEWID(), '00000000-0000-0000-0000-000000041001', '00000000-0000-0000-0000-000000001001',
-     N'Thỉnh thoảng hơi mệt nhưng chưa thấy đau ngực.', 0, '2026-08-10T08:35:00'),
+     N'Thỉnh thoảng hơi mệt nhưng chưa thấy đau ngực.', 0, '2026-09-15T01:35:00'),
 
     (NEWID(), '00000000-0000-0000-0000-000000041002', '00000000-0000-0000-0000-000000001002',
-     N'Tôi muốn hỏi cách theo dõi huyết áp tại nhà.', 1, '2026-08-05T14:01:00'),
+     N'Tôi muốn hỏi cách theo dõi huyết áp tại nhà.', 1, '2026-09-09T07:01:00'),
     (NEWID(), '00000000-0000-0000-0000-000000041002', '00000000-0000-0000-0000-000000002003',
-     N'Bạn nên đo vào thời điểm cố định và ghi lại kết quả để bác sĩ đánh giá xu hướng.', 1, '2026-08-05T14:05:00'),
+     N'Bạn nên đo vào thời điểm cố định và ghi lại kết quả để bác sĩ đánh giá xu hướng.', 1, '2026-09-09T07:05:00'),
 
     (NEWID(), '00000000-0000-0000-0000-000000041003', '00000000-0000-0000-0000-000000001003',
-     N'Tôi bị ho và sổ mũi vài ngày, muốn được tư vấn.', 1, '2026-08-12T19:01:00'),
+     N'Tôi bị ho và sổ mũi vài ngày, muốn được tư vấn.', 1, '2026-09-14T02:01:00'),
     (NEWID(), '00000000-0000-0000-0000-000000041003', '00000000-0000-0000-0000-000000002002',
-     N'Bạn có sốt cao hoặc khó thở không?', 0, '2026-08-12T19:04:00'),
+     N'Bạn có sốt cao hoặc khó thở không?', 0, '2026-09-14T02:04:00'),
 
     (NEWID(), '00000000-0000-0000-0000-000000041004', '00000000-0000-0000-0000-000000001004',
-     N'Tôi hay đau vùng thượng vị sau bữa ăn.', 1, '2026-08-13T10:16:00'),
+     N'Tôi hay đau vùng thượng vị sau bữa ăn.', 1, '2026-09-11T03:16:00'),
     (NEWID(), '00000000-0000-0000-0000-000000041004', '00000000-0000-0000-0000-000000002003',
-     N'Tôi sẽ hỏi thêm về thời gian đau và các thuốc bạn đang dùng.', 0, '2026-08-13T10:18:00');
-
+     N'Tôi sẽ hỏi thêm về thời gian đau và các thuốc bạn đang dùng.', 0, '2026-09-11T03:18:00');
     -- =====================================================
     -- 14. APPOINTMENTS
     -- =====================================================
@@ -449,31 +455,33 @@ BEGIN TRY
      '00000000-0000-0000-0000-000000041001',
      '00000000-0000-0000-0000-000000011001',
      '00000000-0000-0000-0000-000000031001',
-     '2026-08-22T09:00:00', N'online_consult', N'confirmed', '2026-08-10T08:40:00'),
+     '2026-09-18T02:00:00', N'online_consult', N'confirmed', '2026-09-15T01:40:00'),
 
     ('00000000-0000-0000-0000-000000051002',
-     '00000000-0000-0000-0000-000000041002',
+     NULL,
      '00000000-0000-0000-0000-000000011002',
      '00000000-0000-0000-0000-000000031003',
-     '2026-08-06T14:30:00', N'clinic_visit', N'completed', '2026-08-05T14:10:00'),
+     '2026-09-10T03:30:00', N'clinic_visit', N'completed', '2026-09-09T07:10:00'),
 
     ('00000000-0000-0000-0000-000000051003',
-     '00000000-0000-0000-0000-000000041003',
+     NULL,
      '00000000-0000-0000-0000-000000011003',
      '00000000-0000-0000-0000-000000031002',
-     '2026-08-23T10:00:00', N'online_consult', N'pending', '2026-08-12T19:10:00'),
+     '2026-09-19T03:00:00', N'online_consult', N'pending', '2026-09-14T02:10:00'),
 
     ('00000000-0000-0000-0000-000000051004',
-     '00000000-0000-0000-0000-000000041004',
+     NULL,
      '00000000-0000-0000-0000-000000011004',
      '00000000-0000-0000-0000-000000031003',
-     '2026-08-14T10:30:00', N'clinic_visit', N'completed', '2026-08-13T10:25:00'),
+     '2026-09-12T03:30:00', N'clinic_visit', N'completed', '2026-09-11T03:25:00'),
 
     ('00000000-0000-0000-0000-000000051005',
      NULL,
      '00000000-0000-0000-0000-000000011001',
      '00000000-0000-0000-0000-000000031003',
-     '2026-08-28T15:00:00', N'clinic_visit', N'pending', '2026-08-20T09:00:00');
+     '2026-09-20T08:00:00', N'clinic_visit', N'pending', '2026-09-15T02:00:00');
+
+
 
     -- =====================================================
     -- 15. MEDICAL RECORDS
@@ -487,7 +495,7 @@ BEGIN TRY
      '00000000-0000-0000-0000-000000031003',
      N'Tăng huyết áp cần tiếp tục theo dõi',
      N'Khuyến nghị ghi nhận huyết áp tại nhà và tái khám theo lịch.',
-     '2026-08-06T15:10:00'),
+     '2026-09-10T04:10:00'),
 
     ('00000000-0000-0000-0000-000000061002',
      '00000000-0000-0000-0000-000000051004',
@@ -495,7 +503,7 @@ BEGIN TRY
      '00000000-0000-0000-0000-000000031003',
      N'Rối loạn tiêu hóa, theo dõi triệu chứng dạ dày',
      N'Điều chỉnh chế độ ăn và tái khám nếu triệu chứng kéo dài.',
-     '2026-08-14T11:10:00');
+     '2026-09-12T04:10:00');
 
     -- =====================================================
     -- 16. PRESCRIPTIONS
@@ -512,7 +520,7 @@ BEGIN TRY
      '00000000-0000-0000-0000-000000011002',
      '00000000-0000-0000-0000-000000031003',
      N'Tăng huyết áp cần tiếp tục theo dõi',
-     N'pending', '2026-08-06T15:15:00'),
+     N'pending', '2026-09-10T04:15:00'),
 
     ('00000000-0000-0000-0000-000000081002',
      '00000000-0000-0000-0000-000000051004',
@@ -520,7 +528,7 @@ BEGIN TRY
      '00000000-0000-0000-0000-000000011004',
      '00000000-0000-0000-0000-000000031003',
      N'Rối loạn tiêu hóa, theo dõi triệu chứng dạ dày',
-     N'approved', '2026-08-14T11:15:00');
+     N'approved', '2026-09-12T04:15:00');
 
     -- =====================================================
     -- 17. PRESCRIPTION ITEMS
@@ -536,24 +544,20 @@ BEGIN TRY
 
     (NEWID(), '00000000-0000-0000-0000-000000081002', '00000000-0000-0000-0000-000000071006',
      N'20mg', 1, 14, N'Dùng theo chỉ định bác sĩ và hướng dẫn sử dụng.');
-
     -- =====================================================
     -- 18. PAYMENTS
+    -- Tư vấn trực tuyến miễn phí nên không seed Payment cho online_consult.
     -- =====================================================
     INSERT INTO payments
     (id, appointment_id, patient_id, amount, platform_fee, status, payment_method, transaction_ref, created_at)
     VALUES
-    (NEWID(), '00000000-0000-0000-0000-000000051001', '00000000-0000-0000-0000-000000011001',
-     300000, 15000, N'paid', N'momo', N'TXN-20260810-0001', '2026-08-10T08:45:00'),
-
     (NEWID(), '00000000-0000-0000-0000-000000051002', '00000000-0000-0000-0000-000000011002',
-     280000, 14000, N'paid', N'vnpay', N'TXN-20260805-0002', '2026-08-05T14:12:00'),
-
-    (NEWID(), '00000000-0000-0000-0000-000000051003', '00000000-0000-0000-0000-000000011003',
-     250000, 12500, N'pending', N'bank_transfer', N'TXN-20260812-0003', '2026-08-12T19:12:00'),
+     280000, 0, N'paid', N'cash', N'TXN-20260910-0002', '2026-09-10T03:35:00'),
 
     (NEWID(), '00000000-0000-0000-0000-000000051004', '00000000-0000-0000-0000-000000011004',
-     280000, 14000, N'paid', N'cash', N'TXN-20260813-0004', '2026-08-13T10:30:00');
+     280000, 0, N'paid', N'cash', N'TXN-20260912-0004', '2026-09-12T03:35:00');
+
+
 
     -- =====================================================
     -- 19. NOTIFICATIONS
@@ -562,25 +566,25 @@ BEGIN TRY
     (id, user_id, type, title, message, is_read, created_at)
     VALUES
     (NEWID(), '00000000-0000-0000-0000-000000001001', N'appointment_reminder',
-     N'Nhắc lịch khám', N'Bạn có lịch khám trực tuyến vào 09:00 ngày 22/08/2026.', 0, '2026-08-21T08:00:00'),
+     N'Nhắc lịch khám', N'Bạn có lịch khám trực tuyến vào 09:00 ngày 18/09/2026.', 0, '2026-09-15T08:00:00'),
 
     (NEWID(), '00000000-0000-0000-0000-000000001002', N'health_metric',
-     N'Theo dõi huyết áp', N'Bạn nên tiếp tục cập nhật huyết áp hằng ngày.', 0, '2026-08-07T08:00:00'),
+     N'Theo dõi huyết áp', N'Bạn nên tiếp tục cập nhật huyết áp hằng ngày.', 0, '2026-09-15T09:00:00'),
 
     (NEWID(), '00000000-0000-0000-0000-000000001003', N'appointment_confirmed',
-     N'Lịch khám đã được ghi nhận', N'Lịch tư vấn của bạn đang chờ bác sĩ xác nhận.', 1, '2026-08-12T19:15:00'),
+     N'Lịch khám đã được ghi nhận', N'Lịch tư vấn của bạn đang chờ bác sĩ xác nhận.', 1, '2026-09-15T10:00:00'),
 
     (NEWID(), '00000000-0000-0000-0000-000000001004', N'prescription_ready',
-     N'Đơn thuốc mới', N'Đơn thuốc của bạn đã được cập nhật trong hồ sơ.', 0, '2026-08-14T11:20:00'),
+     N'Đơn thuốc mới', N'Đơn thuốc của bạn đã được cập nhật trong hồ sơ.', 0, '2026-09-15T11:00:00'),
 
     (NEWID(), '00000000-0000-0000-0000-000000002001', N'new_appointment',
-     N'Lịch tư vấn mới', N'Bạn có một lịch tư vấn với bệnh nhân Nguyễn Văn An.', 0, '2026-08-20T09:30:00'),
+     N'Lịch tư vấn mới', N'Bạn có một lịch tư vấn với bệnh nhân Nguyễn Văn An.', 0, '2026-09-15T12:00:00'),
 
     (NEWID(), '00000000-0000-0000-0000-000000004001', N'inventory_low_stock',
-     N'Cảnh báo tồn kho', N'Sản phẩm Ventolin có lượng tồn kho thấp.', 0, '2026-08-20T07:00:00'),
+     N'Cảnh báo tồn kho', N'Sản phẩm Ventolin có lượng tồn kho thấp.', 0, '2026-09-15T13:00:00'),
 
     (NEWID(), '00000000-0000-0000-0000-000000003001', N'inventory_approval',
-     N'Phiếu nhập chờ duyệt', N'Có phiếu nhập kho mới đang chờ Admin duyệt.', 0, '2026-08-20T10:00:00');
+     N'Phiếu nhập chờ duyệt', N'Có phiếu nhập kho mới đang chờ Admin duyệt.', 0, '2026-09-15T14:00:00');
 
     -- =====================================================
     -- 20. DRUG ALTERNATIVES
@@ -592,19 +596,19 @@ BEGIN TRY
      '00000000-0000-0000-0000-000000091001',
      '00000000-0000-0000-0000-000000091011',
      N'Cùng nhóm giảm đau nhưng khác hoạt chất; cần kiểm tra tính phù hợp.',
-     70.00, '2026-08-01T00:00:00'),
+     70.00, '2026-09-05T00:00:00'),
 
     (NEWID(),
      '00000000-0000-0000-0000-000000091011',
      '00000000-0000-0000-0000-000000091001',
      N'Phương án thay thế trong nhóm giảm đau khi phù hợp với người dùng.',
-     70.00, '2026-08-01T00:00:00'),
+     70.00, '2026-09-05T00:00:00'),
 
     (NEWID(),
      '00000000-0000-0000-0000-000000091006',
      '00000000-0000-0000-0000-000000091009',
      N'Dữ liệu demo cho chức năng DrugAlternative; không đồng nghĩa tương đương điều trị.',
-     20.00, '2026-08-01T00:00:00');
+     20.00, '2026-09-05T00:00:00');
 
     -- =====================================================
     -- 21. ECOMMERCE ORDERS
@@ -619,25 +623,25 @@ BEGIN TRY
     ('00000000-0000-0000-0000-000000101001',
      '00000000-0000-0000-0000-000000001001', NULL,
      N'12 Lê Lợi, Quận 1, TP.HCM',
-     83000, N'cod', N'paid', N'delivered', NULL, '2026-08-01T10:00:00'),
+     83000, N'cod', N'paid', N'delivered', NULL, '2026-09-05T03:00:00'),
 
     ('00000000-0000-0000-0000-000000101002',
 	'00000000-0000-0000-0000-000000001004', NULL,
 	N'78 Cách Mạng Tháng 8, Quận 3, TP.HCM',
 	48000, N'cod', N'pending', N'processing',
-	'00000000-0000-0000-0000-000000081002', '2026-08-14T12:00:00'),
+	'00000000-0000-0000-0000-000000081002', '2026-09-12T05:00:00'),
 
     ('00000000-0000-0000-0000-000000101003',
      NULL, N'0909998877',
      N'156 Trần Hưng Đạo, Quận 5, TP.HCM',
      63000, N'cod', N'pending', N'processing',
-     NULL, '2026-08-18T09:00:00'),
+     NULL, '2026-09-13T02:00:00'),
 
     ('00000000-0000-0000-0000-000000101004',
      '00000000-0000-0000-0000-000000001003', NULL,
      N'32 Nguyễn Thị Minh Khai, Quận 1, TP.HCM',
      67000, N'cod', N'pending', N'processing',
-     NULL, '2026-08-20T16:00:00');
+     NULL, '2026-09-14T09:00:00');
 
     -- =====================================================
     -- 22. ORDER ITEMS
@@ -696,19 +700,19 @@ BEGIN TRY
    '00000000-0000-0000-0000-000000111001',
    '00000000-0000-0000-0000-000000004001',
    '00000000-0000-0000-0000-000000003001',
-   51500000, '2026-05-20T09:00:00', N'approved'),
+   51500000, '2026-09-01T02:00:00', N'approved'),
 
     ('00000000-0000-0000-0000-000000121002',
 	'00000000-0000-0000-0000-000000111002',
 	'00000000-0000-0000-0000-000000004002',
 	'00000000-0000-0000-0000-000000003001',
-	 54500000, '2026-06-10T09:00:00', N'approved'),
+	 54500000, '2026-09-05T02:00:00', N'approved'),
 
     ('00000000-0000-0000-0000-000000121003',
 	'00000000-0000-0000-0000-000000111003',
 	'00000000-0000-0000-0000-000000004001',
 	NULL,
-	156000000, '2026-08-20T09:00:00', N'pending_approval');
+	156000000, '2026-09-15T02:00:00', N'pending_approval');
 
     -- =====================================================
     -- 25. RECEIPT DETAILS
@@ -788,7 +792,7 @@ GO
 
 SET NOCOUNT ON;
 SET XACT_ABORT ON;
--- BLUE CROWN - ADD MORE DEMO DATA
+-- BLUE CROWN - ADD MORE DEMO DATA (đồng bộ 16/09/2026)
 -- Chạy sau BLUE_CROWN_RESET_AND_SEED.sql. Không xóa dữ liệu hiện có.
 BEGIN TRY
     BEGIN TRANSACTION;
@@ -887,138 +891,138 @@ BEGIN TRY
     );
 
     -- 6. HEALTH METRICS + GOALS
-    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151001') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151001','00000000-0000-0000-0000-000000011006',1,66,'2026-08-16T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151002') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151002','00000000-0000-0000-0000-000000011006',2,74,'2026-08-16T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151003') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151003','00000000-0000-0000-0000-000000011006',6,98,'2026-08-16T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161006') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status,created_by_user_id,created_by_role) VALUES('00000000-0000-0000-0000-000000161006','00000000-0000-0000-0000-000000011006',1,63,'2026-08-10','2026-12-31',N'in_progress','00000000-0000-0000-0000-000000001006',N'patient');
-    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151004') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151004','00000000-0000-0000-0000-000000011007',1,50,'2026-08-17T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151005') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151005','00000000-0000-0000-0000-000000011007',2,75,'2026-08-17T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151006') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151006','00000000-0000-0000-0000-000000011007',6,99,'2026-08-17T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161007') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status,created_by_user_id,created_by_role) VALUES('00000000-0000-0000-0000-000000161007','00000000-0000-0000-0000-000000011007',1,47,'2026-08-10','2026-12-31',N'in_progress','00000000-0000-0000-0000-000000001007',N'patient');
-    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151007') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151007','00000000-0000-0000-0000-000000011008',1,80,'2026-08-18T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151008') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151008','00000000-0000-0000-0000-000000011008',2,76,'2026-08-18T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151009') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151009','00000000-0000-0000-0000-000000011008',6,96,'2026-08-18T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161008') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status,created_by_user_id,created_by_role) VALUES('00000000-0000-0000-0000-000000161008','00000000-0000-0000-0000-000000011008',1,77,'2026-08-10','2026-12-31',N'in_progress','00000000-0000-0000-0000-000000001008',N'patient');
-    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151010') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151010','00000000-0000-0000-0000-000000011009',1,55,'2026-08-19T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151011') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151011','00000000-0000-0000-0000-000000011009',2,77,'2026-08-19T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151012') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151012','00000000-0000-0000-0000-000000011009',6,97,'2026-08-19T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161009') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status,created_by_user_id,created_by_role) VALUES('00000000-0000-0000-0000-000000161009','00000000-0000-0000-0000-000000011009',1,52,'2026-08-10','2026-12-31',N'in_progress','00000000-0000-0000-0000-000000001009',N'patient');
-    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151013') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151013','00000000-0000-0000-0000-000000011010',1,76,'2026-08-20T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151014') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151014','00000000-0000-0000-0000-000000011010',2,78,'2026-08-20T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151015') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151015','00000000-0000-0000-0000-000000011010',6,98,'2026-08-20T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161010') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status,created_by_user_id,created_by_role) VALUES('00000000-0000-0000-0000-000000161010','00000000-0000-0000-0000-000000011010',1,73,'2026-08-10','2026-12-31',N'in_progress','00000000-0000-0000-0000-000000001010',N'patient');
-    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151016') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151016','00000000-0000-0000-0000-000000011011',1,52,'2026-08-21T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151017') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151017','00000000-0000-0000-0000-000000011011',2,79,'2026-08-21T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151018') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151018','00000000-0000-0000-0000-000000011011',6,99,'2026-08-21T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161011') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status,created_by_user_id,created_by_role) VALUES('00000000-0000-0000-0000-000000161011','00000000-0000-0000-0000-000000011011',1,49,'2026-08-10','2026-12-31',N'in_progress','00000000-0000-0000-0000-000000001011',N'patient');
-    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151019') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151019','00000000-0000-0000-0000-000000011012',1,73,'2026-08-22T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151020') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151020','00000000-0000-0000-0000-000000011012',2,68,'2026-08-22T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151021') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151021','00000000-0000-0000-0000-000000011012',6,96,'2026-08-22T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161012') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status,created_by_user_id,created_by_role) VALUES('00000000-0000-0000-0000-000000161012','00000000-0000-0000-0000-000000011012',1,70,'2026-08-10','2026-12-31',N'in_progress','00000000-0000-0000-0000-000000001012',N'patient');
-    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151022') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151022','00000000-0000-0000-0000-000000011013',1,61,'2026-08-23T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151023') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151023','00000000-0000-0000-0000-000000011013',2,69,'2026-08-23T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151024') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151024','00000000-0000-0000-0000-000000011013',6,97,'2026-08-23T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161013') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status,created_by_user_id,created_by_role) VALUES('00000000-0000-0000-0000-000000161013','00000000-0000-0000-0000-000000011013',1,58,'2026-08-10','2026-12-31',N'in_progress','00000000-0000-0000-0000-000000001013',N'patient');
-    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151025') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151025','00000000-0000-0000-0000-000000011014',1,70,'2026-08-24T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151026') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151026','00000000-0000-0000-0000-000000011014',2,70,'2026-08-24T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151027') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151027','00000000-0000-0000-0000-000000011014',6,98,'2026-08-24T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161014') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status,created_by_user_id,created_by_role) VALUES('00000000-0000-0000-0000-000000161014','00000000-0000-0000-0000-000000011014',1,67,'2026-08-10','2026-12-31',N'in_progress','00000000-0000-0000-0000-000000001014',N'patient');
-    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151028') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151028','00000000-0000-0000-0000-000000011015',1,54,'2026-08-25T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151029') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151029','00000000-0000-0000-0000-000000011015',2,71,'2026-08-25T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151030') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151030','00000000-0000-0000-0000-000000011015',6,99,'2026-08-25T07:30:00');
-    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161015') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status,created_by_user_id,created_by_role) VALUES('00000000-0000-0000-0000-000000161015','00000000-0000-0000-0000-000000011015',1,51,'2026-08-10','2026-12-31',N'in_progress','00000000-0000-0000-0000-000000001015',N'patient');
+    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151001') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151001','00000000-0000-0000-0000-000000011006',1,66,'2026-09-05T07:30:00');
+    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151002') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151002','00000000-0000-0000-0000-000000011006',2,74,'2026-09-05T07:30:00');
+    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151003') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151003','00000000-0000-0000-0000-000000011006',6,98,'2026-09-05T07:30:00');
+    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161006') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status,created_by_user_id,created_by_role) VALUES('00000000-0000-0000-0000-000000161006','00000000-0000-0000-0000-000000011006',1,63,'2026-09-01','2026-12-31',N'active','00000000-0000-0000-0000-000000001006',N'patient');
+    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151004') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151004','00000000-0000-0000-0000-000000011007',1,50,'2026-09-06T07:30:00');
+    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151005') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151005','00000000-0000-0000-0000-000000011007',2,75,'2026-09-06T07:30:00');
+    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151006') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151006','00000000-0000-0000-0000-000000011007',6,99,'2026-09-06T07:30:00');
+    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161007') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status,created_by_user_id,created_by_role) VALUES('00000000-0000-0000-0000-000000161007','00000000-0000-0000-0000-000000011007',1,47,'2026-09-01','2026-12-31',N'active','00000000-0000-0000-0000-000000001007',N'patient');
+    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151007') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151007','00000000-0000-0000-0000-000000011008',1,80,'2026-09-07T07:30:00');
+    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151008') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151008','00000000-0000-0000-0000-000000011008',2,76,'2026-09-07T07:30:00');
+    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151009') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151009','00000000-0000-0000-0000-000000011008',6,96,'2026-09-07T07:30:00');
+    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161008') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status,created_by_user_id,created_by_role) VALUES('00000000-0000-0000-0000-000000161008','00000000-0000-0000-0000-000000011008',1,77,'2026-09-01','2026-12-31',N'active','00000000-0000-0000-0000-000000001008',N'patient');
+    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151010') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151010','00000000-0000-0000-0000-000000011009',1,55,'2026-09-08T07:30:00');
+    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151011') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151011','00000000-0000-0000-0000-000000011009',2,77,'2026-09-08T07:30:00');
+    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151012') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151012','00000000-0000-0000-0000-000000011009',6,97,'2026-09-08T07:30:00');
+    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161009') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status,created_by_user_id,created_by_role) VALUES('00000000-0000-0000-0000-000000161009','00000000-0000-0000-0000-000000011009',1,52,'2026-09-01','2026-12-31',N'active','00000000-0000-0000-0000-000000001009',N'patient');
+    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151013') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151013','00000000-0000-0000-0000-000000011010',1,76,'2026-09-09T07:30:00');
+    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151014') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151014','00000000-0000-0000-0000-000000011010',2,78,'2026-09-09T07:30:00');
+    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151015') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151015','00000000-0000-0000-0000-000000011010',6,98,'2026-09-09T07:30:00');
+    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161010') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status,created_by_user_id,created_by_role) VALUES('00000000-0000-0000-0000-000000161010','00000000-0000-0000-0000-000000011010',1,73,'2026-09-01','2026-12-31',N'active','00000000-0000-0000-0000-000000001010',N'patient');
+    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151016') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151016','00000000-0000-0000-0000-000000011011',1,52,'2026-09-10T07:30:00');
+    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151017') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151017','00000000-0000-0000-0000-000000011011',2,79,'2026-09-10T07:30:00');
+    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151018') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151018','00000000-0000-0000-0000-000000011011',6,99,'2026-09-10T07:30:00');
+    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161011') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status,created_by_user_id,created_by_role) VALUES('00000000-0000-0000-0000-000000161011','00000000-0000-0000-0000-000000011011',1,49,'2026-09-01','2026-12-31',N'active','00000000-0000-0000-0000-000000001011',N'patient');
+    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151019') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151019','00000000-0000-0000-0000-000000011012',1,73,'2026-09-11T07:30:00');
+    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151020') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151020','00000000-0000-0000-0000-000000011012',2,68,'2026-09-11T07:30:00');
+    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151021') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151021','00000000-0000-0000-0000-000000011012',6,96,'2026-09-11T07:30:00');
+    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161012') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status,created_by_user_id,created_by_role) VALUES('00000000-0000-0000-0000-000000161012','00000000-0000-0000-0000-000000011012',1,70,'2026-09-01','2026-12-31',N'active','00000000-0000-0000-0000-000000001012',N'patient');
+    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151022') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151022','00000000-0000-0000-0000-000000011013',1,61,'2026-09-12T07:30:00');
+    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151023') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151023','00000000-0000-0000-0000-000000011013',2,69,'2026-09-12T07:30:00');
+    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151024') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151024','00000000-0000-0000-0000-000000011013',6,97,'2026-09-12T07:30:00');
+    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161013') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status,created_by_user_id,created_by_role) VALUES('00000000-0000-0000-0000-000000161013','00000000-0000-0000-0000-000000011013',1,58,'2026-09-01','2026-12-31',N'active','00000000-0000-0000-0000-000000001013',N'patient');
+    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151025') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151025','00000000-0000-0000-0000-000000011014',1,70,'2026-09-13T07:30:00');
+    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151026') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151026','00000000-0000-0000-0000-000000011014',2,70,'2026-09-13T07:30:00');
+    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151027') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151027','00000000-0000-0000-0000-000000011014',6,98,'2026-09-13T07:30:00');
+    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161014') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status,created_by_user_id,created_by_role) VALUES('00000000-0000-0000-0000-000000161014','00000000-0000-0000-0000-000000011014',1,67,'2026-09-01','2026-12-31',N'active','00000000-0000-0000-0000-000000001014',N'patient');
+    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151028') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151028','00000000-0000-0000-0000-000000011015',1,54,'2026-09-14T07:30:00');
+    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151029') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151029','00000000-0000-0000-0000-000000011015',2,71,'2026-09-14T07:30:00');
+    IF NOT EXISTS (SELECT 1 FROM health_metrics WHERE id='00000000-0000-0000-0000-000000151030') INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000151030','00000000-0000-0000-0000-000000011015',6,99,'2026-09-14T07:30:00');
+    IF NOT EXISTS (SELECT 1 FROM health_goals WHERE id='00000000-0000-0000-0000-000000161015') INSERT INTO health_goals(id,patient_id,metric_type_id,target_value,start_date,end_date,status,created_by_user_id,created_by_role) VALUES('00000000-0000-0000-0000-000000161015','00000000-0000-0000-0000-000000011015',1,51,'2026-09-01','2026-12-31',N'active','00000000-0000-0000-0000-000000001015',N'patient');
 
     -- 7. SYMPTOM LOGS
-    IF NOT EXISTS (SELECT 1 FROM symptom_logs WHERE id='00000000-0000-0000-0000-000000131005') INSERT INTO symptom_logs(id,patient_id,symptoms_description,predicted_disease,severity_level,ai_advice,created_at) VALUES('00000000-0000-0000-0000-000000131005','00000000-0000-0000-0000-000000011006',N'Hắt hơi, nghẹt mũi vào buổi sáng, không sốt.',N'Viêm mũi dị ứng',N'LOW',N'Theo dõi triệu chứng và hạn chế tiếp xúc dị nguyên.','2026-08-15T20:00:00');
-    IF NOT EXISTS (SELECT 1 FROM symptom_logs WHERE id='00000000-0000-0000-0000-000000131006') INSERT INTO symptom_logs(id,patient_id,symptoms_description,predicted_disease,severity_level,ai_advice,created_at) VALUES('00000000-0000-0000-0000-000000131006','00000000-0000-0000-0000-000000011007',N'Ngứa mắt, chảy nước mắt khi ra ngoài trời.',N'Dị ứng theo mùa',N'LOW',N'Hạn chế tác nhân nghi ngờ và theo dõi.','2026-08-16T20:00:00');
-    IF NOT EXISTS (SELECT 1 FROM symptom_logs WHERE id='00000000-0000-0000-0000-000000131007') INSERT INTO symptom_logs(id,patient_id,symptoms_description,predicted_disease,severity_level,ai_advice,created_at) VALUES('00000000-0000-0000-0000-000000131007','00000000-0000-0000-0000-000000011008',N'Đau đầu nhẹ sau giờ làm việc, không có dấu hiệu thần kinh khác.',N'Đau đầu do căng thẳng',N'LOW',N'Nghỉ ngơi và đi khám nếu đau tăng.','2026-08-17T20:00:00');
-    IF NOT EXISTS (SELECT 1 FROM symptom_logs WHERE id='00000000-0000-0000-0000-000000131008') INSERT INTO symptom_logs(id,patient_id,symptoms_description,predicted_disease,severity_level,ai_advice,created_at) VALUES('00000000-0000-0000-0000-000000131008','00000000-0000-0000-0000-000000011009',N'Khô mắt sau khi dùng máy tính nhiều giờ.',N'Khô mắt',N'LOW',N'Nghỉ mắt định kỳ và khám nếu kéo dài.','2026-08-18T20:00:00');
-    IF NOT EXISTS (SELECT 1 FROM symptom_logs WHERE id='00000000-0000-0000-0000-000000131009') INSERT INTO symptom_logs(id,patient_id,symptoms_description,predicted_disease,severity_level,ai_advice,created_at) VALUES('00000000-0000-0000-0000-000000131009','00000000-0000-0000-0000-000000011010',N'Huyết áp tại nhà cao kèm đau đầu.',N'Tăng huyết áp cần đánh giá',N'HIGH',N'Nên được cơ sở y tế đánh giá sớm.','2026-08-19T20:00:00');
-    IF NOT EXISTS (SELECT 1 FROM symptom_logs WHERE id='00000000-0000-0000-0000-000000131010') INSERT INTO symptom_logs(id,patient_id,symptoms_description,predicted_disease,severity_level,ai_advice,created_at) VALUES('00000000-0000-0000-0000-000000131010','00000000-0000-0000-0000-000000011011',N'Đầy bụng sau ăn, không nôn.',N'Rối loạn tiêu hóa nhẹ',N'LOW',N'Theo dõi chế độ ăn và đi khám nếu kéo dài.','2026-08-20T20:00:00');
-    IF NOT EXISTS (SELECT 1 FROM symptom_logs WHERE id='00000000-0000-0000-0000-000000131011') INSERT INTO symptom_logs(id,patient_id,symptoms_description,predicted_disease,severity_level,ai_advice,created_at) VALUES('00000000-0000-0000-0000-000000131011','00000000-0000-0000-0000-000000011012',N'Đau thượng vị tái diễn và buồn nôn.',N'Viêm dạ dày',N'LOW',N'Nên đặt lịch khám tiêu hóa.','2026-08-21T20:00:00');
-    IF NOT EXISTS (SELECT 1 FROM symptom_logs WHERE id='00000000-0000-0000-0000-000000131012') INSERT INTO symptom_logs(id,patient_id,symptoms_description,predicted_disease,severity_level,ai_advice,created_at) VALUES('00000000-0000-0000-0000-000000131012','00000000-0000-0000-0000-000000011013',N'Sổ mũi, đau họng nhẹ và mệt mỏi.',N'Cảm cúm thông thường',N'LOW',N'Nghỉ ngơi và theo dõi dấu hiệu nặng.','2026-08-22T20:00:00');
-    IF NOT EXISTS (SELECT 1 FROM symptom_logs WHERE id='00000000-0000-0000-0000-000000131013') INSERT INTO symptom_logs(id,patient_id,symptoms_description,predicted_disease,severity_level,ai_advice,created_at) VALUES('00000000-0000-0000-0000-000000131013','00000000-0000-0000-0000-000000011014',N'Khó thở tăng khi vận động, cảm giác tức ngực.',N'Khó thở cần đánh giá',N'HIGH',N'Cần đánh giá y tế sớm.','2026-08-23T20:00:00');
-    IF NOT EXISTS (SELECT 1 FROM symptom_logs WHERE id='00000000-0000-0000-0000-000000131014') INSERT INTO symptom_logs(id,patient_id,symptoms_description,predicted_disease,severity_level,ai_advice,created_at) VALUES('00000000-0000-0000-0000-000000131014','00000000-0000-0000-0000-000000011015',N'Ho khan từng cơn, không sốt cao.',N'Ho khan nhẹ',N'LOW',N'Theo dõi và đi khám nếu kéo dài.','2026-08-24T20:00:00');
+    IF NOT EXISTS (SELECT 1 FROM symptom_logs WHERE id='00000000-0000-0000-0000-000000131005') INSERT INTO symptom_logs(id,patient_id,symptoms_description,predicted_disease,severity_level,ai_advice,created_at) VALUES('00000000-0000-0000-0000-000000131005','00000000-0000-0000-0000-000000011006',N'Hắt hơi, nghẹt mũi vào buổi sáng, không sốt.',N'Viêm mũi dị ứng',N'LOW',N'Theo dõi triệu chứng và hạn chế tiếp xúc dị nguyên.','2026-09-04T20:00:00');
+    IF NOT EXISTS (SELECT 1 FROM symptom_logs WHERE id='00000000-0000-0000-0000-000000131006') INSERT INTO symptom_logs(id,patient_id,symptoms_description,predicted_disease,severity_level,ai_advice,created_at) VALUES('00000000-0000-0000-0000-000000131006','00000000-0000-0000-0000-000000011007',N'Ngứa mắt, chảy nước mắt khi ra ngoài trời.',N'Dị ứng theo mùa',N'LOW',N'Hạn chế tác nhân nghi ngờ và theo dõi.','2026-09-05T20:00:00');
+    IF NOT EXISTS (SELECT 1 FROM symptom_logs WHERE id='00000000-0000-0000-0000-000000131007') INSERT INTO symptom_logs(id,patient_id,symptoms_description,predicted_disease,severity_level,ai_advice,created_at) VALUES('00000000-0000-0000-0000-000000131007','00000000-0000-0000-0000-000000011008',N'Đau đầu nhẹ sau giờ làm việc, không có dấu hiệu thần kinh khác.',N'Đau đầu do căng thẳng',N'LOW',N'Nghỉ ngơi và đi khám nếu đau tăng.','2026-09-06T20:00:00');
+    IF NOT EXISTS (SELECT 1 FROM symptom_logs WHERE id='00000000-0000-0000-0000-000000131008') INSERT INTO symptom_logs(id,patient_id,symptoms_description,predicted_disease,severity_level,ai_advice,created_at) VALUES('00000000-0000-0000-0000-000000131008','00000000-0000-0000-0000-000000011009',N'Khô mắt sau khi dùng máy tính nhiều giờ.',N'Khô mắt',N'LOW',N'Nghỉ mắt định kỳ và khám nếu kéo dài.','2026-09-07T20:00:00');
+    IF NOT EXISTS (SELECT 1 FROM symptom_logs WHERE id='00000000-0000-0000-0000-000000131009') INSERT INTO symptom_logs(id,patient_id,symptoms_description,predicted_disease,severity_level,ai_advice,created_at) VALUES('00000000-0000-0000-0000-000000131009','00000000-0000-0000-0000-000000011010',N'Huyết áp tại nhà cao kèm đau đầu.',N'Tăng huyết áp cần đánh giá',N'HIGH',N'Nên được cơ sở y tế đánh giá sớm.','2026-09-08T20:00:00');
+    IF NOT EXISTS (SELECT 1 FROM symptom_logs WHERE id='00000000-0000-0000-0000-000000131010') INSERT INTO symptom_logs(id,patient_id,symptoms_description,predicted_disease,severity_level,ai_advice,created_at) VALUES('00000000-0000-0000-0000-000000131010','00000000-0000-0000-0000-000000011011',N'Đầy bụng sau ăn, không nôn.',N'Rối loạn tiêu hóa nhẹ',N'LOW',N'Theo dõi chế độ ăn và đi khám nếu kéo dài.','2026-09-09T20:00:00');
+    IF NOT EXISTS (SELECT 1 FROM symptom_logs WHERE id='00000000-0000-0000-0000-000000131011') INSERT INTO symptom_logs(id,patient_id,symptoms_description,predicted_disease,severity_level,ai_advice,created_at) VALUES('00000000-0000-0000-0000-000000131011','00000000-0000-0000-0000-000000011012',N'Đau thượng vị tái diễn và buồn nôn.',N'Viêm dạ dày',N'LOW',N'Nên đặt lịch khám tiêu hóa.','2026-09-10T20:00:00');
+    IF NOT EXISTS (SELECT 1 FROM symptom_logs WHERE id='00000000-0000-0000-0000-000000131012') INSERT INTO symptom_logs(id,patient_id,symptoms_description,predicted_disease,severity_level,ai_advice,created_at) VALUES('00000000-0000-0000-0000-000000131012','00000000-0000-0000-0000-000000011013',N'Sổ mũi, đau họng nhẹ và mệt mỏi.',N'Cảm cúm thông thường',N'LOW',N'Nghỉ ngơi và theo dõi dấu hiệu nặng.','2026-09-11T20:00:00');
+    IF NOT EXISTS (SELECT 1 FROM symptom_logs WHERE id='00000000-0000-0000-0000-000000131013') INSERT INTO symptom_logs(id,patient_id,symptoms_description,predicted_disease,severity_level,ai_advice,created_at) VALUES('00000000-0000-0000-0000-000000131013','00000000-0000-0000-0000-000000011014',N'Khó thở tăng khi vận động, cảm giác tức ngực.',N'Khó thở cần đánh giá',N'HIGH',N'Cần đánh giá y tế sớm.','2026-09-12T20:00:00');
+    IF NOT EXISTS (SELECT 1 FROM symptom_logs WHERE id='00000000-0000-0000-0000-000000131014') INSERT INTO symptom_logs(id,patient_id,symptoms_description,predicted_disease,severity_level,ai_advice,created_at) VALUES('00000000-0000-0000-0000-000000131014','00000000-0000-0000-0000-000000011015',N'Ho khan từng cơn, không sốt cao.',N'Ho khan nhẹ',N'LOW',N'Theo dõi và đi khám nếu kéo dài.','2026-09-13T20:00:00');
 
     -- 8. CHAT + APPOINTMENTS
-    IF NOT EXISTS (SELECT 1 FROM chat_sessions WHERE id='00000000-0000-0000-0000-000000041005') INSERT INTO chat_sessions(id,patient_id,doctor_id,ai_symptom_log_id,status,created_at) VALUES('00000000-0000-0000-0000-000000041005','00000000-0000-0000-0000-000000011006','00000000-0000-0000-0000-000000031005','00000000-0000-0000-0000-000000131005',N'active','2026-08-17T08:30:00');
-    IF NOT EXISTS (SELECT 1 FROM chat_messages WHERE id='00000000-0000-0000-0000-000000171001') INSERT INTO chat_messages(id,session_id,sender_id,message,is_read,sent_at) VALUES('00000000-0000-0000-0000-000000171001','00000000-0000-0000-0000-000000041005','00000000-0000-0000-0000-000000001006',N'Tôi muốn được bác sĩ tư vấn thêm về triệu chứng gần đây.',1,'2026-08-17T08:31:00');
-    IF NOT EXISTS (SELECT 1 FROM chat_messages WHERE id='00000000-0000-0000-0000-000000171002') INSERT INTO chat_messages(id,session_id,sender_id,message,is_read,sent_at) VALUES('00000000-0000-0000-0000-000000171002','00000000-0000-0000-0000-000000041005','00000000-0000-0000-0000-000000002005',N'Tôi đã nhận được thông tin. Bạn hãy mô tả thêm thời điểm và mức độ triệu chứng.',0,'2026-08-17T08:35:00');
-    IF NOT EXISTS (SELECT 1 FROM appointments WHERE id='00000000-0000-0000-0000-000000051006') INSERT INTO appointments(id,chat_session_id,patient_id,doctor_id,scheduled_at,type,status,created_at) VALUES('00000000-0000-0000-0000-000000051006','00000000-0000-0000-0000-000000041005','00000000-0000-0000-0000-000000011006','00000000-0000-0000-0000-000000031005','2026-08-24T09:00:00',N'online_consult',N'confirmed','2026-08-17T08:40:00');
-    IF NOT EXISTS (SELECT 1 FROM chat_sessions WHERE id='00000000-0000-0000-0000-000000041006') INSERT INTO chat_sessions(id,patient_id,doctor_id,ai_symptom_log_id,status,created_at) VALUES('00000000-0000-0000-0000-000000041006','00000000-0000-0000-0000-000000011007','00000000-0000-0000-0000-000000031004','00000000-0000-0000-0000-000000131006',N'active','2026-08-18T08:30:00');
-    IF NOT EXISTS (SELECT 1 FROM chat_messages WHERE id='00000000-0000-0000-0000-000000171003') INSERT INTO chat_messages(id,session_id,sender_id,message,is_read,sent_at) VALUES('00000000-0000-0000-0000-000000171003','00000000-0000-0000-0000-000000041006','00000000-0000-0000-0000-000000001007',N'Tôi muốn được bác sĩ tư vấn thêm về triệu chứng gần đây.',1,'2026-08-18T08:31:00');
-    IF NOT EXISTS (SELECT 1 FROM chat_messages WHERE id='00000000-0000-0000-0000-000000171004') INSERT INTO chat_messages(id,session_id,sender_id,message,is_read,sent_at) VALUES('00000000-0000-0000-0000-000000171004','00000000-0000-0000-0000-000000041006','00000000-0000-0000-0000-000000002004',N'Tôi đã nhận được thông tin. Bạn hãy mô tả thêm thời điểm và mức độ triệu chứng.',0,'2026-08-18T08:35:00');
-    IF NOT EXISTS (SELECT 1 FROM appointments WHERE id='00000000-0000-0000-0000-000000051007') INSERT INTO appointments(id,chat_session_id,patient_id,doctor_id,scheduled_at,type,status,created_at) VALUES('00000000-0000-0000-0000-000000051007','00000000-0000-0000-0000-000000041006','00000000-0000-0000-0000-000000011007','00000000-0000-0000-0000-000000031004','2026-08-25T10:00:00',N'clinic_visit',N'pending','2026-08-18T08:40:00');
-    IF NOT EXISTS (SELECT 1 FROM chat_sessions WHERE id='00000000-0000-0000-0000-000000041007') INSERT INTO chat_sessions(id,patient_id,doctor_id,ai_symptom_log_id,status,created_at) VALUES('00000000-0000-0000-0000-000000041007','00000000-0000-0000-0000-000000011008','00000000-0000-0000-0000-000000031003','00000000-0000-0000-0000-000000131007',N'active','2026-08-19T08:30:00');
-    IF NOT EXISTS (SELECT 1 FROM chat_messages WHERE id='00000000-0000-0000-0000-000000171005') INSERT INTO chat_messages(id,session_id,sender_id,message,is_read,sent_at) VALUES('00000000-0000-0000-0000-000000171005','00000000-0000-0000-0000-000000041007','00000000-0000-0000-0000-000000001008',N'Tôi muốn được bác sĩ tư vấn thêm về triệu chứng gần đây.',1,'2026-08-19T08:31:00');
-    IF NOT EXISTS (SELECT 1 FROM chat_messages WHERE id='00000000-0000-0000-0000-000000171006') INSERT INTO chat_messages(id,session_id,sender_id,message,is_read,sent_at) VALUES('00000000-0000-0000-0000-000000171006','00000000-0000-0000-0000-000000041007','00000000-0000-0000-0000-000000002003',N'Tôi đã nhận được thông tin. Bạn hãy mô tả thêm thời điểm và mức độ triệu chứng.',0,'2026-08-19T08:35:00');
-    IF NOT EXISTS (SELECT 1 FROM appointments WHERE id='00000000-0000-0000-0000-000000051008') INSERT INTO appointments(id,chat_session_id,patient_id,doctor_id,scheduled_at,type,status,created_at) VALUES('00000000-0000-0000-0000-000000051008','00000000-0000-0000-0000-000000041007','00000000-0000-0000-0000-000000011008','00000000-0000-0000-0000-000000031003','2026-08-26T11:00:00',N'online_consult',N'completed','2026-08-19T08:40:00');
-    IF NOT EXISTS (SELECT 1 FROM chat_sessions WHERE id='00000000-0000-0000-0000-000000041008') INSERT INTO chat_sessions(id,patient_id,doctor_id,ai_symptom_log_id,status,created_at) VALUES('00000000-0000-0000-0000-000000041008','00000000-0000-0000-0000-000000011009','00000000-0000-0000-0000-000000031004','00000000-0000-0000-0000-000000131008',N'active','2026-08-20T08:30:00');
-    IF NOT EXISTS (SELECT 1 FROM chat_messages WHERE id='00000000-0000-0000-0000-000000171007') INSERT INTO chat_messages(id,session_id,sender_id,message,is_read,sent_at) VALUES('00000000-0000-0000-0000-000000171007','00000000-0000-0000-0000-000000041008','00000000-0000-0000-0000-000000001009',N'Tôi muốn được bác sĩ tư vấn thêm về triệu chứng gần đây.',1,'2026-08-20T08:31:00');
-    IF NOT EXISTS (SELECT 1 FROM chat_messages WHERE id='00000000-0000-0000-0000-000000171008') INSERT INTO chat_messages(id,session_id,sender_id,message,is_read,sent_at) VALUES('00000000-0000-0000-0000-000000171008','00000000-0000-0000-0000-000000041008','00000000-0000-0000-0000-000000002004',N'Tôi đã nhận được thông tin. Bạn hãy mô tả thêm thời điểm và mức độ triệu chứng.',0,'2026-08-20T08:35:00');
-    IF NOT EXISTS (SELECT 1 FROM appointments WHERE id='00000000-0000-0000-0000-000000051009') INSERT INTO appointments(id,chat_session_id,patient_id,doctor_id,scheduled_at,type,status,created_at) VALUES('00000000-0000-0000-0000-000000051009','00000000-0000-0000-0000-000000041008','00000000-0000-0000-0000-000000011009','00000000-0000-0000-0000-000000031004','2026-08-27T12:00:00',N'clinic_visit',N'confirmed','2026-08-20T08:40:00');
-    IF NOT EXISTS (SELECT 1 FROM chat_sessions WHERE id='00000000-0000-0000-0000-000000041009') INSERT INTO chat_sessions(id,patient_id,doctor_id,ai_symptom_log_id,status,created_at) VALUES('00000000-0000-0000-0000-000000041009','00000000-0000-0000-0000-000000011010','00000000-0000-0000-0000-000000031001','00000000-0000-0000-0000-000000131009',N'active','2026-08-21T08:30:00');
-    IF NOT EXISTS (SELECT 1 FROM chat_messages WHERE id='00000000-0000-0000-0000-000000171009') INSERT INTO chat_messages(id,session_id,sender_id,message,is_read,sent_at) VALUES('00000000-0000-0000-0000-000000171009','00000000-0000-0000-0000-000000041009','00000000-0000-0000-0000-000000001010',N'Tôi muốn được bác sĩ tư vấn thêm về triệu chứng gần đây.',1,'2026-08-21T08:31:00');
-    IF NOT EXISTS (SELECT 1 FROM chat_messages WHERE id='00000000-0000-0000-0000-000000171010') INSERT INTO chat_messages(id,session_id,sender_id,message,is_read,sent_at) VALUES('00000000-0000-0000-0000-000000171010','00000000-0000-0000-0000-000000041009','00000000-0000-0000-0000-000000002001',N'Tôi đã nhận được thông tin. Bạn hãy mô tả thêm thời điểm và mức độ triệu chứng.',0,'2026-08-21T08:35:00');
-    IF NOT EXISTS (SELECT 1 FROM appointments WHERE id='00000000-0000-0000-0000-000000051010') INSERT INTO appointments(id,chat_session_id,patient_id,doctor_id,scheduled_at,type,status,created_at) VALUES('00000000-0000-0000-0000-000000051010','00000000-0000-0000-0000-000000041009','00000000-0000-0000-0000-000000011010','00000000-0000-0000-0000-000000031001','2026-08-28T13:00:00',N'online_consult',N'completed','2026-08-21T08:40:00');
-    IF NOT EXISTS (SELECT 1 FROM chat_sessions WHERE id='00000000-0000-0000-0000-000000041010') INSERT INTO chat_sessions(id,patient_id,doctor_id,ai_symptom_log_id,status,created_at) VALUES('00000000-0000-0000-0000-000000041010','00000000-0000-0000-0000-000000011011','00000000-0000-0000-0000-000000031006','00000000-0000-0000-0000-000000131010',N'active','2026-08-22T08:30:00');
-    IF NOT EXISTS (SELECT 1 FROM chat_messages WHERE id='00000000-0000-0000-0000-000000171011') INSERT INTO chat_messages(id,session_id,sender_id,message,is_read,sent_at) VALUES('00000000-0000-0000-0000-000000171011','00000000-0000-0000-0000-000000041010','00000000-0000-0000-0000-000000001011',N'Tôi muốn được bác sĩ tư vấn thêm về triệu chứng gần đây.',1,'2026-08-22T08:31:00');
-    IF NOT EXISTS (SELECT 1 FROM chat_messages WHERE id='00000000-0000-0000-0000-000000171012') INSERT INTO chat_messages(id,session_id,sender_id,message,is_read,sent_at) VALUES('00000000-0000-0000-0000-000000171012','00000000-0000-0000-0000-000000041010','00000000-0000-0000-0000-000000002006',N'Tôi đã nhận được thông tin. Bạn hãy mô tả thêm thời điểm và mức độ triệu chứng.',0,'2026-08-22T08:35:00');
-    IF NOT EXISTS (SELECT 1 FROM appointments WHERE id='00000000-0000-0000-0000-000000051011') INSERT INTO appointments(id,chat_session_id,patient_id,doctor_id,scheduled_at,type,status,created_at) VALUES('00000000-0000-0000-0000-000000051011','00000000-0000-0000-0000-000000041010','00000000-0000-0000-0000-000000011011','00000000-0000-0000-0000-000000031006','2026-08-29T09:00:00',N'clinic_visit',N'pending','2026-08-22T08:40:00');
-    IF NOT EXISTS (SELECT 1 FROM chat_sessions WHERE id='00000000-0000-0000-0000-000000041011') INSERT INTO chat_sessions(id,patient_id,doctor_id,ai_symptom_log_id,status,created_at) VALUES('00000000-0000-0000-0000-000000041011','00000000-0000-0000-0000-000000011012','00000000-0000-0000-0000-000000031006','00000000-0000-0000-0000-000000131011',N'active','2026-08-23T08:30:00');
-    IF NOT EXISTS (SELECT 1 FROM chat_messages WHERE id='00000000-0000-0000-0000-000000171013') INSERT INTO chat_messages(id,session_id,sender_id,message,is_read,sent_at) VALUES('00000000-0000-0000-0000-000000171013','00000000-0000-0000-0000-000000041011','00000000-0000-0000-0000-000000001012',N'Tôi muốn được bác sĩ tư vấn thêm về triệu chứng gần đây.',1,'2026-08-23T08:31:00');
-    IF NOT EXISTS (SELECT 1 FROM chat_messages WHERE id='00000000-0000-0000-0000-000000171014') INSERT INTO chat_messages(id,session_id,sender_id,message,is_read,sent_at) VALUES('00000000-0000-0000-0000-000000171014','00000000-0000-0000-0000-000000041011','00000000-0000-0000-0000-000000002006',N'Tôi đã nhận được thông tin. Bạn hãy mô tả thêm thời điểm và mức độ triệu chứng.',0,'2026-08-23T08:35:00');
-    IF NOT EXISTS (SELECT 1 FROM appointments WHERE id='00000000-0000-0000-0000-000000051012') INSERT INTO appointments(id,chat_session_id,patient_id,doctor_id,scheduled_at,type,status,created_at) VALUES('00000000-0000-0000-0000-000000051012','00000000-0000-0000-0000-000000041011','00000000-0000-0000-0000-000000011012','00000000-0000-0000-0000-000000031006','2026-08-30T10:00:00',N'online_consult',N'completed','2026-08-23T08:40:00');
-    IF NOT EXISTS (SELECT 1 FROM chat_sessions WHERE id='00000000-0000-0000-0000-000000041012') INSERT INTO chat_sessions(id,patient_id,doctor_id,ai_symptom_log_id,status,created_at) VALUES('00000000-0000-0000-0000-000000041012','00000000-0000-0000-0000-000000011013','00000000-0000-0000-0000-000000031002','00000000-0000-0000-0000-000000131012',N'active','2026-08-24T08:30:00');
-    IF NOT EXISTS (SELECT 1 FROM chat_messages WHERE id='00000000-0000-0000-0000-000000171015') INSERT INTO chat_messages(id,session_id,sender_id,message,is_read,sent_at) VALUES('00000000-0000-0000-0000-000000171015','00000000-0000-0000-0000-000000041012','00000000-0000-0000-0000-000000001013',N'Tôi muốn được bác sĩ tư vấn thêm về triệu chứng gần đây.',1,'2026-08-24T08:31:00');
-    IF NOT EXISTS (SELECT 1 FROM chat_messages WHERE id='00000000-0000-0000-0000-000000171016') INSERT INTO chat_messages(id,session_id,sender_id,message,is_read,sent_at) VALUES('00000000-0000-0000-0000-000000171016','00000000-0000-0000-0000-000000041012','00000000-0000-0000-0000-000000002002',N'Tôi đã nhận được thông tin. Bạn hãy mô tả thêm thời điểm và mức độ triệu chứng.',0,'2026-08-24T08:35:00');
-    IF NOT EXISTS (SELECT 1 FROM appointments WHERE id='00000000-0000-0000-0000-000000051013') INSERT INTO appointments(id,chat_session_id,patient_id,doctor_id,scheduled_at,type,status,created_at) VALUES('00000000-0000-0000-0000-000000051013','00000000-0000-0000-0000-000000041012','00000000-0000-0000-0000-000000011013','00000000-0000-0000-0000-000000031002','2026-08-31T11:00:00',N'clinic_visit',N'confirmed','2026-08-24T08:40:00');
+    IF NOT EXISTS (SELECT 1 FROM chat_sessions WHERE id='00000000-0000-0000-0000-000000041005') INSERT INTO chat_sessions(id,patient_id,doctor_id,ai_symptom_log_id,status,created_at) VALUES('00000000-0000-0000-0000-000000041005','00000000-0000-0000-0000-000000011006','00000000-0000-0000-0000-000000031005','00000000-0000-0000-0000-000000131005',N'active','2026-09-06T08:30:00');
+    IF NOT EXISTS (SELECT 1 FROM chat_messages WHERE id='00000000-0000-0000-0000-000000171001') INSERT INTO chat_messages(id,session_id,sender_id,message,is_read,sent_at) VALUES('00000000-0000-0000-0000-000000171001','00000000-0000-0000-0000-000000041005','00000000-0000-0000-0000-000000001006',N'Tôi muốn được bác sĩ tư vấn thêm về triệu chứng gần đây.',1,'2026-09-06T08:31:00');
+    IF NOT EXISTS (SELECT 1 FROM chat_messages WHERE id='00000000-0000-0000-0000-000000171002') INSERT INTO chat_messages(id,session_id,sender_id,message,is_read,sent_at) VALUES('00000000-0000-0000-0000-000000171002','00000000-0000-0000-0000-000000041005','00000000-0000-0000-0000-000000002005',N'Tôi đã nhận được thông tin. Bạn hãy mô tả thêm thời điểm và mức độ triệu chứng.',0,'2026-09-06T08:35:00');
+    IF NOT EXISTS (SELECT 1 FROM appointments WHERE id='00000000-0000-0000-0000-000000051006') INSERT INTO appointments(id,chat_session_id,patient_id,doctor_id,scheduled_at,type,status,created_at) VALUES('00000000-0000-0000-0000-000000051006','00000000-0000-0000-0000-000000041005','00000000-0000-0000-0000-000000011006','00000000-0000-0000-0000-000000031005','2026-09-18T04:00:00',N'online_consult',N'confirmed','2026-09-10T01:40:00');
+    IF NOT EXISTS (SELECT 1 FROM chat_sessions WHERE id='00000000-0000-0000-0000-000000041006') INSERT INTO chat_sessions(id,patient_id,doctor_id,ai_symptom_log_id,status,created_at) VALUES('00000000-0000-0000-0000-000000041006','00000000-0000-0000-0000-000000011007','00000000-0000-0000-0000-000000031004','00000000-0000-0000-0000-000000131006',N'closed','2026-09-07T08:30:00');
+    IF NOT EXISTS (SELECT 1 FROM chat_messages WHERE id='00000000-0000-0000-0000-000000171003') INSERT INTO chat_messages(id,session_id,sender_id,message,is_read,sent_at) VALUES('00000000-0000-0000-0000-000000171003','00000000-0000-0000-0000-000000041006','00000000-0000-0000-0000-000000001007',N'Tôi muốn được bác sĩ tư vấn thêm về triệu chứng gần đây.',1,'2026-09-07T08:31:00');
+    IF NOT EXISTS (SELECT 1 FROM chat_messages WHERE id='00000000-0000-0000-0000-000000171004') INSERT INTO chat_messages(id,session_id,sender_id,message,is_read,sent_at) VALUES('00000000-0000-0000-0000-000000171004','00000000-0000-0000-0000-000000041006','00000000-0000-0000-0000-000000002004',N'Tôi đã nhận được thông tin. Bạn hãy mô tả thêm thời điểm và mức độ triệu chứng.',0,'2026-09-07T08:35:00');
+    IF NOT EXISTS (SELECT 1 FROM appointments WHERE id='00000000-0000-0000-0000-000000051007') INSERT INTO appointments(id,chat_session_id,patient_id,doctor_id,scheduled_at,type,status,created_at) VALUES('00000000-0000-0000-0000-000000051007',NULL,'00000000-0000-0000-0000-000000011007','00000000-0000-0000-0000-000000031004','2026-09-19T03:00:00',N'clinic_visit',N'pending','2026-09-11T01:40:00');
+    IF NOT EXISTS (SELECT 1 FROM chat_sessions WHERE id='00000000-0000-0000-0000-000000041007') INSERT INTO chat_sessions(id,patient_id,doctor_id,ai_symptom_log_id,status,created_at) VALUES('00000000-0000-0000-0000-000000041007','00000000-0000-0000-0000-000000011008','00000000-0000-0000-0000-000000031003','00000000-0000-0000-0000-000000131007',N'closed','2026-09-06T08:30:00');
+    IF NOT EXISTS (SELECT 1 FROM chat_messages WHERE id='00000000-0000-0000-0000-000000171005') INSERT INTO chat_messages(id,session_id,sender_id,message,is_read,sent_at) VALUES('00000000-0000-0000-0000-000000171005','00000000-0000-0000-0000-000000041007','00000000-0000-0000-0000-000000001008',N'Tôi muốn được bác sĩ tư vấn thêm về triệu chứng gần đây.',1,'2026-09-06T08:31:00');
+    IF NOT EXISTS (SELECT 1 FROM chat_messages WHERE id='00000000-0000-0000-0000-000000171006') INSERT INTO chat_messages(id,session_id,sender_id,message,is_read,sent_at) VALUES('00000000-0000-0000-0000-000000171006','00000000-0000-0000-0000-000000041007','00000000-0000-0000-0000-000000002003',N'Tôi đã nhận được thông tin. Bạn hãy mô tả thêm thời điểm và mức độ triệu chứng.',0,'2026-09-06T08:35:00');
+    IF NOT EXISTS (SELECT 1 FROM appointments WHERE id='00000000-0000-0000-0000-000000051008') INSERT INTO appointments(id,chat_session_id,patient_id,doctor_id,scheduled_at,type,status,created_at) VALUES('00000000-0000-0000-0000-000000051008','00000000-0000-0000-0000-000000041007','00000000-0000-0000-0000-000000011008','00000000-0000-0000-0000-000000031003','2026-09-08T04:00:00',N'online_consult',N'completed','2026-09-06T01:40:00');
+    IF NOT EXISTS (SELECT 1 FROM chat_sessions WHERE id='00000000-0000-0000-0000-000000041008') INSERT INTO chat_sessions(id,patient_id,doctor_id,ai_symptom_log_id,status,created_at) VALUES('00000000-0000-0000-0000-000000041008','00000000-0000-0000-0000-000000011009','00000000-0000-0000-0000-000000031004','00000000-0000-0000-0000-000000131008',N'closed','2026-09-09T08:30:00');
+    IF NOT EXISTS (SELECT 1 FROM chat_messages WHERE id='00000000-0000-0000-0000-000000171007') INSERT INTO chat_messages(id,session_id,sender_id,message,is_read,sent_at) VALUES('00000000-0000-0000-0000-000000171007','00000000-0000-0000-0000-000000041008','00000000-0000-0000-0000-000000001009',N'Tôi muốn được bác sĩ tư vấn thêm về triệu chứng gần đây.',1,'2026-09-09T08:31:00');
+    IF NOT EXISTS (SELECT 1 FROM chat_messages WHERE id='00000000-0000-0000-0000-000000171008') INSERT INTO chat_messages(id,session_id,sender_id,message,is_read,sent_at) VALUES('00000000-0000-0000-0000-000000171008','00000000-0000-0000-0000-000000041008','00000000-0000-0000-0000-000000002004',N'Tôi đã nhận được thông tin. Bạn hãy mô tả thêm thời điểm và mức độ triệu chứng.',0,'2026-09-09T08:35:00');
+    IF NOT EXISTS (SELECT 1 FROM appointments WHERE id='00000000-0000-0000-0000-000000051009') INSERT INTO appointments(id,chat_session_id,patient_id,doctor_id,scheduled_at,type,status,created_at) VALUES('00000000-0000-0000-0000-000000051009',NULL,'00000000-0000-0000-0000-000000011009','00000000-0000-0000-0000-000000031004','2026-09-18T07:00:00',N'clinic_visit',N'confirmed','2026-09-12T01:40:00');
+    IF NOT EXISTS (SELECT 1 FROM chat_sessions WHERE id='00000000-0000-0000-0000-000000041009') INSERT INTO chat_sessions(id,patient_id,doctor_id,ai_symptom_log_id,status,created_at) VALUES('00000000-0000-0000-0000-000000041009','00000000-0000-0000-0000-000000011010','00000000-0000-0000-0000-000000031001','00000000-0000-0000-0000-000000131009',N'closed','2026-09-07T08:30:00');
+    IF NOT EXISTS (SELECT 1 FROM chat_messages WHERE id='00000000-0000-0000-0000-000000171009') INSERT INTO chat_messages(id,session_id,sender_id,message,is_read,sent_at) VALUES('00000000-0000-0000-0000-000000171009','00000000-0000-0000-0000-000000041009','00000000-0000-0000-0000-000000001010',N'Tôi muốn được bác sĩ tư vấn thêm về triệu chứng gần đây.',1,'2026-09-07T08:31:00');
+    IF NOT EXISTS (SELECT 1 FROM chat_messages WHERE id='00000000-0000-0000-0000-000000171010') INSERT INTO chat_messages(id,session_id,sender_id,message,is_read,sent_at) VALUES('00000000-0000-0000-0000-000000171010','00000000-0000-0000-0000-000000041009','00000000-0000-0000-0000-000000002001',N'Tôi đã nhận được thông tin. Bạn hãy mô tả thêm thời điểm và mức độ triệu chứng.',0,'2026-09-07T08:35:00');
+    IF NOT EXISTS (SELECT 1 FROM appointments WHERE id='00000000-0000-0000-0000-000000051010') INSERT INTO appointments(id,chat_session_id,patient_id,doctor_id,scheduled_at,type,status,created_at) VALUES('00000000-0000-0000-0000-000000051010','00000000-0000-0000-0000-000000041009','00000000-0000-0000-0000-000000011010','00000000-0000-0000-0000-000000031001','2026-09-09T06:00:00',N'online_consult',N'completed','2026-09-07T01:40:00');
+    IF NOT EXISTS (SELECT 1 FROM chat_sessions WHERE id='00000000-0000-0000-0000-000000041010') INSERT INTO chat_sessions(id,patient_id,doctor_id,ai_symptom_log_id,status,created_at) VALUES('00000000-0000-0000-0000-000000041010','00000000-0000-0000-0000-000000011011','00000000-0000-0000-0000-000000031006','00000000-0000-0000-0000-000000131010',N'closed','2026-09-11T08:30:00');
+    IF NOT EXISTS (SELECT 1 FROM chat_messages WHERE id='00000000-0000-0000-0000-000000171011') INSERT INTO chat_messages(id,session_id,sender_id,message,is_read,sent_at) VALUES('00000000-0000-0000-0000-000000171011','00000000-0000-0000-0000-000000041010','00000000-0000-0000-0000-000000001011',N'Tôi muốn được bác sĩ tư vấn thêm về triệu chứng gần đây.',1,'2026-09-11T08:31:00');
+    IF NOT EXISTS (SELECT 1 FROM chat_messages WHERE id='00000000-0000-0000-0000-000000171012') INSERT INTO chat_messages(id,session_id,sender_id,message,is_read,sent_at) VALUES('00000000-0000-0000-0000-000000171012','00000000-0000-0000-0000-000000041010','00000000-0000-0000-0000-000000002006',N'Tôi đã nhận được thông tin. Bạn hãy mô tả thêm thời điểm và mức độ triệu chứng.',0,'2026-09-11T08:35:00');
+    IF NOT EXISTS (SELECT 1 FROM appointments WHERE id='00000000-0000-0000-0000-000000051011') INSERT INTO appointments(id,chat_session_id,patient_id,doctor_id,scheduled_at,type,status,created_at) VALUES('00000000-0000-0000-0000-000000051011',NULL,'00000000-0000-0000-0000-000000011011','00000000-0000-0000-0000-000000031006','2026-09-20T02:00:00',N'clinic_visit',N'pending','2026-09-13T01:40:00');
+    IF NOT EXISTS (SELECT 1 FROM chat_sessions WHERE id='00000000-0000-0000-0000-000000041011') INSERT INTO chat_sessions(id,patient_id,doctor_id,ai_symptom_log_id,status,created_at) VALUES('00000000-0000-0000-0000-000000041011','00000000-0000-0000-0000-000000011012','00000000-0000-0000-0000-000000031006','00000000-0000-0000-0000-000000131011',N'closed','2026-09-09T08:30:00');
+    IF NOT EXISTS (SELECT 1 FROM chat_messages WHERE id='00000000-0000-0000-0000-000000171013') INSERT INTO chat_messages(id,session_id,sender_id,message,is_read,sent_at) VALUES('00000000-0000-0000-0000-000000171013','00000000-0000-0000-0000-000000041011','00000000-0000-0000-0000-000000001012',N'Tôi muốn được bác sĩ tư vấn thêm về triệu chứng gần đây.',1,'2026-09-09T08:31:00');
+    IF NOT EXISTS (SELECT 1 FROM chat_messages WHERE id='00000000-0000-0000-0000-000000171014') INSERT INTO chat_messages(id,session_id,sender_id,message,is_read,sent_at) VALUES('00000000-0000-0000-0000-000000171014','00000000-0000-0000-0000-000000041011','00000000-0000-0000-0000-000000002006',N'Tôi đã nhận được thông tin. Bạn hãy mô tả thêm thời điểm và mức độ triệu chứng.',0,'2026-09-09T08:35:00');
+    IF NOT EXISTS (SELECT 1 FROM appointments WHERE id='00000000-0000-0000-0000-000000051012') INSERT INTO appointments(id,chat_session_id,patient_id,doctor_id,scheduled_at,type,status,created_at) VALUES('00000000-0000-0000-0000-000000051012','00000000-0000-0000-0000-000000041011','00000000-0000-0000-0000-000000011012','00000000-0000-0000-0000-000000031006','2026-09-11T03:00:00',N'online_consult',N'completed','2026-09-09T01:40:00');
+    IF NOT EXISTS (SELECT 1 FROM chat_sessions WHERE id='00000000-0000-0000-0000-000000041012') INSERT INTO chat_sessions(id,patient_id,doctor_id,ai_symptom_log_id,status,created_at) VALUES('00000000-0000-0000-0000-000000041012','00000000-0000-0000-0000-000000011013','00000000-0000-0000-0000-000000031002','00000000-0000-0000-0000-000000131012',N'closed','2026-09-13T08:30:00');
+    IF NOT EXISTS (SELECT 1 FROM chat_messages WHERE id='00000000-0000-0000-0000-000000171015') INSERT INTO chat_messages(id,session_id,sender_id,message,is_read,sent_at) VALUES('00000000-0000-0000-0000-000000171015','00000000-0000-0000-0000-000000041012','00000000-0000-0000-0000-000000001013',N'Tôi muốn được bác sĩ tư vấn thêm về triệu chứng gần đây.',1,'2026-09-13T08:31:00');
+    IF NOT EXISTS (SELECT 1 FROM chat_messages WHERE id='00000000-0000-0000-0000-000000171016') INSERT INTO chat_messages(id,session_id,sender_id,message,is_read,sent_at) VALUES('00000000-0000-0000-0000-000000171016','00000000-0000-0000-0000-000000041012','00000000-0000-0000-0000-000000002002',N'Tôi đã nhận được thông tin. Bạn hãy mô tả thêm thời điểm và mức độ triệu chứng.',0,'2026-09-13T08:35:00');
+    IF NOT EXISTS (SELECT 1 FROM appointments WHERE id='00000000-0000-0000-0000-000000051013') INSERT INTO appointments(id,chat_session_id,patient_id,doctor_id,scheduled_at,type,status,created_at) VALUES('00000000-0000-0000-0000-000000051013',NULL,'00000000-0000-0000-0000-000000011013','00000000-0000-0000-0000-000000031002','2026-09-19T04:00:00',N'clinic_visit',N'confirmed','2026-09-14T01:40:00');
 
     -- 9. NOTIFICATIONS
-    IF NOT EXISTS (SELECT 1 FROM notifications WHERE id='00000000-0000-0000-0000-000000201001') INSERT INTO notifications(id,user_id,type,title,message,is_read,created_at) VALUES('00000000-0000-0000-0000-000000201001','00000000-0000-0000-0000-000000001006',N'appointment_reminder',N'Nhắc lịch và cập nhật Blue Crown',N'Dữ liệu demo bổ sung để kiểm thử danh sách thông báo và phân trang.',0,'2026-08-21T08:00:00');
-    IF NOT EXISTS (SELECT 1 FROM notifications WHERE id='00000000-0000-0000-0000-000000201002') INSERT INTO notifications(id,user_id,type,title,message,is_read,created_at) VALUES('00000000-0000-0000-0000-000000201002','00000000-0000-0000-0000-000000001007',N'appointment_reminder',N'Nhắc lịch và cập nhật Blue Crown',N'Dữ liệu demo bổ sung để kiểm thử danh sách thông báo và phân trang.',0,'2026-08-21T08:00:00');
-    IF NOT EXISTS (SELECT 1 FROM notifications WHERE id='00000000-0000-0000-0000-000000201003') INSERT INTO notifications(id,user_id,type,title,message,is_read,created_at) VALUES('00000000-0000-0000-0000-000000201003','00000000-0000-0000-0000-000000001008',N'appointment_reminder',N'Nhắc lịch và cập nhật Blue Crown',N'Dữ liệu demo bổ sung để kiểm thử danh sách thông báo và phân trang.',0,'2026-08-21T08:00:00');
-    IF NOT EXISTS (SELECT 1 FROM notifications WHERE id='00000000-0000-0000-0000-000000201004') INSERT INTO notifications(id,user_id,type,title,message,is_read,created_at) VALUES('00000000-0000-0000-0000-000000201004','00000000-0000-0000-0000-000000001009',N'appointment_reminder',N'Nhắc lịch và cập nhật Blue Crown',N'Dữ liệu demo bổ sung để kiểm thử danh sách thông báo và phân trang.',0,'2026-08-21T08:00:00');
-    IF NOT EXISTS (SELECT 1 FROM notifications WHERE id='00000000-0000-0000-0000-000000201005') INSERT INTO notifications(id,user_id,type,title,message,is_read,created_at) VALUES('00000000-0000-0000-0000-000000201005','00000000-0000-0000-0000-000000001010',N'appointment_reminder',N'Nhắc lịch và cập nhật Blue Crown',N'Dữ liệu demo bổ sung để kiểm thử danh sách thông báo và phân trang.',0,'2026-08-21T08:00:00');
-    IF NOT EXISTS (SELECT 1 FROM notifications WHERE id='00000000-0000-0000-0000-000000201006') INSERT INTO notifications(id,user_id,type,title,message,is_read,created_at) VALUES('00000000-0000-0000-0000-000000201006','00000000-0000-0000-0000-000000001011',N'appointment_reminder',N'Nhắc lịch và cập nhật Blue Crown',N'Dữ liệu demo bổ sung để kiểm thử danh sách thông báo và phân trang.',0,'2026-08-21T08:00:00');
-    IF NOT EXISTS (SELECT 1 FROM notifications WHERE id='00000000-0000-0000-0000-000000201007') INSERT INTO notifications(id,user_id,type,title,message,is_read,created_at) VALUES('00000000-0000-0000-0000-000000201007','00000000-0000-0000-0000-000000001012',N'appointment_reminder',N'Nhắc lịch và cập nhật Blue Crown',N'Dữ liệu demo bổ sung để kiểm thử danh sách thông báo và phân trang.',0,'2026-08-21T08:00:00');
-    IF NOT EXISTS (SELECT 1 FROM notifications WHERE id='00000000-0000-0000-0000-000000201008') INSERT INTO notifications(id,user_id,type,title,message,is_read,created_at) VALUES('00000000-0000-0000-0000-000000201008','00000000-0000-0000-0000-000000001013',N'appointment_reminder',N'Nhắc lịch và cập nhật Blue Crown',N'Dữ liệu demo bổ sung để kiểm thử danh sách thông báo và phân trang.',0,'2026-08-21T08:00:00');
-    IF NOT EXISTS (SELECT 1 FROM notifications WHERE id='00000000-0000-0000-0000-000000201009') INSERT INTO notifications(id,user_id,type,title,message,is_read,created_at) VALUES('00000000-0000-0000-0000-000000201009','00000000-0000-0000-0000-000000001014',N'appointment_reminder',N'Nhắc lịch và cập nhật Blue Crown',N'Dữ liệu demo bổ sung để kiểm thử danh sách thông báo và phân trang.',0,'2026-08-21T08:00:00');
-    IF NOT EXISTS (SELECT 1 FROM notifications WHERE id='00000000-0000-0000-0000-000000201010') INSERT INTO notifications(id,user_id,type,title,message,is_read,created_at) VALUES('00000000-0000-0000-0000-000000201010','00000000-0000-0000-0000-000000001015',N'appointment_reminder',N'Nhắc lịch và cập nhật Blue Crown',N'Dữ liệu demo bổ sung để kiểm thử danh sách thông báo và phân trang.',0,'2026-08-21T08:00:00');
-    IF NOT EXISTS (SELECT 1 FROM notifications WHERE id='00000000-0000-0000-0000-000000201011') INSERT INTO notifications(id,user_id,type,title,message,is_read,created_at) VALUES('00000000-0000-0000-0000-000000201011','00000000-0000-0000-0000-000000002004',N'new_appointment',N'Lịch khám mới',N'Dữ liệu demo bổ sung để kiểm thử danh sách thông báo và phân trang.',0,'2026-08-21T08:00:00');
-    IF NOT EXISTS (SELECT 1 FROM notifications WHERE id='00000000-0000-0000-0000-000000201012') INSERT INTO notifications(id,user_id,type,title,message,is_read,created_at) VALUES('00000000-0000-0000-0000-000000201012','00000000-0000-0000-0000-000000002005',N'new_appointment',N'Lịch khám mới',N'Dữ liệu demo bổ sung để kiểm thử danh sách thông báo và phân trang.',0,'2026-08-21T08:00:00');
-    IF NOT EXISTS (SELECT 1 FROM notifications WHERE id='00000000-0000-0000-0000-000000201013') INSERT INTO notifications(id,user_id,type,title,message,is_read,created_at) VALUES('00000000-0000-0000-0000-000000201013','00000000-0000-0000-0000-000000002006',N'new_appointment',N'Lịch khám mới',N'Dữ liệu demo bổ sung để kiểm thử danh sách thông báo và phân trang.',0,'2026-08-21T08:00:00');
-    IF NOT EXISTS (SELECT 1 FROM notifications WHERE id='00000000-0000-0000-0000-000000201014') INSERT INTO notifications(id,user_id,type,title,message,is_read,created_at) VALUES('00000000-0000-0000-0000-000000201014','00000000-0000-0000-0000-000000004003',N'inventory_notice',N'Thông báo hệ thống',N'Dữ liệu demo bổ sung để kiểm thử danh sách thông báo và phân trang.',0,'2026-08-21T08:00:00');
-    IF NOT EXISTS (SELECT 1 FROM notifications WHERE id='00000000-0000-0000-0000-000000201015') INSERT INTO notifications(id,user_id,type,title,message,is_read,created_at) VALUES('00000000-0000-0000-0000-000000201015','00000000-0000-0000-0000-000000003001',N'inventory_notice',N'Thông báo hệ thống',N'Dữ liệu demo bổ sung để kiểm thử danh sách thông báo và phân trang.',0,'2026-08-21T08:00:00');
+    IF NOT EXISTS (SELECT 1 FROM notifications WHERE id='00000000-0000-0000-0000-000000201001') INSERT INTO notifications(id,user_id,type,title,message,is_read,created_at) VALUES('00000000-0000-0000-0000-000000201001','00000000-0000-0000-0000-000000001006',N'appointment_reminder',N'Nhắc lịch và cập nhật Blue Crown',N'Dữ liệu demo bổ sung để kiểm thử danh sách thông báo và phân trang.',0,'2026-09-15T08:00:00');
+    IF NOT EXISTS (SELECT 1 FROM notifications WHERE id='00000000-0000-0000-0000-000000201002') INSERT INTO notifications(id,user_id,type,title,message,is_read,created_at) VALUES('00000000-0000-0000-0000-000000201002','00000000-0000-0000-0000-000000001007',N'appointment_reminder',N'Nhắc lịch và cập nhật Blue Crown',N'Dữ liệu demo bổ sung để kiểm thử danh sách thông báo và phân trang.',0,'2026-09-15T08:00:00');
+    IF NOT EXISTS (SELECT 1 FROM notifications WHERE id='00000000-0000-0000-0000-000000201003') INSERT INTO notifications(id,user_id,type,title,message,is_read,created_at) VALUES('00000000-0000-0000-0000-000000201003','00000000-0000-0000-0000-000000001008',N'appointment_reminder',N'Nhắc lịch và cập nhật Blue Crown',N'Dữ liệu demo bổ sung để kiểm thử danh sách thông báo và phân trang.',0,'2026-09-15T08:00:00');
+    IF NOT EXISTS (SELECT 1 FROM notifications WHERE id='00000000-0000-0000-0000-000000201004') INSERT INTO notifications(id,user_id,type,title,message,is_read,created_at) VALUES('00000000-0000-0000-0000-000000201004','00000000-0000-0000-0000-000000001009',N'appointment_reminder',N'Nhắc lịch và cập nhật Blue Crown',N'Dữ liệu demo bổ sung để kiểm thử danh sách thông báo và phân trang.',0,'2026-09-15T08:00:00');
+    IF NOT EXISTS (SELECT 1 FROM notifications WHERE id='00000000-0000-0000-0000-000000201005') INSERT INTO notifications(id,user_id,type,title,message,is_read,created_at) VALUES('00000000-0000-0000-0000-000000201005','00000000-0000-0000-0000-000000001010',N'appointment_reminder',N'Nhắc lịch và cập nhật Blue Crown',N'Dữ liệu demo bổ sung để kiểm thử danh sách thông báo và phân trang.',0,'2026-09-15T08:00:00');
+    IF NOT EXISTS (SELECT 1 FROM notifications WHERE id='00000000-0000-0000-0000-000000201006') INSERT INTO notifications(id,user_id,type,title,message,is_read,created_at) VALUES('00000000-0000-0000-0000-000000201006','00000000-0000-0000-0000-000000001011',N'appointment_reminder',N'Nhắc lịch và cập nhật Blue Crown',N'Dữ liệu demo bổ sung để kiểm thử danh sách thông báo và phân trang.',0,'2026-09-15T08:00:00');
+    IF NOT EXISTS (SELECT 1 FROM notifications WHERE id='00000000-0000-0000-0000-000000201007') INSERT INTO notifications(id,user_id,type,title,message,is_read,created_at) VALUES('00000000-0000-0000-0000-000000201007','00000000-0000-0000-0000-000000001012',N'appointment_reminder',N'Nhắc lịch và cập nhật Blue Crown',N'Dữ liệu demo bổ sung để kiểm thử danh sách thông báo và phân trang.',0,'2026-09-15T08:00:00');
+    IF NOT EXISTS (SELECT 1 FROM notifications WHERE id='00000000-0000-0000-0000-000000201008') INSERT INTO notifications(id,user_id,type,title,message,is_read,created_at) VALUES('00000000-0000-0000-0000-000000201008','00000000-0000-0000-0000-000000001013',N'appointment_reminder',N'Nhắc lịch và cập nhật Blue Crown',N'Dữ liệu demo bổ sung để kiểm thử danh sách thông báo và phân trang.',0,'2026-09-15T08:00:00');
+    IF NOT EXISTS (SELECT 1 FROM notifications WHERE id='00000000-0000-0000-0000-000000201009') INSERT INTO notifications(id,user_id,type,title,message,is_read,created_at) VALUES('00000000-0000-0000-0000-000000201009','00000000-0000-0000-0000-000000001014',N'appointment_reminder',N'Nhắc lịch và cập nhật Blue Crown',N'Dữ liệu demo bổ sung để kiểm thử danh sách thông báo và phân trang.',0,'2026-09-15T08:00:00');
+    IF NOT EXISTS (SELECT 1 FROM notifications WHERE id='00000000-0000-0000-0000-000000201010') INSERT INTO notifications(id,user_id,type,title,message,is_read,created_at) VALUES('00000000-0000-0000-0000-000000201010','00000000-0000-0000-0000-000000001015',N'appointment_reminder',N'Nhắc lịch và cập nhật Blue Crown',N'Dữ liệu demo bổ sung để kiểm thử danh sách thông báo và phân trang.',0,'2026-09-15T08:00:00');
+    IF NOT EXISTS (SELECT 1 FROM notifications WHERE id='00000000-0000-0000-0000-000000201011') INSERT INTO notifications(id,user_id,type,title,message,is_read,created_at) VALUES('00000000-0000-0000-0000-000000201011','00000000-0000-0000-0000-000000002004',N'new_appointment',N'Lịch khám mới',N'Dữ liệu demo bổ sung để kiểm thử danh sách thông báo và phân trang.',0,'2026-09-15T08:00:00');
+    IF NOT EXISTS (SELECT 1 FROM notifications WHERE id='00000000-0000-0000-0000-000000201012') INSERT INTO notifications(id,user_id,type,title,message,is_read,created_at) VALUES('00000000-0000-0000-0000-000000201012','00000000-0000-0000-0000-000000002005',N'new_appointment',N'Lịch khám mới',N'Dữ liệu demo bổ sung để kiểm thử danh sách thông báo và phân trang.',0,'2026-09-15T08:00:00');
+    IF NOT EXISTS (SELECT 1 FROM notifications WHERE id='00000000-0000-0000-0000-000000201013') INSERT INTO notifications(id,user_id,type,title,message,is_read,created_at) VALUES('00000000-0000-0000-0000-000000201013','00000000-0000-0000-0000-000000002006',N'new_appointment',N'Lịch khám mới',N'Dữ liệu demo bổ sung để kiểm thử danh sách thông báo và phân trang.',0,'2026-09-15T08:00:00');
+    IF NOT EXISTS (SELECT 1 FROM notifications WHERE id='00000000-0000-0000-0000-000000201014') INSERT INTO notifications(id,user_id,type,title,message,is_read,created_at) VALUES('00000000-0000-0000-0000-000000201014','00000000-0000-0000-0000-000000004003',N'inventory_notice',N'Thông báo hệ thống',N'Dữ liệu demo bổ sung để kiểm thử danh sách thông báo và phân trang.',0,'2026-09-15T08:00:00');
+    IF NOT EXISTS (SELECT 1 FROM notifications WHERE id='00000000-0000-0000-0000-000000201015') INSERT INTO notifications(id,user_id,type,title,message,is_read,created_at) VALUES('00000000-0000-0000-0000-000000201015','00000000-0000-0000-0000-000000003001',N'inventory_notice',N'Thông báo hệ thống',N'Dữ liệu demo bổ sung để kiểm thử danh sách thông báo và phân trang.',0,'2026-09-15T08:00:00');
 
     -- 10. ECOMMERCE ORDERS + ITEMS
-    IF NOT EXISTS (SELECT 1 FROM ecommerce_orders WHERE id='00000000-0000-0000-0000-000000101005') INSERT INTO ecommerce_orders(id,user_id,guest_phone,shipping_address,total_amount,payment_method,payment_status,order_status,prescription_id,created_at) VALUES('00000000-0000-0000-0000-000000101005','00000000-0000-0000-0000-000000001006',NULL,N'Địa chỉ giao hàng demo 5, TP.HCM',100000,N'cod',N'pending',N'processing',NULL,'2026-08-15T10:00:00');
+    IF NOT EXISTS (SELECT 1 FROM ecommerce_orders WHERE id='00000000-0000-0000-0000-000000101005') INSERT INTO ecommerce_orders(id,user_id,guest_phone,shipping_address,total_amount,payment_method,payment_status,order_status,prescription_id,created_at) VALUES('00000000-0000-0000-0000-000000101005','00000000-0000-0000-0000-000000001006',NULL,N'Địa chỉ giao hàng demo 5, TP.HCM',100000,N'cod',N'pending',N'processing',NULL,'2026-09-06T03:00:00');
     IF NOT EXISTS (SELECT 1 FROM order_items WHERE id='00000000-0000-0000-0000-000000221001') INSERT INTO order_items(id,order_id,product_id,quantity,unit_price) VALUES('00000000-0000-0000-0000-000000221001','00000000-0000-0000-0000-000000101005','00000000-0000-0000-0000-000000091015',1,28000);
     IF NOT EXISTS (SELECT 1 FROM order_items WHERE id='00000000-0000-0000-0000-000000221002') INSERT INTO order_items(id,order_id,product_id,quantity,unit_price) VALUES('00000000-0000-0000-0000-000000221002','00000000-0000-0000-0000-000000101005','00000000-0000-0000-0000-000000091025',1,72000);
-    IF NOT EXISTS (SELECT 1 FROM ecommerce_orders WHERE id='00000000-0000-0000-0000-000000101006') INSERT INTO ecommerce_orders(id,user_id,guest_phone,shipping_address,total_amount,payment_method,payment_status,order_status,prescription_id,created_at) VALUES('00000000-0000-0000-0000-000000101006','00000000-0000-0000-0000-000000001007',NULL,N'Địa chỉ giao hàng demo 6, TP.HCM',107000,N'cod',N'pending',N'processing',NULL,'2026-08-16T10:00:00');
+    IF NOT EXISTS (SELECT 1 FROM ecommerce_orders WHERE id='00000000-0000-0000-0000-000000101006') INSERT INTO ecommerce_orders(id,user_id,guest_phone,shipping_address,total_amount,payment_method,payment_status,order_status,prescription_id,created_at) VALUES('00000000-0000-0000-0000-000000101006','00000000-0000-0000-0000-000000001007',NULL,N'Địa chỉ giao hàng demo 6, TP.HCM',107000,N'cod',N'pending',N'processing',NULL,'2026-09-07T03:00:00');
     IF NOT EXISTS (SELECT 1 FROM order_items WHERE id='00000000-0000-0000-0000-000000221003') INSERT INTO order_items(id,order_id,product_id,quantity,unit_price) VALUES('00000000-0000-0000-0000-000000221003','00000000-0000-0000-0000-000000101006','00000000-0000-0000-0000-000000091016',1,22000);
     IF NOT EXISTS (SELECT 1 FROM order_items WHERE id='00000000-0000-0000-0000-000000221004') INSERT INTO order_items(id,order_id,product_id,quantity,unit_price) VALUES('00000000-0000-0000-0000-000000221004','00000000-0000-0000-0000-000000101006','00000000-0000-0000-0000-000000091026',1,85000);
-    IF NOT EXISTS (SELECT 1 FROM ecommerce_orders WHERE id='00000000-0000-0000-0000-000000101007') INSERT INTO ecommerce_orders(id,user_id,guest_phone,shipping_address,total_amount,payment_method,payment_status,order_status,prescription_id,created_at) VALUES('00000000-0000-0000-0000-000000101007','00000000-0000-0000-0000-000000001008',NULL,N'Địa chỉ giao hàng demo 7, TP.HCM',167000,N'cod',N'pending',N'processing',NULL,'2026-08-17T10:00:00');
+    IF NOT EXISTS (SELECT 1 FROM ecommerce_orders WHERE id='00000000-0000-0000-0000-000000101007') INSERT INTO ecommerce_orders(id,user_id,guest_phone,shipping_address,total_amount,payment_method,payment_status,order_status,prescription_id,created_at) VALUES('00000000-0000-0000-0000-000000101007','00000000-0000-0000-0000-000000001008',NULL,N'Địa chỉ giao hàng demo 7, TP.HCM',167000,N'cod',N'pending',N'processing',NULL,'2026-09-08T03:00:00');
     IF NOT EXISTS (SELECT 1 FROM order_items WHERE id='00000000-0000-0000-0000-000000221005') INSERT INTO order_items(id,order_id,product_id,quantity,unit_price) VALUES('00000000-0000-0000-0000-000000221005','00000000-0000-0000-0000-000000101007','00000000-0000-0000-0000-000000091029',1,135000);
     IF NOT EXISTS (SELECT 1 FROM order_items WHERE id='00000000-0000-0000-0000-000000221006') INSERT INTO order_items(id,order_id,product_id,quantity,unit_price) VALUES('00000000-0000-0000-0000-000000221006','00000000-0000-0000-0000-000000101007','00000000-0000-0000-0000-000000091020',1,32000);
-    IF NOT EXISTS (SELECT 1 FROM ecommerce_orders WHERE id='00000000-0000-0000-0000-000000101008') INSERT INTO ecommerce_orders(id,user_id,guest_phone,shipping_address,total_amount,payment_method,payment_status,order_status,prescription_id,created_at) VALUES('00000000-0000-0000-0000-000000101008','00000000-0000-0000-0000-000000001009',NULL,N'Địa chỉ giao hàng demo 8, TP.HCM',171000,N'cod',N'pending',N'processing',NULL,'2026-08-18T10:00:00');
+    IF NOT EXISTS (SELECT 1 FROM ecommerce_orders WHERE id='00000000-0000-0000-0000-000000101008') INSERT INTO ecommerce_orders(id,user_id,guest_phone,shipping_address,total_amount,payment_method,payment_status,order_status,prescription_id,created_at) VALUES('00000000-0000-0000-0000-000000101008','00000000-0000-0000-0000-000000001009',NULL,N'Địa chỉ giao hàng demo 8, TP.HCM',171000,N'cod',N'pending',N'processing',NULL,'2026-09-09T03:00:00');
     IF NOT EXISTS (SELECT 1 FROM order_items WHERE id='00000000-0000-0000-0000-000000221007') INSERT INTO order_items(id,order_id,product_id,quantity,unit_price) VALUES('00000000-0000-0000-0000-000000221007','00000000-0000-0000-0000-000000101008','00000000-0000-0000-0000-000000091018',1,145000);
     IF NOT EXISTS (SELECT 1 FROM order_items WHERE id='00000000-0000-0000-0000-000000221008') INSERT INTO order_items(id,order_id,product_id,quantity,unit_price) VALUES('00000000-0000-0000-0000-000000221008','00000000-0000-0000-0000-000000101008','00000000-0000-0000-0000-000000091031',1,26000);
-    IF NOT EXISTS (SELECT 1 FROM ecommerce_orders WHERE id='00000000-0000-0000-0000-000000101009') INSERT INTO ecommerce_orders(id,user_id,guest_phone,shipping_address,total_amount,payment_method,payment_status,order_status,prescription_id,created_at) VALUES('00000000-0000-0000-0000-000000101009','00000000-0000-0000-0000-000000001010',NULL,N'Địa chỉ giao hàng demo 9, TP.HCM',52000,N'cod',N'pending',N'processing',NULL,'2026-08-19T10:00:00');
+    IF NOT EXISTS (SELECT 1 FROM ecommerce_orders WHERE id='00000000-0000-0000-0000-000000101009') INSERT INTO ecommerce_orders(id,user_id,guest_phone,shipping_address,total_amount,payment_method,payment_status,order_status,prescription_id,created_at) VALUES('00000000-0000-0000-0000-000000101009','00000000-0000-0000-0000-000000001010',NULL,N'Địa chỉ giao hàng demo 9, TP.HCM',52000,N'cod',N'pending',N'processing',NULL,'2026-09-10T03:00:00');
     IF NOT EXISTS (SELECT 1 FROM order_items WHERE id='00000000-0000-0000-0000-000000221010') INSERT INTO order_items(id,order_id,product_id,quantity,unit_price) VALUES('00000000-0000-0000-0000-000000221010','00000000-0000-0000-0000-000000101009','00000000-0000-0000-0000-000000091014',1,52000);
-    IF NOT EXISTS (SELECT 1 FROM ecommerce_orders WHERE id='00000000-0000-0000-0000-000000101010') INSERT INTO ecommerce_orders(id,user_id,guest_phone,shipping_address,total_amount,payment_method,payment_status,order_status,prescription_id,created_at) VALUES('00000000-0000-0000-0000-000000101010','00000000-0000-0000-0000-000000001011',NULL,N'Địa chỉ giao hàng demo 10, TP.HCM',214000,N'cod',N'pending',N'processing',NULL,'2026-08-20T10:00:00');
+    IF NOT EXISTS (SELECT 1 FROM ecommerce_orders WHERE id='00000000-0000-0000-0000-000000101010') INSERT INTO ecommerce_orders(id,user_id,guest_phone,shipping_address,total_amount,payment_method,payment_status,order_status,prescription_id,created_at) VALUES('00000000-0000-0000-0000-000000101010','00000000-0000-0000-0000-000000001011',NULL,N'Địa chỉ giao hàng demo 10, TP.HCM',214000,N'cod',N'pending',N'processing',NULL,'2026-09-11T03:00:00');
     IF NOT EXISTS (SELECT 1 FROM order_items WHERE id='00000000-0000-0000-0000-000000221011') INSERT INTO order_items(id,order_id,product_id,quantity,unit_price) VALUES('00000000-0000-0000-0000-000000221011','00000000-0000-0000-0000-000000101010','00000000-0000-0000-0000-000000091018',1,145000);
     IF NOT EXISTS (SELECT 1 FROM order_items WHERE id='00000000-0000-0000-0000-000000221012') INSERT INTO order_items(id,order_id,product_id,quantity,unit_price) VALUES('00000000-0000-0000-0000-000000221012','00000000-0000-0000-0000-000000101010','00000000-0000-0000-0000-000000091021',1,69000);
-    IF NOT EXISTS (SELECT 1 FROM ecommerce_orders WHERE id='00000000-0000-0000-0000-000000101011') INSERT INTO ecommerce_orders(id,user_id,guest_phone,shipping_address,total_amount,payment_method,payment_status,order_status,prescription_id,created_at) VALUES('00000000-0000-0000-0000-000000101011','00000000-0000-0000-0000-000000001012',NULL,N'Địa chỉ giao hàng demo 11, TP.HCM',146000,N'cod',N'pending',N'processing',NULL,'2026-08-21T10:00:00');
+    IF NOT EXISTS (SELECT 1 FROM ecommerce_orders WHERE id='00000000-0000-0000-0000-000000101011') INSERT INTO ecommerce_orders(id,user_id,guest_phone,shipping_address,total_amount,payment_method,payment_status,order_status,prescription_id,created_at) VALUES('00000000-0000-0000-0000-000000101011','00000000-0000-0000-0000-000000001012',NULL,N'Địa chỉ giao hàng demo 11, TP.HCM',146000,N'cod',N'pending',N'processing',NULL,'2026-09-12T03:00:00');
     IF NOT EXISTS (SELECT 1 FROM order_items WHERE id='00000000-0000-0000-0000-000000221013') INSERT INTO order_items(id,order_id,product_id,quantity,unit_price) VALUES('00000000-0000-0000-0000-000000221013','00000000-0000-0000-0000-000000101011','00000000-0000-0000-0000-000000091022',1,89000);
     IF NOT EXISTS (SELECT 1 FROM order_items WHERE id='00000000-0000-0000-0000-000000221014') INSERT INTO order_items(id,order_id,product_id,quantity,unit_price) VALUES('00000000-0000-0000-0000-000000221014','00000000-0000-0000-0000-000000101011','00000000-0000-0000-0000-000000091023',1,57000);
-    IF NOT EXISTS (SELECT 1 FROM ecommerce_orders WHERE id='00000000-0000-0000-0000-000000101012') INSERT INTO ecommerce_orders(id,user_id,guest_phone,shipping_address,total_amount,payment_method,payment_status,order_status,prescription_id,created_at) VALUES('00000000-0000-0000-0000-000000101012','00000000-0000-0000-0000-000000001013',NULL,N'Địa chỉ giao hàng demo 12, TP.HCM',139000,N'cod',N'pending',N'processing',NULL,'2026-08-22T10:00:00');
+    IF NOT EXISTS (SELECT 1 FROM ecommerce_orders WHERE id='00000000-0000-0000-0000-000000101012') INSERT INTO ecommerce_orders(id,user_id,guest_phone,shipping_address,total_amount,payment_method,payment_status,order_status,prescription_id,created_at) VALUES('00000000-0000-0000-0000-000000101012','00000000-0000-0000-0000-000000001013',NULL,N'Địa chỉ giao hàng demo 12, TP.HCM',139000,N'cod',N'pending',N'processing',NULL,'2026-09-13T03:00:00');
     IF NOT EXISTS (SELECT 1 FROM order_items WHERE id='00000000-0000-0000-0000-000000221015') INSERT INTO order_items(id,order_id,product_id,quantity,unit_price) VALUES('00000000-0000-0000-0000-000000221015','00000000-0000-0000-0000-000000101012','00000000-0000-0000-0000-000000091024',1,61000);
     IF NOT EXISTS (SELECT 1 FROM order_items WHERE id='00000000-0000-0000-0000-000000221016') INSERT INTO order_items(id,order_id,product_id,quantity,unit_price) VALUES('00000000-0000-0000-0000-000000221016','00000000-0000-0000-0000-000000101012','00000000-0000-0000-0000-000000091017',1,78000);
-    IF NOT EXISTS (SELECT 1 FROM ecommerce_orders WHERE id='00000000-0000-0000-0000-000000101013') INSERT INTO ecommerce_orders(id,user_id,guest_phone,shipping_address,total_amount,payment_method,payment_status,order_status,prescription_id,created_at) VALUES('00000000-0000-0000-0000-000000101013',NULL,N'0909000013',N'Địa chỉ giao hàng demo 13, TP.HCM',169000,N'cod',N'pending',N'processing',NULL,'2026-08-23T10:00:00');
+    IF NOT EXISTS (SELECT 1 FROM ecommerce_orders WHERE id='00000000-0000-0000-0000-000000101013') INSERT INTO ecommerce_orders(id,user_id,guest_phone,shipping_address,total_amount,payment_method,payment_status,order_status,prescription_id,created_at) VALUES('00000000-0000-0000-0000-000000101013',NULL,N'0909000013',N'Địa chỉ giao hàng demo 13, TP.HCM',169000,N'cod',N'pending',N'processing',NULL,'2026-09-14T03:00:00');
     IF NOT EXISTS (SELECT 1 FROM order_items WHERE id='00000000-0000-0000-0000-000000221017') INSERT INTO order_items(id,order_id,product_id,quantity,unit_price) VALUES('00000000-0000-0000-0000-000000221017','00000000-0000-0000-0000-000000101013','00000000-0000-0000-0000-000000091030',1,49000);
     IF NOT EXISTS (SELECT 1 FROM order_items WHERE id='00000000-0000-0000-0000-000000221018') INSERT INTO order_items(id,order_id,product_id,quantity,unit_price) VALUES('00000000-0000-0000-0000-000000221018','00000000-0000-0000-0000-000000101013','00000000-0000-0000-0000-000000091032',1,120000);
-    IF NOT EXISTS (SELECT 1 FROM ecommerce_orders WHERE id='00000000-0000-0000-0000-000000101014') INSERT INTO ecommerce_orders(id,user_id,guest_phone,shipping_address,total_amount,payment_method,payment_status,order_status,prescription_id,created_at) VALUES('00000000-0000-0000-0000-000000101014',NULL,N'0909000014',N'Địa chỉ giao hàng demo 14, TP.HCM',193000,N'cod',N'pending',N'processing',NULL,'2026-08-24T10:00:00');
+    IF NOT EXISTS (SELECT 1 FROM ecommerce_orders WHERE id='00000000-0000-0000-0000-000000101014') INSERT INTO ecommerce_orders(id,user_id,guest_phone,shipping_address,total_amount,payment_method,payment_status,order_status,prescription_id,created_at) VALUES('00000000-0000-0000-0000-000000101014',NULL,N'0909000014',N'Địa chỉ giao hàng demo 14, TP.HCM',193000,N'cod',N'pending',N'processing',NULL,'2026-09-15T03:00:00');
     IF NOT EXISTS (SELECT 1 FROM order_items WHERE id='00000000-0000-0000-0000-000000221019') INSERT INTO order_items(id,order_id,product_id,quantity,unit_price) VALUES('00000000-0000-0000-0000-000000221019','00000000-0000-0000-0000-000000101014','00000000-0000-0000-0000-000000091027',1,68000);
     IF NOT EXISTS (SELECT 1 FROM order_items WHERE id='00000000-0000-0000-0000-000000221020') INSERT INTO order_items(id,order_id,product_id,quantity,unit_price) VALUES('00000000-0000-0000-0000-000000221020','00000000-0000-0000-0000-000000101014','00000000-0000-0000-0000-000000091028',1,125000);
 
@@ -1026,9 +1030,9 @@ BEGIN TRY
     IF NOT EXISTS (SELECT 1 FROM suppliers WHERE id='00000000-0000-0000-0000-000000111004') INSERT INTO suppliers(id,supplier_name,contact_phone,gdp_certified,created_at) VALUES('00000000-0000-0000-0000-000000111004',N'Công ty CP Traphaco',N'02436830001',1,'2025-08-04');
     IF NOT EXISTS (SELECT 1 FROM suppliers WHERE id='00000000-0000-0000-0000-000000111005') INSERT INTO suppliers(id,supplier_name,contact_phone,gdp_certified,created_at) VALUES('00000000-0000-0000-0000-000000111005',N'Công ty CP Dược phẩm Imexpharm',N'02773851941',1,'2025-08-04');
     IF NOT EXISTS (SELECT 1 FROM suppliers WHERE id='00000000-0000-0000-0000-000000111006') INSERT INTO suppliers(id,supplier_name,contact_phone,gdp_certified,created_at) VALUES('00000000-0000-0000-0000-000000111006',N'Công ty CP Pymepharco',N'02573829090',1,'2025-08-04');
-    IF NOT EXISTS (SELECT 1 FROM inventory_receipts WHERE id='00000000-0000-0000-0000-000000121004') INSERT INTO inventory_receipts(id,supplier_id,created_by,approved_by,total_cost,receipt_date,status) VALUES('00000000-0000-0000-0000-000000121004','00000000-0000-0000-0000-000000111004','00000000-0000-0000-0000-000000004003','00000000-0000-0000-0000-000000003001',78600000,'2026-08-21T09:00:00',N'approved');
-    IF NOT EXISTS (SELECT 1 FROM inventory_receipts WHERE id='00000000-0000-0000-0000-000000121005') INSERT INTO inventory_receipts(id,supplier_id,created_by,approved_by,total_cost,receipt_date,status) VALUES('00000000-0000-0000-0000-000000121005','00000000-0000-0000-0000-000000111005','00000000-0000-0000-0000-000000004001','00000000-0000-0000-0000-000000003001',138000000,'2026-08-21T09:00:00',N'approved');
-    IF NOT EXISTS (SELECT 1 FROM inventory_receipts WHERE id='00000000-0000-0000-0000-000000121006') INSERT INTO inventory_receipts(id,supplier_id,created_by,approved_by,total_cost,receipt_date,status) VALUES('00000000-0000-0000-0000-000000121006','00000000-0000-0000-0000-000000111006','00000000-0000-0000-0000-000000004002',NULL,197000000,'2026-08-21T09:00:00',N'pending_approval');
+    IF NOT EXISTS (SELECT 1 FROM inventory_receipts WHERE id='00000000-0000-0000-0000-000000121004') INSERT INTO inventory_receipts(id,supplier_id,created_by,approved_by,total_cost,receipt_date,status) VALUES('00000000-0000-0000-0000-000000121004','00000000-0000-0000-0000-000000111004','00000000-0000-0000-0000-000000004003','00000000-0000-0000-0000-000000003001',78600000,'2026-09-12T02:00:00',N'approved');
+    IF NOT EXISTS (SELECT 1 FROM inventory_receipts WHERE id='00000000-0000-0000-0000-000000121005') INSERT INTO inventory_receipts(id,supplier_id,created_by,approved_by,total_cost,receipt_date,status) VALUES('00000000-0000-0000-0000-000000121005','00000000-0000-0000-0000-000000111005','00000000-0000-0000-0000-000000004001','00000000-0000-0000-0000-000000003001',138000000,'2026-09-13T02:00:00',N'approved');
+    IF NOT EXISTS (SELECT 1 FROM inventory_receipts WHERE id='00000000-0000-0000-0000-000000121006') INSERT INTO inventory_receipts(id,supplier_id,created_by,approved_by,total_cost,receipt_date,status) VALUES('00000000-0000-0000-0000-000000121006','00000000-0000-0000-0000-000000111006','00000000-0000-0000-0000-000000004002',NULL,197000000,'2026-09-15T02:00:00',N'pending_approval');
     IF NOT EXISTS (SELECT 1 FROM receipt_details WHERE id='00000000-0000-0000-0000-000000231001') INSERT INTO receipt_details(id,receipt_id,product_id,batch_number,expiration_date,quantity_imported,import_price) VALUES('00000000-0000-0000-0000-000000231001','00000000-0000-0000-0000-000000121004','00000000-0000-0000-0000-000000091015',N'LOR2026D01','2028-02-01',1800,12000);
     IF NOT EXISTS (SELECT 1 FROM receipt_details WHERE id='00000000-0000-0000-0000-000000231002') INSERT INTO receipt_details(id,receipt_id,product_id,batch_number,expiration_date,quantity_imported,import_price) VALUES('00000000-0000-0000-0000-000000231002','00000000-0000-0000-0000-000000121004','00000000-0000-0000-0000-000000091019',N'PVI2026D02','2028-04-15',1500,18000);
     IF NOT EXISTS (SELECT 1 FROM receipt_details WHERE id='00000000-0000-0000-0000-000000231003') INSERT INTO receipt_details(id,receipt_id,product_id,batch_number,expiration_date,quantity_imported,import_price) VALUES('00000000-0000-0000-0000-000000231003','00000000-0000-0000-0000-000000121004','00000000-0000-0000-0000-000000091020',N'ALC2026D03','2029-01-01',3000,10000);
@@ -1154,3 +1158,184 @@ WHERE id = '00000000-0000-0000-0000-000000091031';
 UPDATE products SET image_url = N'/images/products/n95mask.jpg'
 WHERE id = '00000000-0000-0000-0000-000000091032';
 
+-- =====================================================
+-- 27. KIỂM TRA ĐỒNG BỘ NGHIỆP VỤ SAU KHI SEED
+-- Tất cả các cột *_error bên dưới phải bằng 0.
+-- =====================================================
+SELECT
+    SUM(CASE WHEN a.type = 'clinic_visit' AND a.chat_session_id IS NOT NULL THEN 1 ELSE 0 END) AS clinic_has_chat_error,
+    SUM(CASE WHEN a.type = 'online_consult' AND a.status = 'pending' AND a.chat_session_id IS NOT NULL THEN 1 ELSE 0 END) AS pending_online_has_chat_error,
+    SUM(CASE WHEN a.type = 'online_consult' AND a.status = 'confirmed' AND (a.chat_session_id IS NULL OR cs.status <> 'active') THEN 1 ELSE 0 END) AS confirmed_online_chat_error,
+    SUM(CASE WHEN a.type = 'online_consult' AND a.status = 'completed' AND (a.chat_session_id IS NULL OR cs.status <> 'closed') THEN 1 ELSE 0 END) AS completed_online_chat_error,
+    SUM(CASE WHEN a.status = 'pending' AND a.scheduled_at <= GETUTCDATE() THEN 1 ELSE 0 END) AS pending_in_past_error
+FROM appointments a
+LEFT JOIN chat_sessions cs ON cs.id = a.chat_session_id;
+
+SELECT
+    SUM(CASE WHEN a.id IS NULL OR a.type <> 'clinic_visit' OR a.status <> 'completed' THEN 1 ELSE 0 END) AS medical_record_appointment_error,
+    SUM(CASE WHEN a.id IS NOT NULL AND (mr.patient_id <> a.patient_id OR mr.doctor_id <> a.doctor_id) THEN 1 ELSE 0 END) AS medical_record_identity_error
+FROM medical_records mr
+LEFT JOIN appointments a ON a.id = mr.appointment_id;
+
+SELECT
+    SUM(CASE WHEN ABS(o.total_amount - ISNULL(x.items_total, 0)) > 0.01 THEN 1 ELSE 0 END) AS ecommerce_total_error,
+    SUM(CASE WHEN LOWER(o.payment_method) <> 'cod' THEN 1 ELSE 0 END) AS ecommerce_non_cod_error
+FROM ecommerce_orders o
+OUTER APPLY (
+    SELECT SUM(oi.quantity * oi.unit_price) AS items_total
+    FROM order_items oi
+    WHERE oi.order_id = o.id
+) x;
+
+SELECT
+    SUM(CASE WHEN ABS(r.total_cost - ISNULL(x.details_total, 0)) > 0.01 THEN 1 ELSE 0 END) AS inventory_total_error,
+    SUM(CASE WHEN r.status = 'approved' AND r.approved_by IS NULL THEN 1 ELSE 0 END) AS approved_without_admin_error,
+    SUM(CASE WHEN r.status = 'pending_approval' AND r.approved_by IS NOT NULL THEN 1 ELSE 0 END) AS pending_has_approver_error
+FROM inventory_receipts r
+OUTER APPLY (
+    SELECT SUM(rd.quantity_imported * rd.import_price) AS details_total
+    FROM receipt_details rd
+    WHERE rd.receipt_id = r.id
+) x;
+
+SELECT
+    SUM(CASE WHEN LOWER(ISNULL(status, '')) NOT IN ('active', 'completed', 'cancelled') THEN 1 ELSE 0 END) AS health_goal_status_error
+FROM health_goals;
+GO
+
+
+USE BLUE_CROWN;
+GO
+
+SET NOCOUNT ON;
+SET XACT_ABORT ON;
+
+BEGIN TRY
+    BEGIN TRANSACTION;
+    
+    DELETE FROM receipt_details WHERE receipt_id IN (SELECT id FROM inventory_receipts WHERE receipt_date >= '2026-10-01');
+    DELETE FROM inventory_receipts WHERE receipt_date >= '2026-10-01';
+
+    DELETE FROM order_items WHERE order_id IN (SELECT id FROM ecommerce_orders WHERE created_at >= '2026-10-01');
+    DELETE FROM ecommerce_orders WHERE created_at >= '2026-10-01';
+    
+    DELETE FROM payments WHERE created_at >= '2026-10-01';
+    
+    DELETE FROM prescription_dispense_items WHERE dispensed_at >= '2026-10-01';
+    DELETE FROM prescription_items WHERE prescription_id IN (SELECT id FROM prescriptions WHERE created_at >= '2026-10-01');
+    DELETE FROM prescriptions WHERE created_at >= '2026-10-01';
+    DELETE FROM medical_records WHERE created_at >= '2026-10-01';
+    
+    DELETE FROM appointments WHERE created_at >= '2026-10-01';
+    DELETE FROM chat_messages WHERE sent_at >= '2026-10-01';
+    DELETE FROM chat_sessions WHERE created_at >= '2026-10-01';
+    
+    DELETE FROM symptom_logs WHERE created_at >= '2026-10-01';
+    DELETE FROM health_metrics WHERE recorded_at >= '2026-10-01';
+    DELETE FROM health_goals WHERE start_date >= '2026-10-01';
+    
+    DELETE FROM notifications WHERE created_at >= '2026-10-01';
+
+    -- =====================================================
+    -- 1. HEALTH METRICS & GOALS 
+    -- =====================================================
+    INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000153010','00000000-0000-0000-0000-000000011005',1,58.2,'2026-10-01T07:00:00');
+    INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000153011','00000000-0000-0000-0000-000000011005',1,58.0,'2026-10-02T07:00:00');
+    INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000153012','00000000-0000-0000-0000-000000011005',1,57.8,'2026-10-03T07:00:00');
+    INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000153013','00000000-0000-0000-0000-000000011006',3,135,'2026-10-01T08:00:00');
+    INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000153014','00000000-0000-0000-0000-000000011006',4,85,'2026-10-01T08:00:00');
+    INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000153015','00000000-0000-0000-0000-000000011006',3,130,'2026-10-03T08:00:00');
+    INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000153016','00000000-0000-0000-0000-000000011006',4,80,'2026-10-03T08:00:00');
+    INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000153017','00000000-0000-0000-0000-000000011007',5,110,'2026-10-02T06:30:00');
+    INSERT INTO health_metrics(id,patient_id,metric_type_id,value,recorded_at) VALUES('00000000-0000-0000-0000-000000153018','00000000-0000-0000-0000-000000011007',5,105,'2026-10-03T06:30:00');
+
+    INSERT INTO health_goals (id, patient_id, metric_type_id, target_value, start_date, end_date, status, created_by_user_id, created_by_role)
+    VALUES ('00000000-0000-0000-0000-000000162001', '00000000-0000-0000-0000-000000011003', 1, 70.00, '2026-10-01', '2026-12-31', N'active', '00000000-0000-0000-0000-000000001003', N'patient');
+
+    -- =====================================================
+    -- 2. SYMPTOM LOGS 
+    -- =====================================================
+    INSERT INTO symptom_logs(id,patient_id,symptoms_description,predicted_disease,severity_level,ai_advice,created_at) VALUES('00000000-0000-0000-0000-000000133010','00000000-0000-0000-0000-000000011005',N'Nổi mẩn đỏ ngứa khắp tay sau khi ăn hải sản.',N'Dị ứng thực phẩm',N'HIGH',N'Tránh gãi, nếu khó thở cần đi cấp cứu ngay.','2026-10-01T19:00:00');
+    INSERT INTO symptom_logs(id,patient_id,symptoms_description,predicted_disease,severity_level,ai_advice,created_at) VALUES('00000000-0000-0000-0000-000000133011','00000000-0000-0000-0000-000000011007',N'Mệt mỏi, chán ăn, thỉnh thoảng hơi buồn nôn.',N'Rối loạn tiêu hóa',N'LOW',N'Ăn uống thanh đạm, chia nhỏ bữa ăn.','2026-10-02T08:30:00');
+    INSERT INTO symptom_logs(id,patient_id,symptoms_description,predicted_disease,severity_level,ai_advice,created_at) VALUES('00000000-0000-0000-0000-000000133012','00000000-0000-0000-0000-000000011008',N'Đau nhức cơ bắp, sốt 39 độ, nhức đầu.',N'Sốt siêu vi',N'HIGH',N'Uống nhiều nước, dùng thuốc hạ sốt nếu quá 38.5 độ.','2026-10-03T10:00:00');
+    INSERT INTO symptom_logs(id,patient_id,symptoms_description,predicted_disease,severity_level,ai_advice,created_at) VALUES('00000000-0000-0000-0000-000000133013','00000000-0000-0000-0000-000000011010',N'Đau rát họng, khàn tiếng, không sốt.',N'Viêm họng cấp',N'LOW',N'Súc miệng nước muối, giữ ấm cổ.','2026-10-04T08:00:00');
+
+    -- =====================================================
+    -- 3. APPOINTMENTS
+    -- =====================================================
+    INSERT INTO appointments(id,patient_id,doctor_id,scheduled_at,type,status,created_at) VALUES('00000000-0000-0000-0000-000000053010','00000000-0000-0000-0000-000000011005','00000000-0000-0000-0000-000000031004','2026-10-02T09:00:00',N'clinic_visit',N'completed','2026-10-01T19:30:00');
+    INSERT INTO appointments(id,patient_id,doctor_id,scheduled_at,type,status,created_at) VALUES('00000000-0000-0000-0000-000000053011','00000000-0000-0000-0000-000000011008','00000000-0000-0000-0000-000000031003','2026-10-03T14:00:00',N'clinic_visit',N'completed','2026-10-02T21:00:00');
+    INSERT INTO appointments(id,patient_id,doctor_id,scheduled_at,type,status,created_at) VALUES('00000000-0000-0000-0000-000000053012','00000000-0000-0000-0000-000000011010','00000000-0000-0000-0000-000000031005','2026-10-15T09:30:00',N'online_consult',N'pending','2026-10-02T08:00:00');
+    INSERT INTO appointments(id,patient_id,doctor_id,scheduled_at,type,status,created_at) VALUES('00000000-0000-0000-0000-000000053013','00000000-0000-0000-0000-000000011011','00000000-0000-0000-0000-000000031001','2026-10-18T10:00:00',N'clinic_visit',N'pending','2026-10-03T09:00:00');
+    INSERT INTO appointments(id,patient_id,doctor_id,scheduled_at,type,status,created_at) VALUES('00000000-0000-0000-0000-000000053014','00000000-0000-0000-0000-000000011012','00000000-0000-0000-0000-000000031006','2026-10-12T13:30:00',N'clinic_visit',N'confirmed','2026-10-01T10:00:00');
+    INSERT INTO appointments(id,patient_id,doctor_id,scheduled_at,type,status,created_at) VALUES('00000000-0000-0000-0000-000000053015','00000000-0000-0000-0000-000000011013','00000000-0000-0000-0000-000000031002','2026-10-20T15:00:00',N'online_consult',N'confirmed','2026-10-03T11:00:00');
+    INSERT INTO appointments(id,patient_id,doctor_id,scheduled_at,type,status,created_at) VALUES('00000000-0000-0000-0000-000000053016','00000000-0000-0000-0000-000000011009','00000000-0000-0000-0000-000000031003','2026-10-10T09:00:00',N'clinic_visit',N'cancelled','2026-10-01T08:00:00');
+
+    -- =====================================================
+    -- 4. MEDICAL RECORDS & PRESCRIPTIONS 
+    -- =====================================================
+    INSERT INTO medical_records(id,appointment_id,patient_id,doctor_id,diagnosis,notes,created_at) VALUES('00000000-0000-0000-0000-000000063010','00000000-0000-0000-0000-000000053010','00000000-0000-0000-0000-000000011005','00000000-0000-0000-0000-000000031004',N'Viêm da dị ứng tiếp xúc',N'Cần tránh ăn hải sản, bôi thuốc đều đặn.','2026-10-02T09:30:00');
+    INSERT INTO prescriptions(id,appointment_id,medical_record_id,patient_id,doctor_id,diagnosis,status,created_at) VALUES('00000000-0000-0000-0000-000000083010','00000000-0000-0000-0000-000000053010','00000000-0000-0000-0000-000000063010','00000000-0000-0000-0000-000000011005','00000000-0000-0000-0000-000000031004',N'Viêm da dị ứng tiếp xúc',N'approved','2026-10-02T09:35:00');
+    INSERT INTO prescription_items(id,prescription_id,medication_id,dosage,frequency_per_day,duration_days,instructions) VALUES(NEWID(),'00000000-0000-0000-0000-000000083010','00000000-0000-0000-0000-000000071007',N'10mg',1,7,N'Uống 1 viên vào buổi tối.');
+
+    INSERT INTO medical_records(id,appointment_id,patient_id,doctor_id,diagnosis,notes,created_at) VALUES('00000000-0000-0000-0000-000000063011','00000000-0000-0000-0000-000000053011','00000000-0000-0000-0000-000000011008','00000000-0000-0000-0000-000000031003',N'Sốt virus không đặc hiệu',N'Bù nước, theo dõi sát nhiệt độ.','2026-10-03T14:30:00');
+    INSERT INTO prescriptions(id,appointment_id,medical_record_id,patient_id,doctor_id,diagnosis,status,created_at) VALUES('00000000-0000-0000-0000-000000083011','00000000-0000-0000-0000-000000053011','00000000-0000-0000-0000-000000063011','00000000-0000-0000-0000-000000011008','00000000-0000-0000-0000-000000031003',N'Sốt virus không đặc hiệu',N'dispensed','2026-10-03T14:35:00');
+    INSERT INTO prescription_items(id,prescription_id,medication_id,dosage,frequency_per_day,duration_days,instructions) VALUES(NEWID(),'00000000-0000-0000-0000-000000083011','00000000-0000-0000-0000-000000071001',N'500mg',3,5,N'Uống khi sốt > 38.5 độ.');
+    INSERT INTO prescription_items(id,prescription_id,medication_id,dosage,frequency_per_day,duration_days,instructions) VALUES(NEWID(),'00000000-0000-0000-0000-000000083011','00000000-0000-0000-0000-000000071010',N'1 gói',2,5,N'Pha 1 gói với 200ml nước chín.');
+
+    -- =====================================================
+    -- 5. PAYMENTS (Đổi hết VNPay thành Cash cho hệ thống phòng khám)
+    -- =====================================================
+    INSERT INTO payments(id,appointment_id,patient_id,amount,platform_fee,status,payment_method,transaction_ref,created_at) VALUES('00000000-0000-0000-0000-000000183010','00000000-0000-0000-0000-000000053010','00000000-0000-0000-0000-000000011005',270000,0,N'paid',N'cash',N'TXN-OCT-010','2026-10-02T08:50:00');
+    INSERT INTO payments(id,appointment_id,patient_id,amount,platform_fee,status,payment_method,transaction_ref,created_at) VALUES('00000000-0000-0000-0000-000000183011','00000000-0000-0000-0000-000000053011','00000000-0000-0000-0000-000000011008',280000,0,N'paid',N'cash',N'TXN-OCT-011','2026-10-03T13:50:00');
+    INSERT INTO payments(id,appointment_id,patient_id,amount,platform_fee,status,payment_method,transaction_ref,created_at) VALUES('00000000-0000-0000-0000-000000183012','00000000-0000-0000-0000-000000053016','00000000-0000-0000-0000-000000011009',280000,0,N'refunded',N'cash',N'TXN-OCT-012','2026-10-03T08:10:00');
+
+    -- =====================================================
+    -- 6. ECOMMERCE ORDERS (Đổi hết VNPay thành COD cho thương mại điện tử)
+    -- =====================================================
+    -- Đơn 1: Đang chờ xử lý (Pending)
+    INSERT INTO ecommerce_orders(id,user_id,guest_phone,shipping_address,total_amount,payment_method,payment_status,order_status,prescription_id,created_at) VALUES('00000000-0000-0000-0000-000000103010','00000000-0000-0000-0000-000000001008',NULL,N'Quận Gò Vấp, TP.HCM',142000,N'cod',N'pending',N'pending',NULL,'2026-10-01T09:00:00');
+    INSERT INTO order_items(id,order_id,product_id,quantity,unit_price) VALUES(NEWID(),'00000000-0000-0000-0000-000000103010','00000000-0000-0000-0000-000000091001',2,25000); 
+    INSERT INTO order_items(id,order_id,product_id,quantity,unit_price) VALUES(NEWID(),'00000000-0000-0000-0000-000000103010','00000000-0000-0000-0000-000000091032',1,92000); 
+
+    -- Đơn 2: Đang giao hàng (Shipped)
+    INSERT INTO ecommerce_orders(id,user_id,guest_phone,shipping_address,total_amount,payment_method,payment_status,order_status,prescription_id,created_at) VALUES('00000000-0000-0000-0000-000000103011','00000000-0000-0000-0000-000000001009',NULL,N'Quận 2, TP.HCM',255000,N'cod',N'pending',N'shipped',NULL,'2026-10-02T10:00:00');
+    INSERT INTO order_items(id,order_id,product_id,quantity,unit_price) VALUES(NEWID(),'00000000-0000-0000-0000-000000103011','00000000-0000-0000-0000-000000091028',1,120000); 
+    INSERT INTO order_items(id,order_id,product_id,quantity,unit_price) VALUES(NEWID(),'00000000-0000-0000-0000-000000103011','00000000-0000-0000-0000-000000091029',1,135000); 
+
+    -- Đơn 3: Đã giao thành công (Delivered)
+    INSERT INTO ecommerce_orders(id,user_id,guest_phone,shipping_address,total_amount,payment_method,payment_status,order_status,prescription_id,created_at) VALUES('00000000-0000-0000-0000-000000103012','00000000-0000-0000-0000-000000001005',NULL,N'Quận 1, TP.HCM',90000,N'cod',N'paid',N'delivered',NULL,'2026-10-03T14:00:00');
+    INSERT INTO order_items(id,order_id,product_id,quantity,unit_price) VALUES(NEWID(),'00000000-0000-0000-0000-000000103012','00000000-0000-0000-0000-000000091010',2,45000); 
+
+    -- Đơn 4: Khách mua không đăng nhập (Guest) - Đã hủy
+    INSERT INTO ecommerce_orders(id,user_id,guest_phone,shipping_address,total_amount,payment_method,payment_status,order_status,prescription_id,created_at) VALUES('00000000-0000-0000-0000-000000103013',NULL,N'0908888999',N'Quận Bình Thạnh, TP.HCM',114000,N'cod',N'pending',N'cancelled',NULL,'2026-10-04T08:00:00');
+    INSERT INTO order_items(id,order_id,product_id,quantity,unit_price) VALUES(NEWID(),'00000000-0000-0000-0000-000000103013','00000000-0000-0000-0000-000000091023',2,57000); 
+
+    -- =====================================================
+    -- 7. INVENTORY RECEIPTS
+    -- =====================================================
+    INSERT INTO inventory_receipts(id,supplier_id,created_by,approved_by,total_cost,receipt_date,status) VALUES('00000000-0000-0000-0000-000000123010','00000000-0000-0000-0000-000000111005','00000000-0000-0000-0000-000000004001',NULL,185000000,'2026-10-03T09:00:00',N'pending_approval');
+    INSERT INTO receipt_details(id,receipt_id,product_id,batch_number,expiration_date,quantity_imported,import_price) VALUES(NEWID(),'00000000-0000-0000-0000-000000123010','00000000-0000-0000-0000-000000091029',N'MVT2026OCT','2028-10-01',1000,75000);
+    INSERT INTO receipt_details(id,receipt_id,product_id,batch_number,expiration_date,quantity_imported,import_price) VALUES(NEWID(),'00000000-0000-0000-0000-000000123010','00000000-0000-0000-0000-000000091032',N'N952026OCT','2029-10-01',2000,55000);
+
+    -- =====================================================
+    -- 8. NOTIFICATIONS 
+    -- =====================================================
+    INSERT INTO notifications(id,user_id,type,title,message,is_read,created_at) VALUES(NEWID(),'00000000-0000-0000-0000-000000001008',N'order_placed',N'Đặt hàng thành công',N'Đơn hàng thanh toán COD của bạn đã được hệ thống ghi nhận.',0,'2026-10-01T09:05:00');
+    INSERT INTO notifications(id,user_id,type,title,message,is_read,created_at) VALUES(NEWID(),'00000000-0000-0000-0000-000000001008',N'appointment_reminder',N'Nhắc nhở lịch khám',N'Vui lòng đến phòng khám trước 15 phút.',1,'2026-10-02T08:00:00');
+    INSERT INTO notifications(id,user_id,type,title,message,is_read,created_at) VALUES(NEWID(),'00000000-0000-0000-0000-000000001008',N'health_metric',N'Cảnh báo sức khỏe',N'Hãy cập nhật chỉ số huyết áp tuần này.',0,'2026-10-03T08:00:00');
+    
+    INSERT INTO notifications(id,user_id,type,title,message,is_read,created_at) VALUES(NEWID(),'00000000-0000-0000-0000-000000001009',N'order_shipped',N'Đơn hàng đang giao',N'Đơn hàng COD của bạn đã được xuất kho và bàn giao.',0,'2026-10-03T10:05:00');
+    INSERT INTO notifications(id,user_id,type,title,message,is_read,created_at) VALUES(NEWID(),'00000000-0000-0000-0000-000000001009',N'appointment_cancelled',N'Lịch khám đã hủy',N'Lịch khám ngày 10/10 của bạn đã hủy theo yêu cầu.',1,'2026-10-02T08:05:00');
+    
+    INSERT INTO notifications(id,user_id,type,title,message,is_read,created_at) VALUES(NEWID(),'00000000-0000-0000-0000-000000003001',N'inventory_approval',N'Chờ duyệt nhập kho',N'Có 1 phiếu nhập kho trị giá 185,000,000đ đang chờ duyệt.',0,'2026-10-03T09:05:00');
+
+    COMMIT TRANSACTION;
+
+END TRY
+BEGIN CATCH
+    IF @@TRANCOUNT > 0
+        ROLLBACK TRANSACTION;
+    THROW;
+END CATCH;
+GO
