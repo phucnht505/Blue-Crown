@@ -161,22 +161,34 @@
             <label>Tên phòng khám <span>*</span></label>
             <input type="text" formControlName="name">
 
-            @if (clinicForm.controls.name.touched && clinicForm.controls.name.invalid) {
-            <p class="field-error">Tên phòng khám phải từ 2 đến 255 ký tự.</p>
+            @if (clinicForm.controls.name.touched && clinicForm.controls.name.errors?.['required']) {
+            <p class="field-error">Tên phòng khám là bắt buộc.</p>
+            } @else if (clinicForm.controls.name.touched && clinicForm.controls.name.errors?.['minlength']) {
+            <p class="field-error">Tên phòng khám phải có ít nhất 2 ký tự.</p>
+            } @else if (clinicForm.controls.name.touched && clinicForm.controls.name.errors?.['maxlength']) {
+            <p class="field-error">Tên phòng khám không được vượt quá 100 ký tự.</p>
+            } @else if (clinicForm.controls.name.touched && clinicForm.controls.name.errors?.['pattern']) {
+            <p class="field-error">Tên phòng khám chứa ký tự không hợp lệ.</p>
             }
           </div>
 
           <div class="field full-width">
-            <label>Địa chỉ</label>
+            <label>Địa chỉ <span>*</span></label>
             <input type="text" formControlName="address">
+
+            @if (clinicForm.controls.address.touched && clinicForm.controls.address.errors?.['required']) {
+            <p class="field-error">Địa chỉ phòng khám là bắt buộc.</p>
+            } @else if (clinicForm.controls.address.touched && clinicForm.controls.address.errors?.['maxlength']) {
+            <p class="field-error">Địa chỉ không được vượt quá 255 ký tự.</p>
+            }
           </div>
 
           <div class="field full-width">
             <label>Số điện thoại</label>
             <input type="text" formControlName="phone">
 
-            @if (clinicForm.controls.phone.touched && clinicForm.controls.phone.invalid) {
-            <p class="field-error">Số điện thoại không hợp lệ.</p>
+            @if (clinicForm.controls.phone.touched && clinicForm.controls.phone.errors?.['pattern']) {
+            <p class="field-error">Số điện thoại phải gồm 10 số và bắt đầu bằng 03, 05, 07, 08 hoặc 09.</p>
             }
           </div>
         </div>

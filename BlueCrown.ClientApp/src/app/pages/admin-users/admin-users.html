@@ -2,11 +2,11 @@
   <section class="page-header">
     <div>
       <p class="eyebrow">ADMIN</p>
-      <h1>Quản lý người dùng</h1>
-      <p>Quản lý tài khoản, vai trò và trạng thái hoạt động của người dùng Blue Crown.</p>
+      <h1>Quản lý bệnh nhân</h1>
+      <p>Quản lý tài khoản bệnh nhân và trạng thái hoạt động của bệnh nhân Blue Crown.</p>
     </div>
 
-    <button class="primary-button" type="button" (click)="openCreate()">+ Thêm tài khoản</button>
+    <button class="primary-button" type="button" (click)="openCreate()">+ Thêm bệnh nhân</button>
   </section>
 
   @if (errorMessage) {
@@ -23,17 +23,6 @@
         <div class="field">
           <label>Tìm kiếm</label>
           <input type="text" formControlName="search" placeholder="Tên, email hoặc số điện thoại">
-        </div>
-
-        <div class="field">
-          <label>Vai trò</label>
-          <select formControlName="role">
-            <option value="">Tất cả vai trò</option>
-            <option value="patient">Bệnh nhân</option>
-            <option value="doctor">Bác sĩ</option>
-            <option value="pharmacist">Dược sĩ</option>
-            <option value="admin">Admin</option>
-          </select>
         </div>
 
         <div class="field">
@@ -56,9 +45,9 @@
 
   <section class="table-card">
     @if (isLoading) {
-    <div class="state-message">Đang tải danh sách người dùng...</div>
+    <div class="state-message">Đang tải danh sách bệnh nhân...</div>
     } @else if (users.length === 0) {
-    <div class="state-message">Không tìm thấy người dùng phù hợp.</div>
+    <div class="state-message">Không tìm thấy bệnh nhân phù hợp.</div>
     } @else {
     <div class="table-wrapper">
       <table>
@@ -67,7 +56,6 @@
             <th>Họ tên</th>
             <th>Email</th>
             <th>Số điện thoại</th>
-            <th>Vai trò</th>
             <th>Trạng thái</th>
             <th>Thao tác</th>
           </tr>
@@ -79,7 +67,6 @@
             <td>{{ user.fullName || '-' }}</td>
             <td>{{ user.email || '-' }}</td>
             <td>{{ user.phone || '-' }}</td>
-            <td>{{ getRoleLabel(user.role) }}</td>
 
             <td>
               <span class="status-badge"
@@ -92,8 +79,13 @@
 
             <td>
               <div class="action-group">
-                <button type="button" class="action-button" (click)="viewDetail(user.id)">Chi tiết</button>
-                <button type="button" class="action-button edit" (click)="openEdit(user.id)">Sửa</button>
+                <button type="button" class="action-button" (click)="viewDetail(user.id)">
+                  Chi tiết
+                </button>
+
+                <button type="button" class="action-button edit" (click)="openEdit(user.id)">
+                  Sửa
+                </button>
 
                 <button type="button"
                         class="action-button"
@@ -125,8 +117,14 @@
     <section class="modal">
       <div class="modal-header">
         <div>
-          <h2>{{ editingUserId ? 'Cập nhật tài khoản' : 'Thêm tài khoản' }}</h2>
-          <p>{{ editingUserId ? 'Chỉnh sửa thông tin và quyền của người dùng.' : 'Tạo tài khoản mới trong hệ thống.' }}</p>
+          <h2>{{ editingUserId ? 'Cập nhật bệnh nhân' : 'Thêm bệnh nhân' }}</h2>
+          <p>
+            {{
+ editingUserId
+              ? 'Chỉnh sửa thông tin tài khoản bệnh nhân.'
+              : 'Tạo tài khoản bệnh nhân mới trong hệ thống.'
+            }}
+          </p>
         </div>
 
         <button type="button" class="close-button" (click)="closeForm()">×</button>
@@ -188,16 +186,6 @@
           </div>
 
           <div class="field">
-            <label>Vai trò <span>*</span></label>
-            <select formControlName="role">
-              <option value="patient">Bệnh nhân</option>
-              <option value="doctor">Bác sĩ</option>
-              <option value="pharmacist">Dược sĩ</option>
-              <option value="admin">Admin</option>
-            </select>
-          </div>
-
-          <div class="field">
             <label>Trạng thái <span>*</span></label>
             <select formControlName="status">
               <option value="active">Hoạt động</option>
@@ -216,6 +204,7 @@
 
         <div class="modal-actions">
           <button class="secondary-button" type="button" (click)="closeForm()">Hủy</button>
+
           <button class="primary-button" type="submit" [disabled]="isSaving">
             {{ isSaving ? 'Đang lưu...' : 'Lưu thay đổi' }}
           </button>
@@ -230,27 +219,61 @@
     <section class="modal detail-modal">
       <div class="modal-header">
         <div>
-          <h2>Chi tiết người dùng</h2>
-          <p>Thông tin tài khoản trong hệ thống.</p>
+          <h2>Chi tiết bệnh nhân</h2>
+          <p>Thông tin tài khoản bệnh nhân trong hệ thống.</p>
         </div>
 
         <button type="button" class="close-button" (click)="closeDetail()">×</button>
       </div>
 
       <div class="detail-grid">
-        <div><span>Họ tên</span><strong>{{ selectedUser.fullName || '-' }}</strong></div>
-        <div><span>Email</span><strong>{{ selectedUser.email || '-' }}</strong></div>
-        <div><span>Số điện thoại</span><strong>{{ selectedUser.phone || '-' }}</strong></div>
-        <div><span>Ngày sinh</span><strong>{{ selectedUser.dateOfBirth || '-' }}</strong></div>
-        <div><span>Giới tính</span><strong>{{ getGenderLabel(selectedUser.gender) }}</strong></div>
-        <div><span>Vai trò</span><strong>{{ getRoleLabel(selectedUser.role) }}</strong></div>
-        <div><span>Trạng thái</span><strong>{{ getStatusLabel(selectedUser.status) }}</strong></div>
-        <div><span>Avatar</span><strong>{{ selectedUser.avatarUrl || '-' }}</strong></div>
+        <div>
+          <span>Họ tên</span>
+          <strong>{{ selectedUser.fullName || '-' }}</strong>
+        </div>
+
+        <div>
+          <span>Email</span>
+          <strong>{{ selectedUser.email || '-' }}</strong>
+        </div>
+
+        <div>
+          <span>Số điện thoại</span>
+          <strong>{{ selectedUser.phone || '-' }}</strong>
+        </div>
+
+        <div>
+          <span>Ngày sinh</span>
+          <strong>{{ selectedUser.dateOfBirth || '-' }}</strong>
+        </div>
+
+        <div>
+          <span>Giới tính</span>
+          <strong>{{ getGenderLabel(selectedUser.gender) }}</strong>
+        </div>
+
+        <div>
+          <span>Loại tài khoản</span>
+          <strong>Bệnh nhân</strong>
+        </div>
+
+        <div>
+          <span>Trạng thái</span>
+          <strong>{{ getStatusLabel(selectedUser.status) }}</strong>
+        </div>
+
+        <div>
+          <span>Avatar</span>
+          <strong>{{ selectedUser.avatarUrl || '-' }}</strong>
+        </div>
       </div>
 
       <div class="modal-actions">
         <button class="secondary-button" type="button" (click)="closeDetail()">Đóng</button>
-        <button class="primary-button" type="button" (click)="openEdit(selectedUser.id)">Chỉnh sửa</button>
+
+        <button class="primary-button" type="button" (click)="openEdit(selectedUser.id)">
+          Chỉnh sửa
+        </button>
       </div>
     </section>
   </div>

@@ -6,29 +6,17 @@ namespace BlueCrown.Api.Models;
 public partial class Appointment
 {
     public Guid Id { get; set; }
-
     public Guid? ChatSessionId { get; set; }
-
     public Guid PatientId { get; set; }
-
     public Guid DoctorId { get; set; }
-
     public DateTime ScheduledAt { get; set; }
-
     public string? Type { get; set; }
-
     public string? Status { get; set; }
-
     public DateTime? CreatedAt { get; set; }
-
     public virtual ChatSession? ChatSession { get; set; }
-
     public virtual DoctorProfile Doctor { get; set; } = null!;
-
     public virtual MedicalRecord? MedicalRecord { get; set; }
     public virtual PatientProfile Patient { get; set; } = null!;
-
     public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
-
     public virtual ICollection<Prescription> Prescriptions { get; set; } = new List<Prescription>();
 }

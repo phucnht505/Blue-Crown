@@ -33,7 +33,7 @@ export class AccountProfilePage implements OnInit {
       Validators.required,
       Validators.minLength(2),
       Validators.maxLength(50),
-      Validators.pattern(/^[\p{L}\s]+$/u),
+      Validators.pattern(/^(?:BS\.\s)?[\p{L}]+(?:\s+[\p{L}]+)*$/u),
     ]],
     phone: ['', [
       Validators.required,

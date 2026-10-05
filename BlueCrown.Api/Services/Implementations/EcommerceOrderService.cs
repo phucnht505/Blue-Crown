@@ -47,14 +47,13 @@ namespace BlueCrown.Api.Services.Implementations
             return MapToDto(order);
         }
 
-        public async Task<List<EcommerceOrderDto>> LookupGuestOrdersAsync(GuestOrderLookupDto dto)
+        public async Task<List<EcommerceOrderDto>> LookupGuestOrdersAsync(GuestOrderLookupDto dto, Guid? userId)
         {
             var phone = NormalizePhone(dto.GuestPhone);
 
             if (!Regex.IsMatch(phone, @"^0[35789]\d{8}$"))
                 throw new ArgumentException("Số điện thoại không hợp lệ. Ví dụ: 0901234567.");
 
-            // BR-ORD-LOOKUP-001: Nếu có mã đơn thì mã đơn và SĐT phải cùng khớp.
             if (dto.OrderId.HasValue)
             {
                 if (dto.OrderId.Value == Guid.Empty)
@@ -62,18 +61,44 @@ namespace BlueCrown.Api.Services.Implementations
 
                 var order = await _orderRepository.GetByIdAsync(dto.OrderId.Value);
 
-                if (order == null || order.UserId.HasValue)
+                if (order == null)
                     return new List<EcommerceOrderDto>();
 
                 if (!string.Equals(NormalizePhone(order.GuestPhone), phone, StringComparison.Ordinal))
                     return new List<EcommerceOrderDto>();
 
+                if (userId.HasValue)
+                {
+                    // User đăng nhập chỉ được xem đơn của chính mình.
+                    if (order.UserId != userId.Value)
+                        return new List<EcommerceOrderDto>();
+                }
+                else
+                {
+                    // Guest chỉ được xem đơn không thuộc tài khoản.
+                    if (order.UserId != null)
+                        return new List<EcommerceOrderDto>();
+                }
+
                 return new List<EcommerceOrderDto> { MapToDto(order) };
             }
 
-            // BR-ORD-LOOKUP-002: Không có mã đơn thì tìm các đơn Guest theo SĐT.
-            var orders = await _orderRepository.GetGuestOrdersByPhoneAsync(phone);
-            return orders.Select(MapToDto).ToList();
+            if (userId.HasValue)
+            {
+                // User đăng nhập chỉ được tìm đơn của chính mình.
+                var orders = await _orderRepository.GetByUserIdAsync(userId.Value);
+
+                orders = orders
+                    .Where(x => string.Equals(NormalizePhone(x.GuestPhone), phone, StringComparison.Ordinal))
+                    .ToList();
+
+                return orders.Select(MapToDto).ToList();
+            }
+
+            // Guest chỉ được tìm đơn không có tài khoản.
+            var guestOrders = await _orderRepository.GetGuestOrdersByPhoneAsync(phone);
+
+            return guestOrders.Select(MapToDto).ToList();
         }
 
         public async Task<EcommerceOrderDto> CreateAsync(Guid? userId, CreateEcommerceOrderDto dto)

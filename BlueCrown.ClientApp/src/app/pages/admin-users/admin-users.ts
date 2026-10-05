@@ -29,7 +29,6 @@ export class AdminUsers implements OnInit {
 
   filterForm = this.formBuilder.nonNullable.group({
     search: [''],
-    role: [''],
     status: [''],
   });
 
@@ -56,7 +55,6 @@ export class AdminUsers implements OnInit {
     dateOfBirth: [''],
     gender: [''],
     avatarUrl: [''],
-    role: ['patient', Validators.required],
     status: ['active', Validators.required],
   });
 
@@ -71,7 +69,7 @@ export class AdminUsers implements OnInit {
     this.isLoading = true;
     this.errorMessage = '';
 
-    this.userService.getAll(filter.search, filter.role, filter.status).subscribe({
+    this.userService.getAll(filter.search, filter.status).subscribe({
       next: users => {
         this.users = users;
         this.isLoading = false;
@@ -88,7 +86,6 @@ export class AdminUsers implements OnInit {
   resetFilters(): void {
     this.filterForm.reset({
       search: '',
-      role: '',
       status: '',
     });
 
@@ -116,7 +113,6 @@ export class AdminUsers implements OnInit {
       dateOfBirth: '',
       gender: '',
       avatarUrl: '',
-      role: 'patient',
       status: 'active',
     });
   }
@@ -141,7 +137,6 @@ export class AdminUsers implements OnInit {
           dateOfBirth: user.dateOfBirth ?? '',
           gender: user.gender ?? '',
           avatarUrl: user.avatarUrl ?? '',
-          role: user.role ?? 'patient',
           status: user.status ?? 'active',
         });
 
@@ -196,12 +191,11 @@ export class AdminUsers implements OnInit {
         password: value.password,
         dateOfBirth: value.dateOfBirth || null,
         gender: value.gender || null,
-        role: value.role,
         status: value.status,
       };
 
       this.userService.create(request).subscribe({
-        next: () => this.handleSaveSuccess('Thêm tài khoản thành công.'),
+        next: () => this.handleSaveSuccess('Thêm bệnh nhân thành công.'),
         error: error => this.handleSaveError(error),
       });
 
@@ -215,12 +209,11 @@ export class AdminUsers implements OnInit {
       dateOfBirth: value.dateOfBirth || null,
       gender: value.gender || null,
       avatarUrl: value.avatarUrl.trim() || null,
-      role: value.role,
       status: value.status,
     };
 
     this.userService.update(this.editingUserId, request).subscribe({
-      next: () => this.handleSaveSuccess('Cập nhật tài khoản thành công.'),
+      next: () => this.handleSaveSuccess('Cập nhật bệnh nhân thành công.'),
       error: error => this.handleSaveError(error),
     });
   }
@@ -232,8 +225,8 @@ export class AdminUsers implements OnInit {
     const newStatus = user.status === 'active' ? 'suspended' : 'active';
 
     const message = newStatus === 'suspended'
-      ? 'Bạn có chắc muốn khóa tài khoản này?'
-      : 'Bạn có chắc muốn mở khóa tài khoản này?';
+      ? 'Bạn có chắc muốn khóa tài khoản bệnh nhân này?'
+      : 'Bạn có chắc muốn mở khóa tài khoản bệnh nhân này?';
 
     if (!window.confirm(message))
       return;
@@ -243,8 +236,8 @@ export class AdminUsers implements OnInit {
     this.userService.updateStatus(user.id, { status: newStatus }).subscribe({
       next: () => {
         this.successMessage = newStatus === 'active'
-          ? 'Mở khóa tài khoản thành công.'
-          : 'Khóa tài khoản thành công.';
+          ? 'Mở khóa bệnh nhân thành công.'
+          : 'Khóa bệnh nhân thành công.';
 
         this.loadUsers();
       },
@@ -260,7 +253,10 @@ export class AdminUsers implements OnInit {
       return;
 
     const confirmed = window.confirm(
-      `Vô hiệu hóa tài khoản "${user.fullName}"? Dữ liệu liên quan sẽ được giữ lại.`
+      `Bạn có chắc muốn XÓA VĨNH VIỄN bệnh nhân "${user.fullName}"?\n\n` +
+      `Tài khoản chỉ được xóa nếu chưa có dữ liệu hoặc ràng buộc liên quan.\n` +
+      `Nếu bệnh nhân đã có dữ liệu nghiệp vụ, hệ thống sẽ không xóa và bạn cần khóa tài khoản thay thế.\n\n` +
+      `Hành động này không thể hoàn tác.`
     );
 
     if (!confirmed)
@@ -278,21 +274,6 @@ export class AdminUsers implements OnInit {
         this.changeDetectorRef.detectChanges();
       },
     });
-  }
-
-  getRoleLabel(role: string | null): string {
-    switch (role) {
-      case 'admin':
-        return 'Admin';
-      case 'doctor':
-        return 'Bác sĩ';
-      case 'pharmacist':
-        return 'Dược sĩ';
-      case 'patient':
-        return 'Bệnh nhân';
-      default:
-        return role || '-';
-    }
   }
 
   getStatusLabel(status: string | null): string {

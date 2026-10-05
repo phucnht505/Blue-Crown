@@ -31,9 +31,17 @@ export class AdminCategories implements OnInit {
   successMessage = '';
 
   clinicForm = this.formBuilder.nonNullable.group({
-    name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(255)]],
-    address: [''],
-    phone: ['', Validators.pattern(/^(0[35789]\d{8}|\+84[35789]\d{8})$/)],
+    name: ['', [
+      Validators.required,
+      Validators.minLength(2),
+      Validators.maxLength(100),
+      Validators.pattern(/^[\p{L}\d\s&().,'-]+$/u),
+    ]],
+    address: ['', [
+      Validators.required,
+      Validators.maxLength(255),
+    ]],
+    phone: ['', Validators.pattern(/^(03|05|07|08|09)\d{8}$/)],
   });
 
   metricForm = this.formBuilder.nonNullable.group({
@@ -148,6 +156,10 @@ export class AdminCategories implements OnInit {
       return;
 
     const value = this.clinicForm.getRawValue();
+    if (!value.address.trim()) {
+      this.errorMessage = 'Địa chỉ phòng khám là bắt buộc.';
+      return;
+    }
 
     const request: ClinicRequest = {
       name: value.name.trim(),

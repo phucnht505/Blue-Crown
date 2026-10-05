@@ -9,7 +9,6 @@ namespace BlueCrown.Api.DTOs.HealthMetrics
 
         [Range(typeof(decimal), "0", "999999", ErrorMessage = "Giá trị chỉ số không được âm.")]
         public decimal Value { get; set; }
-
         public DateTime? RecordedAt { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿using BlueCrown.Api.DTOs.Users;
+using BlueCrown.Api.DTOs.Users;
 using BlueCrown.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,24 +9,24 @@ namespace BlueCrown.Api.Controllers
     [Authorize(Roles = "admin")]
     [ApiController]
     [Route("api/[controller]")]
-    public class UsersController : ControllerBase
+    public class AdminPharmacistController : ControllerBase
     {
-        private readonly IUserService _userService;
+        private readonly IAdminPharmacistService _service;
 
-        public UsersController(IUserService userService)
+        public AdminPharmacistController(IAdminPharmacistService service)
         {
-            _userService = userService;
+            _service = service;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllUsers(
+        public async Task<IActionResult> GetAll(
             [FromQuery] string? search,
             [FromQuery] string? status)
         {
             try
             {
-                var users = await _userService.GetAllUsersAsync(search, status);
-                return Ok(users);
+                var pharmacists = await _service.GetAllAsync(search, status);
+                return Ok(pharmacists);
             }
             catch (Exception ex)
             {
@@ -35,16 +35,16 @@ namespace BlueCrown.Api.Controllers
         }
 
         [HttpGet("{id:guid}")]
-        public async Task<IActionResult> GetUserById(Guid id)
+        public async Task<IActionResult> GetById(Guid id)
         {
             try
             {
-                var user = await _userService.GetUserByIdAsync(id);
+                var pharmacist = await _service.GetByIdAsync(id);
 
-                if (user == null)
-                    return NotFound(new { message = "Không tìm thấy bệnh nhân." });
+                if (pharmacist == null)
+                    return NotFound(new { message = "Không tìm thấy dược sĩ." });
 
-                return Ok(user);
+                return Ok(pharmacist);
             }
             catch (Exception ex)
             {
@@ -53,12 +53,13 @@ namespace BlueCrown.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] AdminCreateUserDto dto)
+        public async Task<IActionResult> Create(
+            [FromBody] AdminPharmacistCreateDto dto)
         {
             try
             {
-                var user = await _userService.CreateUserByAdminAsync(dto);
-                return Ok(user);
+                var pharmacist = await _service.CreateAsync(dto);
+                return Ok(pharmacist);
             }
             catch (Exception ex)
             {
@@ -67,16 +68,18 @@ namespace BlueCrown.Api.Controllers
         }
 
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> UpdateUser(Guid id, [FromBody] AdminUpdateUserDto dto)
+        public async Task<IActionResult> Update(
+            Guid id,
+            [FromBody] AdminPharmacistUpdateDto dto)
         {
             try
             {
-                var user = await _userService.UpdateUserByAdminAsync(
+                var pharmacist = await _service.UpdateAsync(
                     id,
                     dto,
                     GetCurrentUserId());
 
-                return Ok(user);
+                return Ok(pharmacist);
             }
             catch (Exception ex)
             {
@@ -91,12 +94,12 @@ namespace BlueCrown.Api.Controllers
         {
             try
             {
-                var user = await _userService.UpdateUserStatusAsync(
+                var pharmacist = await _service.UpdateStatusAsync(
                     id,
                     dto,
                     GetCurrentUserId());
 
-                return Ok(user);
+                return Ok(pharmacist);
             }
             catch (Exception ex)
             {
@@ -105,11 +108,11 @@ namespace BlueCrown.Api.Controllers
         }
 
         [HttpDelete("{id:guid}/hard")]
-        public async Task<IActionResult> DeleteUser(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             try
             {
-                var message = await _userService.DeleteUserByAdminAsync(
+                var message = await _service.DeleteAsync(
                     id,
                     GetCurrentUserId());
 

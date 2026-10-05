@@ -17,22 +17,32 @@ namespace BlueCrown.Api.Repositories.Implementations
 
         public async Task<List<EcommerceOrder>> GetAllAsync()
         {
-            return await BuildQuery().OrderByDescending(x => x.CreatedAt).AsNoTracking().ToListAsync();
+            return await BuildQuery()
+                .OrderByDescending(x => x.CreatedAt)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<EcommerceOrder?> GetByIdAsync(Guid id)
         {
-            return await BuildQuery().AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+            return await BuildQuery()
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<EcommerceOrder?> GetByIdForUpdateAsync(Guid id)
         {
-            return await BuildQuery().FirstOrDefaultAsync(x => x.Id == id);
+            return await BuildQuery()
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<List<EcommerceOrder>> GetByUserIdAsync(Guid userId)
         {
-            return await BuildQuery().Where(x => x.UserId == userId).OrderByDescending(x => x.CreatedAt).AsNoTracking().ToListAsync();
+            return await BuildQuery()
+                .Where(x => x.UserId == userId)
+                .OrderByDescending(x => x.CreatedAt)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<List<EcommerceOrder>> GetGuestOrdersByPhoneAsync(string guestPhone)
@@ -46,7 +56,8 @@ namespace BlueCrown.Api.Repositories.Implementations
 
         public async Task<bool> HasActiveOrderByPrescriptionIdAsync(Guid prescriptionId)
         {
-            return await _context.EcommerceOrders.AnyAsync(x => x.PrescriptionId == prescriptionId && x.OrderStatus != "cancelled");
+            return await _context.EcommerceOrders
+                .AnyAsync(x => x.PrescriptionId == prescriptionId && x.OrderStatus != "cancelled");
         }
 
         public async Task AddAsync(EcommerceOrder order)
@@ -69,7 +80,8 @@ namespace BlueCrown.Api.Repositories.Implementations
             return _context.EcommerceOrders
                 .Include(x => x.User)
                 .Include(x => x.Prescription)
-                .Include(x => x.OrderItems).ThenInclude(x => x.Product);
+                .Include(x => x.OrderItems)
+                    .ThenInclude(x => x.Product);
         }
     }
 }

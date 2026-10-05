@@ -24,6 +24,7 @@ export class AdminDoctors implements OnInit {
   isFormOpen = false;
   errorMessage = '';
   successMessage = '';
+  formValidationMessage = '';
 
   filterForm = this.formBuilder.nonNullable.group({
     search: [''],
@@ -32,10 +33,19 @@ export class AdminDoctors implements OnInit {
   });
 
   doctorForm = this.formBuilder.nonNullable.group({
-    fullName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50), Validators.pattern(/^[\p{L}\s]+$/u)]],
+    fullName: ['', [
+      Validators.required,
+      Validators.minLength(2),
+      Validators.maxLength(50),
+      Validators.pattern(/^(?:BS\.\s)?[\p{L}]+(?:\s+[\p{L}]+)*$/u),
+    ]],
     email: ['', [Validators.required, Validators.email]],
     phone: ['', [Validators.required, Validators.pattern(/^(03|05|07|08|09)\d{8}$/)]],
-    password: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/)]],
+    password: ['', [
+      Validators.required,
+      Validators.minLength(8),
+      Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/),
+    ]],
     dateOfBirth: [''],
     gender: [''],
     avatarUrl: [''],
@@ -69,6 +79,7 @@ export class AdminDoctors implements OnInit {
 
   loadDoctors(): void {
     const filter = this.filterForm.getRawValue();
+
     this.isLoading = true;
     this.errorMessage = '';
 
@@ -93,6 +104,7 @@ export class AdminDoctors implements OnInit {
 
   openCreate(): void {
     this.clearMessages();
+
     this.editingId = null;
     this.selectedDoctor = null;
     this.isFormOpen = true;
@@ -121,6 +133,8 @@ export class AdminDoctors implements OnInit {
       consultationFee: '',
       status: 'active',
     });
+
+    this.formValidationMessage = '';
   }
 
   openEdit(id: string): void {
@@ -153,6 +167,7 @@ export class AdminDoctors implements OnInit {
           status: doctor.userStatus ?? 'active',
         });
 
+        this.formValidationMessage = '';
         this.changeDetectorRef.detectChanges();
       },
       error: error => {
@@ -180,6 +195,8 @@ export class AdminDoctors implements OnInit {
   closeForm(): void {
     this.isFormOpen = false;
     this.editingId = null;
+    this.formValidationMessage = '';
+    this.doctorForm.markAsUntouched();
   }
 
   closeDetail(): void {
@@ -190,8 +207,13 @@ export class AdminDoctors implements OnInit {
     this.clearMessages();
     this.doctorForm.markAllAsTouched();
 
-    if (this.doctorForm.invalid)
+    if (this.doctorForm.invalid) {
+      this.formValidationMessage = 'Vui lòng kiểm tra và sửa các thông tin không hợp lệ trước khi lưu.';
+      this.changeDetectorRef.detectChanges();
       return;
+    }
+
+    this.formValidationMessage = '';
 
     const value = this.doctorForm.getRawValue();
     this.isSaving = true;
@@ -283,11 +305,18 @@ export class AdminDoctors implements OnInit {
     });
   }
 
-  deactivate(doctor: AdminDoctor): void {
-    if (!window.confirm(`Vô hiệu hóa bác sĩ "${doctor.fullName}"? Hồ sơ và dữ liệu y tế sẽ được giữ lại.`))
+  deleteDoctor(doctor: AdminDoctor): void {
+    if (!window.confirm(
+      `Bạn có chắc muốn XÓA VĨNH VIỄN tài khoản bác sĩ "${doctor.fullName}"?\n\n` +
+      `Tài khoản chỉ được xóa nếu chưa có dữ liệu nghiệp vụ hoặc ràng buộc liên quan.\n` +
+      `Nếu bác sĩ đã có dữ liệu, hệ thống sẽ không xóa và bạn cần khóa tài khoản thay thế.\n\n` +
+      `Hành động này không thể hoàn tác.`
+    ))
       return;
 
-    this.doctorService.deactivate(doctor.id).subscribe({
+    this.clearMessages();
+
+    this.doctorService.delete(doctor.userId).subscribe({
       next: response => {
         this.successMessage = response.message;
         this.loadDoctors();
@@ -320,9 +349,99 @@ export class AdminDoctors implements OnInit {
     return '-';
   }
 
+  getFieldError(controlName: string): string {
+    const control = this.doctorForm.get(controlName);
+
+    if (!control || !control.touched || !control.errors)
+      return '';
+
+    if (control.errors['required']) {
+      switch (controlName) {
+        case 'fullName':
+          return 'Họ tên không được để trống.';
+        case 'email':
+          return 'Email không được để trống.';
+        case 'phone':
+          return 'Số điện thoại không được để trống.';
+        case 'password':
+          return 'Mật khẩu không được để trống.';
+        case 'specialty':
+          return 'Chuyên khoa không được để trống.';
+        case 'licenseNumber':
+          return 'Số giấy phép không được để trống.';
+        case 'status':
+          return 'Trạng thái không được để trống.';
+        default:
+          return 'Trường này không được để trống.';
+      }
+    }
+
+    if (control.errors['minlength']) {
+      const requiredLength = control.errors['minlength'].requiredLength;
+
+      if (controlName === 'password')
+        return `Mật khẩu phải có ít nhất ${requiredLength} ký tự.`;
+
+      if (controlName === 'fullName')
+        return `Họ tên phải có ít nhất ${requiredLength} ký tự.`;
+
+      return `Phải có ít nhất ${requiredLength} ký tự.`;
+    }
+
+    if (control.errors['maxlength']) {
+      const requiredLength = control.errors['maxlength'].requiredLength;
+
+      if (controlName === 'fullName')
+        return `Họ tên không được vượt quá ${requiredLength} ký tự.`;
+
+      if (controlName === 'specialty')
+        return `Chuyên khoa không được vượt quá ${requiredLength} ký tự.`;
+
+      if (controlName === 'licenseNumber')
+        return `Số giấy phép không được vượt quá ${requiredLength} ký tự.`;
+
+      if (controlName === 'bio')
+        return `Giới thiệu không được vượt quá ${requiredLength} ký tự.`;
+
+      return `Không được vượt quá ${requiredLength} ký tự.`;
+    }
+
+    if (control.errors['email'])
+      return 'Email không đúng định dạng.';
+
+    if (control.errors['pattern']) {
+      switch (controlName) {
+        case 'fullName':
+          return 'Họ tên chỉ được chứa chữ cái và khoảng trắng, hoặc tiền tố BS. ở đầu.';
+        case 'phone':
+          return 'Số điện thoại phải gồm 10 chữ số và bắt đầu bằng 03, 05, 07, 08 hoặc 09.';
+        case 'password':
+          return 'Mật khẩu phải có ít nhất 1 chữ thường, 1 chữ hoa và 1 chữ số.';
+        default:
+          return 'Thông tin không đúng định dạng.';
+      }
+    }
+
+    if (control.errors['min']) {
+      return `Giá trị không được nhỏ hơn ${control.errors['min'].min}.`;
+    }
+
+    if (control.errors['max']) {
+      return `Giá trị không được lớn hơn ${control.errors['max'].max}.`;
+    }
+
+    return 'Thông tin không hợp lệ.';
+  }
+
+  hasFieldError(controlName: string): boolean {
+    const control = this.doctorForm.get(controlName);
+    return !!control && control.touched && control.invalid;
+  }
+
   clearMessages(): void {
     this.errorMessage = '';
     this.successMessage = '';
+    this.formValidationMessage = '';
   }
 
   private toNullableNumber(value: string): number | null {
@@ -333,6 +452,7 @@ export class AdminDoctors implements OnInit {
     this.isSaving = false;
     this.isFormOpen = false;
     this.editingId = null;
+    this.formValidationMessage = '';
     this.successMessage = message;
     this.loadMeta();
     this.loadDoctors();

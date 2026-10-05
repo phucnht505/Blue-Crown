@@ -55,6 +55,7 @@ namespace BlueCrown.Api
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IAdminPharmacistService, AdminPharmacistService>();
             builder.Services.AddScoped<IAccountService, AccountService>();
 
             builder.Services.AddScoped<IPatientProfileRepository, PatientProfileRepository>();

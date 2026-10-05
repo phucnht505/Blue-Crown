@@ -1,4 +1,4 @@
-﻿import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import {
@@ -50,8 +50,8 @@ export class AdminDoctorService {
     return this.http.put<AdminDoctorMessage>(`${this.apiUrl}/${id}/verify`, verified);
   }
 
-  deactivate(id: string): Observable<AdminDoctorMessage> {
-    return this.http.delete<AdminDoctorMessage>(`${this.apiUrl}/admin/${id}`);
+  delete(userId: string): Observable<AdminDoctorMessage> {
+    return this.http.delete<AdminDoctorMessage>(`/api/Users/${userId}/hard`);
   }
 }
 

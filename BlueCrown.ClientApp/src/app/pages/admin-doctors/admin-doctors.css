@@ -305,6 +305,31 @@ td {
   margin: 5px 0 0;
   color: #dc2626;
   font-size: 12px;
+  line-height: 1.4;
+}
+
+.field input.invalid,
+.field select.invalid,
+.field textarea.invalid {
+  border-color: #dc2626;
+  background: #fffafa;
+}
+
+  .field input.invalid:focus,
+  .field select.invalid:focus,
+  .field textarea.invalid:focus {
+    border-color: #dc2626;
+    box-shadow: 0 0 0 2px rgba(220, 38, 38, .08);
+  }
+
+.form-validation-message {
+  margin-bottom: 18px;
+  padding: 11px 14px;
+  border: 1px solid #fecaca;
+  border-radius: 9px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 14px;
 }
 
 .modal-actions {

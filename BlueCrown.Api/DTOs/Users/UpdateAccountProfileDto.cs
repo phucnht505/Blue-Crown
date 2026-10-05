@@ -6,7 +6,7 @@ namespace BlueCrown.Api.DTOs.Users
     {
         [Required(ErrorMessage = "Họ tên không được để trống.")]
         [StringLength(50, MinimumLength = 2, ErrorMessage = "Họ tên phải từ 2 đến 50 ký tự.")]
-        [RegularExpression(@"^[\p{L}\s]+$", ErrorMessage = "Họ tên chỉ được chứa chữ cái và khoảng trắng.")]
+        [RegularExpression(@"^(?:BS\.\s)?[\p{L}]+(?:\s+[\p{L}]+)*$", ErrorMessage = "Họ tên chỉ được chứa chữ cái và khoảng trắng, hoặc tiền tố BS. ở đầu.")]
         public string FullName { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Số điện thoại không được để trống.")]

@@ -145,6 +145,67 @@ CREATE TABLE medical_records (
 
 CREATE UNIQUE INDEX UX_medical_records_appointment_id
 ON medical_records(appointment_id);
+
+USE BLUE_CROWN;
+GO
+
+BEGIN TRY
+    BEGIN TRANSACTION;
+
+    IF EXISTS (
+        SELECT 1
+        FROM medical_records
+        WHERE appointment_id IS NULL
+    )
+        THROW 50001, N'Không thể đổi appointment_id thành NOT NULL vì còn MedicalRecord không có Appointment.', 1;
+
+    IF EXISTS (
+        SELECT appointment_id
+        FROM medical_records
+        GROUP BY appointment_id
+        HAVING COUNT(*) > 1
+    )
+        THROW 50002, N'Không thể tạo UNIQUE INDEX vì có Appointment bị trùng MedicalRecord.', 1;
+
+    ALTER TABLE medical_records
+    ALTER COLUMN appointment_id UNIQUEIDENTIFIER NOT NULL;
+
+    IF NOT EXISTS (
+        SELECT 1
+        FROM sys.indexes
+        WHERE object_id = OBJECT_ID('dbo.medical_records')
+          AND name = 'UX_medical_records_appointment_id'
+    )
+    BEGIN
+        CREATE UNIQUE INDEX UX_medical_records_appointment_id
+        ON medical_records(appointment_id);
+    END;
+
+    COMMIT TRANSACTION;
+
+    PRINT N'Đã đồng bộ MedicalRecord - Appointment thành công.';
+END TRY
+BEGIN CATCH
+    IF @@TRANCOUNT > 0
+        ROLLBACK TRANSACTION;
+
+    THROW;
+END CATCH;
+GO
+
+SELECT
+    c.name,
+    c.is_nullable
+FROM sys.columns c
+WHERE c.object_id = OBJECT_ID('dbo.medical_records')
+  AND c.name = 'appointment_id';
+
+SELECT
+    name,
+    is_unique
+FROM sys.indexes
+WHERE object_id = OBJECT_ID('dbo.medical_records')
+ORDER BY name;
 -- =========================================
 -- NHÓM 6: ĐƠN THUỐC & NHẮC UỐNG THUỐC
 -- =========================================

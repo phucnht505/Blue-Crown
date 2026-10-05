@@ -48,14 +48,26 @@ namespace BlueCrown.Api.Controllers
             }
         }
 
-        // UC10: Guest tra cứu bằng số điện thoại, mã đơn là tùy chọn.
+        // UC10: Tra cứu bằng số điện thoại, mã đơn là tùy chọn.
         [HttpPost("lookup")]
         [AllowAnonymous]
         public async Task<ActionResult<List<EcommerceOrderDto>>> LookupGuestOrders([FromBody] GuestOrderLookupDto dto)
         {
             try
             {
-                var orders = await _service.LookupGuestOrdersAsync(dto);
+                Guid? userId = null;
+
+                if (User.Identity?.IsAuthenticated == true)
+                {
+                    var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                    if (!Guid.TryParse(userIdClaim, out var parsedUserId))
+                        return Unauthorized(new { message = "Không xác định được người dùng." });
+
+                    userId = parsedUserId;
+                }
+
+                var orders = await _service.LookupGuestOrdersAsync(dto, userId);
 
                 if (orders.Count == 0)
                     return NotFound(new { message = "Không tìm thấy đơn hàng phù hợp với thông tin đã nhập." });
