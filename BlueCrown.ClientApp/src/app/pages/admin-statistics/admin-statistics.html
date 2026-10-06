@@ -1,254 +1,340 @@
 <main class="statistics-page">
-    <div class="page-header">
-        <div>
-            <a routerLink="/admin/dashboard" class="back-link">← Admin Dashboard</a>
-            <p class="eyebrow">BÁO CÁO THỐNG KÊ</p>
-            <h1>Thống kê bán hàng và nhập kho</h1>
-            <p>Theo dõi doanh thu bán hàng, chi phí nhập hàng và các giao dịch đã hoàn tất.</p>
-        </div>
+  <div class="page-header">
+    <div>
+      <a routerLink="/admin/dashboard" class="back-link">← Admin Dashboard</a>
+      <p class="eyebrow">BÁO CÁO THỐNG KÊ</p>
+      <h1>Thống kê bán hàng và nhập kho</h1>
+      <p>Theo dõi doanh thu bán hàng, doanh thu thuốc đã cấp, chi phí nhập hàng và các giao dịch đã hoàn tất.</p>
+    </div>
+  </div>
+
+  <section class="filter-card">
+    <div class="filter-group">
+      <label>Thống kê theo</label>
+
+      <select [(ngModel)]="period" (change)="onPeriodChange()">
+        <option value="day">Ngày</option>
+        <option value="month">Tháng</option>
+        <option value="year">Năm</option>
+      </select>
     </div>
 
-    <section class="filter-card">
-        <div class="filter-group">
-            <label>Thống kê theo</label>
-
-            <select [(ngModel)]="period" (change)="onPeriodChange()">
-                <option value="day">Ngày</option>
-                <option value="month">Tháng</option>
-                <option value="year">Năm</option>
-            </select>
-        </div>
-
-        @if (period === 'day') {
-        <div class="filter-group">
-            <label>Ngày</label>
-            <input type="date" [(ngModel)]="selectedDate">
-        </div>
-        }
-
-        @if (period === 'month') {
-        <div class="filter-group">
-            <label>Tháng</label>
-            <input type="month" [(ngModel)]="selectedMonth">
-        </div>
-        }
-
-        @if (period === 'year') {
-        <div class="filter-group">
-            <label>Năm</label>
-            <input type="number"
-                   min="2000"
-                   max="9999"
-                   [(ngModel)]="selectedYear">
-        </div>
-        }
-
-        <button type="button"
-                class="search-button"
-                (click)="loadStatistics()"
-                [disabled]="loading">
-
-            {{ loading ? 'Đang tải...' : 'Xem báo cáo' }}
-        </button>
-    </section>
-
-    @if (errorMessage) {
-    <div class="error-box">
-        {{ errorMessage }}
+    @if (period === 'day') {
+    <div class="filter-group">
+      <label>Ngày</label>
+      <input type="date" [(ngModel)]="selectedDate">
     </div>
     }
 
-    @if (loading) {
-    <div class="loading-box">
-        <div class="spinner"></div>
-        <span>Đang tổng hợp dữ liệu báo cáo...</span>
+    @if (period === 'month') {
+    <div class="filter-group">
+      <label>Tháng</label>
+      <input type="month" [(ngModel)]="selectedMonth">
     </div>
     }
 
-    @if (statistics && !loading) {
-    @if (statistics.salesOrderCount === 0 && statistics.inventoryReceiptCount === 0) {
-    <div class="empty-report">
-        Không có dữ liệu bán hàng hoặc nhập kho trong kỳ báo cáo này.
+    @if (period === 'year') {
+    <div class="filter-group">
+      <label>Năm</label>
+      <input type="number"
+             min="2000"
+             max="9999"
+             [(ngModel)]="selectedYear">
     </div>
     }
-    <section class="report-toolbar">
-        <div>
-            <p class="toolbar-label">KỲ BÁO CÁO</p>
-            <h2>{{ getPeriodTitle() }}</h2>
-        </div>
 
-        <div class="export-actions">
-            <button type="button"
-                    class="export-button pdf-button"
-                    (click)="exportPdf()"
-                    [disabled]="exportingPdf || exportingWord">
+    <button type="button"
+            class="search-button"
+            (click)="loadStatistics()"
+            [disabled]="loading">
 
-                {{ exportingPdf ? 'Đang xuất PDF...' : 'Xuất PDF' }}
-            </button>
+      {{ loading ? 'Đang tải...' : 'Xem báo cáo' }}
+    </button>
+  </section>
 
-            <button type="button"
-                    class="export-button word-button"
-                    (click)="exportWord()"
-                    [disabled]="exportingPdf || exportingWord">
+  @if (errorMessage) {
+  <div class="error-box">
+    {{ errorMessage }}
+  </div>
+  }
 
-                {{ exportingWord ? 'Đang xuất Word...' : 'Xuất Word' }}
-            </button>
-        </div>
-    </section>
+  @if (loading) {
+  <div class="loading-box">
+    <div class="spinner"></div>
+    <span>Đang tổng hợp dữ liệu báo cáo...</span>
+  </div>
+  }
 
-    <section class="summary-grid">
-        <article class="summary-card">
-            <span>Đơn bán hoàn tất</span>
-            <strong>{{ statistics.salesOrderCount }}</strong>
-            <small>Đơn hàng đã giao thành công</small>
-        </article>
+  @if (statistics && !loading) {
+  @if (statistics.salesOrderCount === 0 &&
+  statistics.dispensedItemCount === 0 &&
+  statistics.inventoryReceiptCount === 0) {
+  <div class="empty-report">
+    Không có dữ liệu bán hàng, thuốc đã cấp hoặc nhập kho trong kỳ báo cáo này.
+  </div>
+  }
 
-        <article class="summary-card">
-            <span>Doanh thu bán hàng</span>
-            <strong>{{ formatMoney(statistics.salesRevenue) }}</strong>
-            <small>Tổng giá trị đơn đã giao</small>
-        </article>
+  <section class="report-toolbar">
+    <div>
+      <p class="toolbar-label">KỲ BÁO CÁO</p>
+      <h2>{{ getPeriodTitle() }}</h2>
+    </div>
 
-        <article class="summary-card">
-            <span>Phiếu nhập đã duyệt</span>
-            <strong>{{ statistics.inventoryReceiptCount }}</strong>
-            <small>Phiếu nhập hợp lệ trong kỳ</small>
-        </article>
+    <div class="export-actions">
+      <button type="button"
+              class="export-button pdf-button"
+              (click)="exportPdf()"
+              [disabled]="exportingPdf || exportingWord">
 
-        <article class="summary-card">
-            <span>Chi phí nhập hàng</span>
-            <strong>{{ formatMoney(statistics.inventoryCost) }}</strong>
-            <small>Tổng giá trị nhập kho</small>
-        </article>
+        {{ exportingPdf ? 'Đang xuất PDF...' : 'Xuất PDF' }}
+      </button>
 
-        <article class="summary-card balance-card">
-            <span>Chênh lệch thu - chi</span>
-            <strong>{{ formatMoney(statistics.balance) }}</strong>
-            <small>Doanh thu bán - chi phí nhập</small>
-        </article>
-    </section>
+      <button type="button"
+              class="export-button word-button"
+              (click)="exportWord()"
+              [disabled]="exportingPdf || exportingWord">
 
-    <section class="table-card">
-        <div class="section-title">
-            <div>
-                <h2>Hóa đơn / đơn bán đã hoàn tất</h2>
-                <p>{{ statistics.salesOrderCount }} giao dịch</p>
-            </div>
-        </div>
+        {{ exportingWord ? 'Đang xuất Word...' : 'Xuất Word' }}
+      </button>
+    </div>
+  </section>
 
-        @if (statistics.salesOrders.length === 0) {
-        <div class="empty-state">
-            Không có đơn bán hoàn tất trong khoảng thời gian này.
-        </div>
-        } @else {
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Mã đơn</th>
-                        <th>Khách hàng</th>
-                        <th>Ngày bán</th>
-                        <th>Thanh toán</th>
-                        <th>Trạng thái</th>
-                        <th class="money-column">Tổng tiền</th>
-                    </tr>
-                </thead>
+  <section class="summary-grid">
+    <article class="summary-card">
+      <span>Đơn bán hoàn tất</span>
+      <strong>{{ statistics.salesOrderCount }}</strong>
+      <small>Đơn hàng đã giao thành công</small>
+    </article>
 
-                <tbody>
-                    @for (order of statistics.salesOrders; track order.id) {
-                    <tr>
-                        <td class="code">
-                            {{ shortId(order.id) }}
-                        </td>
+    <article class="summary-card">
+      <span>Doanh thu bán hàng</span>
+      <strong>{{ formatMoney(statistics.salesRevenue) }}</strong>
+      <small>Tổng giá trị đơn đã giao</small>
+    </article>
 
-                        <td>
-                            <strong>{{ order.customerName }}</strong>
+    <article class="summary-card">
+      <span>Thuốc đã cấp</span>
+      <strong>{{ statistics.dispensedItemCount }}</strong>
+      <small>Giao dịch cấp thuốc trong kỳ</small>
+    </article>
 
-                            @if (order.guestPhone) {
-                            <small>{{ order.guestPhone }}</small>
-                            }
-                        </td>
+    <article class="summary-card">
+      <span>Doanh thu thuốc</span>
+      <strong>{{ formatMoney(statistics.prescriptionRevenue) }}</strong>
+      <small>Tổng tiền thuốc đã cấp</small>
+    </article>
 
-                        <td>
-                            {{ order.createdAt | date:'dd/MM/yyyy HH:mm' }}
-                        </td>
+    <article class="summary-card">
+      <span>Tổng thu</span>
+      <strong>{{ formatMoney(statistics.totalRevenue) }}</strong>
+      <small>Đơn hàng + thuốc đã cấp</small>
+    </article>
 
-                        <td>
-                            {{ order.paymentMethod | uppercase }}
-                        </td>
+    <article class="summary-card">
+      <span>Phiếu nhập đã duyệt</span>
+      <strong>{{ statistics.inventoryReceiptCount }}</strong>
+      <small>Phiếu nhập hợp lệ trong kỳ</small>
+    </article>
 
-                        <td>
-                            <span class="status success">
-                                Đã giao
-                            </span>
-                        </td>
+    <article class="summary-card">
+      <span>Chi phí nhập hàng</span>
+      <strong>{{ formatMoney(statistics.inventoryCost) }}</strong>
+      <small>Tổng giá trị nhập kho</small>
+    </article>
 
-                        <td class="money-column">
-                            {{ formatMoney(order.totalAmount) }}
-                        </td>
-                    </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-        }
-    </section>
+    <article class="summary-card balance-card">
+      <span>Chênh lệch thu - chi</span>
+      <strong>{{ formatMoney(statistics.balance) }}</strong>
+      <small>Tổng thu - chi phí nhập</small>
+    </article>
+  </section>
 
-    <section class="table-card">
-        <div class="section-title">
-            <div>
-                <h2>Phiếu nhập đã duyệt</h2>
-                <p>{{ statistics.inventoryReceiptCount }} phiếu nhập</p>
-            </div>
-        </div>
+  <section class="table-card">
+    <div class="section-title">
+      <div>
+        <h2>Hóa đơn / đơn bán đã hoàn tất</h2>
+        <p>{{ statistics.salesOrderCount }} giao dịch</p>
+      </div>
+    </div>
 
-        @if (statistics.inventoryReceipts.length === 0) {
-        <div class="empty-state">
-            Không có phiếu nhập đã duyệt trong khoảng thời gian này.
-        </div>
-        } @else {
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Mã phiếu</th>
-                        <th>Nhà cung cấp</th>
-                        <th>Ngày nhập</th>
-                        <th>Trạng thái</th>
-                        <th class="money-column">Tổng chi phí</th>
-                    </tr>
-                </thead>
+    @if (statistics.salesOrders.length === 0) {
+    <div class="empty-state">
+      Không có đơn bán hoàn tất trong khoảng thời gian này.
+    </div>
+    } @else {
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Mã đơn</th>
+            <th>Khách hàng</th>
+            <th>Ngày bán</th>
+            <th>Thanh toán</th>
+            <th>Trạng thái</th>
+            <th class="money-column">Tổng tiền</th>
+          </tr>
+        </thead>
 
-                <tbody>
-                    @for (receipt of statistics.inventoryReceipts; track receipt.id) {
-                    <tr>
-                        <td class="code">
-                            {{ shortId(receipt.id) }}
-                        </td>
+        <tbody>
+          @for (order of statistics.salesOrders; track order.id) {
+          <tr>
+            <td class="code">
+              {{ shortId(order.id) }}
+            </td>
 
-                        <td>
-                            {{ receipt.supplierName }}
-                        </td>
+            <td>
+              <strong>{{ order.customerName }}</strong>
 
-                        <td>
-                            {{ receipt.receiptDate | date:'dd/MM/yyyy HH:mm' }}
-                        </td>
+              @if (order.guestPhone) {
+              <small>{{ order.guestPhone }}</small>
+              }
+            </td>
 
-                        <td>
-                            <span class="status success">
-                                Đã duyệt
-                            </span>
-                        </td>
+            <td>
+              {{ order.createdAt | date:'dd/MM/yyyy HH:mm' }}
+            </td>
 
-                        <td class="money-column">
-                            {{ formatMoney(receipt.totalCost) }}
-                        </td>
-                    </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-        }
-    </section>
+            <td>
+              {{ order.paymentMethod | uppercase }}
+            </td>
+
+            <td>
+              <span class="status success">
+                Đã giao
+              </span>
+            </td>
+
+            <td class="money-column">
+              {{ formatMoney(order.totalAmount) }}
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
     }
+  </section>
+
+  <section class="table-card">
+    <div class="section-title">
+      <div>
+        <h2>Hóa đơn thuốc / thuốc đã cấp</h2>
+        <p>{{ statistics.dispensedItemCount }} giao dịch</p>
+      </div>
+    </div>
+
+    @if (statistics.dispensedItems.length === 0) {
+    <div class="empty-state">
+      Không có thuốc đã cấp trong khoảng thời gian này.
+    </div>
+    } @else {
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Mã cấp thuốc</th>
+            <th>Thuốc</th>
+            <th>Số lượng</th>
+            <th class="money-column">Đơn giá</th>
+            <th>Người cấp</th>
+            <th>Ngày cấp</th>
+            <th class="money-column">Thành tiền</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (item of statistics.dispensedItems; track item.id) {
+          <tr>
+            <td class="code">
+              {{ shortId(item.id) }}
+            </td>
+
+            <td>
+              <strong>{{ item.productName }}</strong>
+            </td>
+
+            <td>
+              {{ item.quantityDispensed }}
+            </td>
+
+            <td class="money-column">
+              {{ formatMoney(item.unitPrice) }}
+            </td>
+
+            <td>
+              {{ item.dispensedByName || 'Không xác định' }}
+            </td>
+
+            <td>
+              {{ item.dispensedAt | date:'dd/MM/yyyy HH:mm' }}
+            </td>
+
+            <td class="money-column">
+              {{ formatMoney(item.totalAmount) }}
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    }
+  </section>
+
+  <section class="table-card">
+    <div class="section-title">
+      <div>
+        <h2>Phiếu nhập đã duyệt</h2>
+        <p>{{ statistics.inventoryReceiptCount }} phiếu nhập</p>
+      </div>
+    </div>
+
+    @if (statistics.inventoryReceipts.length === 0) {
+    <div class="empty-state">
+      Không có phiếu nhập đã duyệt trong khoảng thời gian này.
+    </div>
+    } @else {
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Mã phiếu</th>
+            <th>Nhà cung cấp</th>
+            <th>Ngày nhập</th>
+            <th>Trạng thái</th>
+            <th class="money-column">Tổng chi phí</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (receipt of statistics.inventoryReceipts; track receipt.id) {
+          <tr>
+            <td class="code">
+              {{ shortId(receipt.id) }}
+            </td>
+
+            <td>
+              {{ receipt.supplierName }}
+            </td>
+
+            <td>
+              {{ receipt.receiptDate | date:'dd/MM/yyyy HH:mm' }}
+            </td>
+
+            <td>
+              <span class="status success">
+                Đã duyệt
+              </span>
+            </td>
+
+            <td class="money-column">
+              {{ formatMoney(receipt.totalCost) }}
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    }
+  </section>
+  }
 </main>

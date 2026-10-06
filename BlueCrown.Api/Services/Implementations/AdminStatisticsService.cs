@@ -15,7 +15,11 @@ public class AdminStatisticsService : IAdminStatisticsService
 
     public async Task<AdminStatisticsDto> GetStatisticsAsync(AdminStatisticsQueryDto query)
     {
-        var (fromDate, toDate, period) = GetDateRange(query);
+        var (fromDate, toDate) = GetDateRange(
+            query.Period,
+            query.Date,
+            query.Month,
+            query.Year);
 
         var orders = await _repository.GetDeliveredOrdersAsync(fromDate, toDate);
         var receipts = await _repository.GetApprovedReceiptsAsync(fromDate, toDate);
@@ -32,7 +36,7 @@ public class AdminStatisticsService : IAdminStatisticsService
 
         return new AdminStatisticsDto
         {
-            Period = period,
+            Period = query.Period,
             FromDate = fromDate,
             ToDate = toDate,
 
@@ -42,6 +46,17 @@ public class AdminStatisticsService : IAdminStatisticsService
             DispensedItemCount = dispensedItems.Count,
             PrescriptionRevenue = prescriptionRevenue,
 
+            DispensedItems = dispensedItems.Select(x => new PrescriptionDispenseStatistic
+            {
+                Id = x.Id,
+                ProductName = x.Product?.Name ?? "Không xác định",
+                QuantityDispensed = x.QuantityDispensed,
+                UnitPrice = x.UnitPrice,
+                DispensedByName = x.DispensedByNavigation?.FullName,
+                DispensedAt = x.DispensedAt,
+                TotalAmount = x.UnitPrice * x.QuantityDispensed
+            }).ToList(),
+
             TotalRevenue = totalRevenue,
 
             InventoryReceiptCount = receipts.Count,
@@ -49,82 +64,97 @@ public class AdminStatisticsService : IAdminStatisticsService
 
             Balance = totalRevenue - inventoryCost,
 
-            SalesOrders = orders.Select(x => new SalesOrderStatisticDto
+            SalesOrders = orders.Select(x => new SalesOrderStatistic
             {
                 Id = x.Id,
                 CreatedAt = x.CreatedAt,
-                CustomerName = x.User?.FullName ?? "Khách vãng lai",
+                CustomerName = GetCustomerName(x),
                 GuestPhone = x.GuestPhone,
                 TotalAmount = x.TotalAmount,
                 PaymentMethod = x.PaymentMethod,
-                PaymentStatus = x.PaymentStatus ?? string.Empty,
-                OrderStatus = x.OrderStatus ?? string.Empty
+                PaymentStatus = x.PaymentStatus,
+                OrderStatus = x.OrderStatus
             }).ToList(),
 
-            InventoryReceipts = receipts.Select(x => new InventoryReceiptStatisticDto
+            InventoryReceipts = receipts.Select(x => new InventoryReceiptStatistic
             {
                 Id = x.Id,
                 ReceiptDate = x.ReceiptDate,
                 SupplierName = x.Supplier?.SupplierName ?? "Không xác định",
                 TotalCost = x.TotalCost ?? 0,
-                Status = x.Status ?? string.Empty
+                Status = x.Status
             }).ToList()
         };
     }
 
-    private static (DateTime fromDate, DateTime toDate, string period) GetDateRange(AdminStatisticsQueryDto query)
+    private static string GetCustomerName(Models.EcommerceOrder order)
     {
-        var now = DateTime.Now;
-        var period = (query.Period ?? "day").Trim().ToLowerInvariant();
-
-        if (period == "day")
+        if (!string.IsNullOrWhiteSpace(order.User?.FullName))
         {
-            var date = (query.Date ?? now).Date;
-            return (date, date.AddDays(1), "day");
+            return order.User.FullName;
         }
 
-        if (period == "month")
+        if (!string.IsNullOrWhiteSpace(order.GuestPhone))
         {
-            var year = query.Year ?? now.Year;
-            var month = query.Month ?? now.Month;
-
-            if (year < 1 || year > 9999)
-            {
-                throw new ArgumentException("Năm không hợp lệ.");
-            }
-
-            if (month < 1 || month > 12)
-            {
-                throw new ArgumentException("Tháng phải từ 1 đến 12.");
-            }
-
-            var start = new DateTime(year, month, 1);
-
-            return (
-                start,
-                start.AddMonths(1),
-                "month"
-            );
+            return $"Khách vãng lai {order.GuestPhone}";
         }
 
-        if (period == "year")
+        return "Khách vãng lai";
+    }
+
+    private static (DateTime FromDate, DateTime ToDate) GetDateRange(
+        string period,
+        DateTime? date,
+        int? month,
+        int? year)
+    {
+        switch (period.ToLowerInvariant())
         {
-            var year = query.Year ?? now.Year;
+            case "day":
+                {
+                    var selectedDate = (date ?? DateTime.Today).Date;
 
-            if (year < 1 || year > 9999)
-            {
-                throw new ArgumentException("Năm không hợp lệ.");
-            }
+                    return (
+                        selectedDate,
+                        selectedDate.AddDays(1)
+                    );
+                }
 
-            var start = new DateTime(year, 1, 1);
+            case "month":
+                {
+                    var selectedYear = year ?? DateTime.Today.Year;
+                    var selectedMonth = month ?? DateTime.Today.Month;
 
-            return (
-                start,
-                start.AddYears(1),
-                "year"
-            );
+                    var fromDate = new DateTime(
+                        selectedYear,
+                        selectedMonth,
+                        1);
+
+                    return (
+                        fromDate,
+                        fromDate.AddMonths(1)
+                    );
+                }
+
+            case "year":
+                {
+                    var selectedYear = year ?? DateTime.Today.Year;
+
+                    var fromDate = new DateTime(
+                        selectedYear,
+                        1,
+                        1);
+
+                    return (
+                        fromDate,
+                        fromDate.AddYears(1)
+                    );
+                }
+
+            default:
+                throw new ArgumentException(
+                    "Period không hợp lệ. Chỉ hỗ trợ day, month hoặc year.",
+                    nameof(period));
         }
-
-        throw new ArgumentException("Period chỉ nhận day, month hoặc year.");
     }
 }
