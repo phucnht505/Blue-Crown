@@ -1,10 +1,4 @@
-﻿-- BLUE CROWN - DATA RESET + SEED MỚI NHẤT
--- Cập nhật ngày nghiệp vụ theo thời điểm 16/09/2026.
--- Giữ nguyên ngày sinh và hạn sử dụng sản phẩm/lô hàng.
--- Đồng bộ trạng thái Appointment/ChatSession để tránh xung đột BR-CHAT-007.
--- File này XÓA TOÀN BỘ DỮ LIỆU hiện có trong BLUE_CROWN rồi seed lại.
-
-USE BLUE_CROWN;
+﻿USE BLUE_CROWN;
 GO
 
 SET NOCOUNT ON;

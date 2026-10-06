@@ -986,6 +986,10 @@ public partial class BlueCrownContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("dispensed_at");
 
+            entity.Property(e => e.UnitPrice)
+                .HasColumnType("decimal(12, 2)")
+                .HasColumnName("unit_price");
+
             entity.HasOne(d => d.PrescriptionItem)
                 .WithOne(p => p.PrescriptionDispenseItem)
                 .HasForeignKey<PrescriptionDispenseItem>(d => d.PrescriptionItemId)

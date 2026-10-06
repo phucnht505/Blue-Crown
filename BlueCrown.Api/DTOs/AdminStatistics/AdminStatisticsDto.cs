@@ -10,6 +10,9 @@ public class AdminStatisticsDto
     public int InventoryReceiptCount { get; set; }
     public decimal InventoryCost { get; set; }
     public decimal Balance { get; set; }
+    public int DispensedItemCount { get; set; }
+    public decimal PrescriptionRevenue { get; set; }
+    public decimal TotalRevenue { get; set; }
     public List<SalesOrderStatisticDto> SalesOrders { get; set; } = new();
     public List<InventoryReceiptStatisticDto> InventoryReceipts { get; set; } = new();
 }

@@ -7,6 +7,7 @@ namespace BlueCrown.Api.DTOs.Prescriptions
         public Guid ProductId { get; set; }
         public string ProductName { get; set; } = string.Empty;
         public int QuantityDispensed { get; set; }
+        public decimal UnitPrice { get; set; }
         public Guid? DispensedBy { get; set; }
         public string? DispensedByName { get; set; }
         public DateTime? DispensedAt { get; set; }

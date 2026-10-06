@@ -107,6 +107,8 @@ namespace BlueCrown.Api.Services.Implementations
 
                 var itemTotal = unitPrice * itemDto.Quantity;
 
+                product.StockQuantity = stockQuantity - itemDto.Quantity;
+
                 var orderItem = new OrderItem
                 {
                     Id = Guid.NewGuid(),

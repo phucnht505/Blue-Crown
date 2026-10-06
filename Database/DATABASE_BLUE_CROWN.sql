@@ -365,6 +365,7 @@ BEGIN
         quantity_dispensed INT NOT NULL,
         dispensed_by UNIQUEIDENTIFIER NULL,
         dispensed_at DATETIME NOT NULL DEFAULT GETDATE(),
+	    unit_price DECIMAL(12,2) NOT NULL,
 
         CONSTRAINT PK_prescription_dispense_items PRIMARY KEY (id),
 
