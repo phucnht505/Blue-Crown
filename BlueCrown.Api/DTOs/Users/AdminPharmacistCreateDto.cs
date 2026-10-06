@@ -6,7 +6,7 @@ namespace BlueCrown.Api.DTOs.Users
     {
         [Required(ErrorMessage = "Họ tên là bắt buộc.")]
         [StringLength(50, MinimumLength = 2, ErrorMessage = "Họ tên phải từ 2 đến 50 ký tự.")]
-        [RegularExpression(@"^[\p{L}\s]+$", ErrorMessage = "Họ tên chỉ được chứa chữ cái và khoảng trắng.")]
+        [RegularExpression(@"^(DS\.\s*)?[\p{L}\s]+$", ErrorMessage = "Họ tên chỉ được chứa chữ cái, khoảng trắng và tiền tố DS.")]
         public string FullName { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Email là bắt buộc.")]

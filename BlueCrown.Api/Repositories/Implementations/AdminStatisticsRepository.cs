@@ -71,4 +71,29 @@ public class AdminStatisticsRepository : IAdminStatisticsRepository
             })
             .ToListAsync();
     }
+    public async Task<List<PrescriptionDispenseItem>> GetDispensedItemsAsync(DateTime fromDate, DateTime toDate)
+    {
+        return await _context.PrescriptionDispenseItems
+            .AsNoTracking()
+            .Where(x =>
+                x.DispensedAt >= fromDate &&
+                x.DispensedAt < toDate)
+            .OrderByDescending(x => x.DispensedAt)
+            .Select(x => new PrescriptionDispenseItem
+            {
+                Id = x.Id,
+                PrescriptionItemId = x.PrescriptionItemId,
+                ProductId = x.ProductId,
+                QuantityDispensed = x.QuantityDispensed,
+                UnitPrice = x.UnitPrice,
+                DispensedBy = x.DispensedBy,
+                DispensedAt = x.DispensedAt,
+                Product = x.Product == null ? null : new Product
+                    {
+                        Id = x.Product.Id,
+                        Name = x.Product.Name
+                    }
+            })
+            .ToListAsync();
+    }
 }

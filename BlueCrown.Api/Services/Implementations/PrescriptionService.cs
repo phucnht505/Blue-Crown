@@ -524,13 +524,13 @@ namespace BlueCrown.Api.Services.Implementations
                 product.StockQuantity =
                     currentStock - requestItem.QuantityDispensed;
 
-                dispenseItems.Add(
-                    new PrescriptionDispenseItem
+                dispenseItems.Add(new PrescriptionDispenseItem
                     {
                         Id = Guid.NewGuid(),
                         PrescriptionItemId = prescriptionItem.Id,
                         ProductId = product.Id,
                         QuantityDispensed = requestItem.QuantityDispensed,
+                        UnitPrice = product.Price,
                         DispensedBy = pharmacistUserId,
                         DispensedAt = dispensedAt
                     });
@@ -679,12 +679,11 @@ namespace BlueCrown.Api.Services.Implementations
                 Id = dispense.Id,
                 PrescriptionItemId = dispense.PrescriptionItemId,
                 ProductId = dispense.ProductId,
-                ProductName =
-                    dispense.Product?.Name ?? "Không xác định",
+                ProductName = dispense.Product?.Name ?? "Không xác định",
                 QuantityDispensed = dispense.QuantityDispensed,
+                UnitPrice = dispense.UnitPrice,
                 DispensedBy = dispense.DispensedBy,
-                DispensedByName =
-                    dispense.DispensedByNavigation?.FullName,
+                DispensedByName = dispense.DispensedByNavigation?.FullName,
                 DispensedAt = AsUtc(dispense.DispensedAt)
             };
         }

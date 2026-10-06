@@ -19,8 +19,15 @@ public class AdminStatisticsService : IAdminStatisticsService
 
         var orders = await _repository.GetDeliveredOrdersAsync(fromDate, toDate);
         var receipts = await _repository.GetApprovedReceiptsAsync(fromDate, toDate);
+        var dispensedItems = await _repository.GetDispensedItemsAsync(fromDate, toDate);
 
         var salesRevenue = orders.Sum(x => x.TotalAmount);
+
+        var prescriptionRevenue = dispensedItems.Sum(
+            x => x.UnitPrice * x.QuantityDispensed);
+
+        var totalRevenue = salesRevenue + prescriptionRevenue;
+
         var inventoryCost = receipts.Sum(x => x.TotalCost ?? 0);
 
         return new AdminStatisticsDto
@@ -28,11 +35,19 @@ public class AdminStatisticsService : IAdminStatisticsService
             Period = period,
             FromDate = fromDate,
             ToDate = toDate,
+
             SalesOrderCount = orders.Count,
             SalesRevenue = salesRevenue,
+
+            DispensedItemCount = dispensedItems.Count,
+            PrescriptionRevenue = prescriptionRevenue,
+
+            TotalRevenue = totalRevenue,
+
             InventoryReceiptCount = receipts.Count,
             InventoryCost = inventoryCost,
-            Balance = salesRevenue - inventoryCost,
+
+            Balance = totalRevenue - inventoryCost,
 
             SalesOrders = orders.Select(x => new SalesOrderStatisticDto
             {
